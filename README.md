@@ -35,9 +35,12 @@ EasyScreenLive是EasyDarwin开源流媒体团队开发的一个集采集，编�
 libEasyScreenLive windows版本库支持输入源:
 
 typedef enum tagSOURCE_TYPE
+
 {
 	SOURCE_LOCAL_CAMERA = 0,	//本地音视频
+	
       SOURCE_SCREEN_CAPTURE =1,//屏幕捕获
+      
 	SOURCE_FILE_STREAM = 2,       //文件流推送(mp4,ts,flv???)
 
 }SOURCE_TYPE;
@@ -45,9 +48,12 @@ typedef enum tagSOURCE_TYPE
 libEasyScreenLive windows版本库支持视频(H264)编码器:
 
 typedef enum tagENCODER_TYPE
+
 {
 	ENCODER_DEFAULT 				= 0, //默认编码器
+	
 	ENCODER_FASTSOFTWARE 	= 1,//快速软编码
+	
 	ENCODER_FASTHARDWARE 	= 2,//快速硬件编码，需要Nvidia显卡支持
 
 }ENCODER_TYPE;
@@ -55,10 +61,14 @@ typedef enum tagENCODER_TYPE
 libEasyScreenLive windows版本库支持推送流:
 
 typedef enum tagPUSH_TYPE
+
 {
 	PUSH_NONE = 0,
+	
 	PUSH_RTSP ,			//推送RTSP
+	
 	PUSH_RTMP ,		//推送RTMP
+	
 }PUSH_TYPE;
 
 
