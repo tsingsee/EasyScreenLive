@@ -1,0 +1,75 @@
+# EasyScreenLive #
+
+EasyScreenLive是EasyDarwin开源流媒体团队开发的一个集采集，编码，推流和流媒体RTSP服务于一身的通用库，目前支持Windows，Android平台，通过EasyScreenLive我们就可以避免接触到稍显复杂的音视频源采集，编码和流媒体推送以及RTSP/RTP/RTCP服务流程，只需要调用EasyScreenLive的几个API接口，就能轻松、稳定地把流媒体音视频数据推送给EasyDSS服务器以及发布RTSP服务，RTSP服务支持组播和单播两种模式，可用于同屏直播，延时在300ms以内。
+
+
+## 调用示例 ##
+
+- **EasyScreenLive_Android**：实时采集安卓摄像头音视频（Android 5.0+支持采集手机桌面屏幕进行直播），进行H264/AAC编码后，调用libEasyIPCamera进行同屏直播；
+
+- **EasyScreenLive_win32**：实时采集USB摄像头或者桌面屏幕，以及音频输入设备，进行H264/AAC编码后，调用libEasyIPCamera进行同屏直播，调用libEasyRTMP推行RTMP到EasyDSS服务器；
+
+
+	Windows编译方法，
+
+    	Visual Studio 2010 编译：.\EasyScreenLive_win32\libEasyScreenLive\libEasyScreenLive.sln
+
+	Android编译方法，
+		
+		Android Studio编译：
+
+- **我们同时提供Windows、Android版本的libEasyScreenLive库**：EasyScreenLive SDK商业使用需要经过授权才能永久使用，商业授权方案可以邮件发送至[support@easydarwin.org](mailto:support@easydarwin.org "EasyDarwin support mail")或者通过电话Tel：**13718530929** 进行更深入的技术与合作咨询；
+
+	<table>
+	<tr><td><b>支持平台</b></td><td><b>芯片</b></td><td><b>位置名称</b></td></tr>
+	<tr><td>Windows</td><td>x86</td><td>./Lib/</td></tr>
+	<tr><td>Windows</td><td>x64</td><td>./Lib/x64/</td></tr>
+	<tr><td>Android</td><td>armeabi</td></tr>
+	<tr><td>Android</td><td>armeabi-v7a</td></tr>
+	<tr><td>Android</td><td>arm64-v8a</td></tr>
+	<tr><td colspan="3"><center>邮件获取更多平台版本</center></td></tr>
+	</table>
+
+
+## 特殊说明 ##
+libEasyScreenLive windows版本库支持输入源:
+
+typedef enum tagSOURCE_TYPE
+{
+	SOURCE_LOCAL_CAMERA = 0,	//本地音视频
+      SOURCE_SCREEN_CAPTURE =1,//屏幕捕获
+	SOURCE_FILE_STREAM = 2,       //文件流推送(mp4,ts,flv???)
+
+}SOURCE_TYPE;
+
+libEasyScreenLive windows版本库支持视频(H264)编码器:
+
+typedef enum tagENCODER_TYPE
+{
+	ENCODER_DEFAULT 				= 0, //默认编码器
+	ENCODER_FASTSOFTWARE 	= 1,//快速软编码
+	ENCODER_FASTHARDWARE 	= 2,//快速硬件编码，需要Nvidia显卡支持
+
+}ENCODER_TYPE;
+
+libEasyScreenLive windows版本库支持推送流:
+
+typedef enum tagPUSH_TYPE
+{
+	PUSH_NONE = 0,
+	PUSH_RTSP ,			//推送RTSP
+	PUSH_RTMP ,		//推送RTMP
+}PUSH_TYPE;
+
+
+## 获取更多信息 ##
+
+邮件：[support@easydarwin.org](mailto:support@easydarwin.org) 
+
+WEB：[www.EasyDarwin.org](http://www.easydarwin.org)
+
+QQ交流群：[465901074](http://jq.qq.com/?_wv=1027&k=2G045mo "EasyPusher & EasyRTSPClient")
+
+Copyright &copy; EasyDarwin.org 2012-2017
+
+![EasyDarwin](http://www.easydarwin.org/skin/easydarwin/images/wx_qrcode.jpg)
