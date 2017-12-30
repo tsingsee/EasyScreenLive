@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Context context;
 
     //cap screen Permission
-    static Intent mResultIntent;
-    static int mResultCode;
+    public static Intent mResultIntent;
+    public static int mResultCode;
 
 
     private Button startButton;
