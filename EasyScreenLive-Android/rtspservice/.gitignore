@@ -1,0 +1,4 @@
+/build
+/CMakeFiles
+/libs
+cmake_install.cmake
