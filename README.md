@@ -90,7 +90,7 @@ Windows版本截图如下所示：
 
 android版本延时对比
 ![android_delay](
-https://github.com/EasyDSS/EasyScreenLive/tree/master/screenshots/android_delay.jpg)
+https://github.com/EasyDSS/EasyScreenLive/raw/master/screenshots/android_delay.jpg)
 
 
 
