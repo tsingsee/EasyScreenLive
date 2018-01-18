@@ -76,14 +76,14 @@ typedef enum tagPUSH_TYPE
 }PUSH_TYPE;
 
 Windows版本截图如下所示：
-![这里写图片描述](http://img.blog.csdn.net/20171229174054227?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![EasyScrnenLive](http://img.blog.csdn.net/20171229174054227?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
 延时对比：
 
-![这里写图片描述](http://img.blog.csdn.net/20171229174607692?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![Delay](http://img.blog.csdn.net/20171229174607692?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
 硬件解码
-![这里写图片描述](http://img.blog.csdn.net/20171229180042374?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![HardCodecPlayer](http://img.blog.csdn.net/20171229180042374?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
 ## 获取更多信息 ##
 
