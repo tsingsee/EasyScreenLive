@@ -88,6 +88,10 @@ Windows版本截图如下所示：
 硬件解码
 ![HardCodecPlayer](http://img.blog.csdn.net/20180118145734798?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
+android版本延时对比
+![android_delay](
+https://github.com/EasyDSS/EasyScreenLive/tree/master/screenshots/android_delay.jpg)
+
 
 
 ## 获取更多信息 ##
