@@ -19,17 +19,22 @@ import org.easydarwin.rtspservice.JniEasyScreenLive;
 public class CapScreenService extends Service implements JniEasyScreenLive.IPCameraCallBack{
 
     private final static String TAG = "CapScreenService";
+
     private int windowWidth = 1920;
     private int windowHeight = 1080;
     private int mFrameRate = 30;
     private int mBitRate = 4*1000*1000;
+
+
     public Context mContext;
     static boolean mServiceIsStart = false;
 
     private PushDataThread mPushThread;
+
     private JniEasyScreenLive jniEasyScreenLive;
     EasyScreenCap easyScreenCap;
     private int mChannelId = 1;
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -48,11 +53,11 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
     public int onStartCommand(Intent intent, int flags, int startId) {
         mServiceIsStart = true;
         easyScreenCap =  new EasyScreenCap(this);
-        int ret = easyScreenCap.initScreenCapture(MainActivity.mResultIntent, MainActivity.mResultCode,
+        int ret = easyScreenCap.initScreenCapture(PusherFragment.mResultIntent, PusherFragment.mResultCode,
                 windowWidth, windowHeight, mFrameRate, mBitRate);
         if (ret < 0) {
-            MainActivity.mResultIntent = null;
-            MainActivity.mResultCode = 0;
+            PusherFragment.mResultIntent = null;
+            PusherFragment.mResultCode = 0;
             Log.e(TAG, "init easyScreenCap fail");
             easyScreenCap = null;
             return START_STICKY;
@@ -69,24 +74,26 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
         mChannelId = jniEasyScreenLive.registerCallback(this);
         jniEasyScreenLive.active(this);
 
-        final String strId =Config.getStreamName(this);
-        final String URL = Config.getRtspUrl(this);
+        OnLiveManagerService.liveRtspConfig.port             = Integer.parseInt(Config.getRtspPort(this));
+        OnLiveManagerService.liveRtspConfig.URL              = Config.getRtspUrl(this);
+        OnLiveManagerService.liveRtspConfig.strName          = Config.getStreamName(this);
 
-        final int iport = Integer.parseInt(Config.getRtspPort(this));
-        final int enableMulticast = Integer.parseInt(Config.getLiveType(this));
-        final int multicastPort = Integer.parseInt(Config.getMulPort(this));
-        final int mulTTL = 7;
-        final String multicastIP = "239.255.42.42";
+        OnLiveManagerService.liveRtspConfig.enableMulticast  = Integer.parseInt(Config.getLiveType(this));
+        OnLiveManagerService.liveRtspConfig.multicastIP      = "239.255.42.42";
+        OnLiveManagerService.liveRtspConfig.multicastPort    = Integer.parseInt(Config.getMulPort(this));
+        OnLiveManagerService.liveRtspConfig.multicastTTL     = 7;
 
-        int ret = jniEasyScreenLive.startup(iport,
+        int ret = jniEasyScreenLive.startup(OnLiveManagerService.liveRtspConfig.port,
                 JniEasyScreenLive.AuthType.AUTHENTICATION_TYPE_BASIC,
                 "","", "",
-                0,mChannelId,strId.getBytes(),
-                enableMulticast, multicastIP, multicastPort, mulTTL);
+                0,mChannelId,OnLiveManagerService.liveRtspConfig.strName.getBytes(),
+                OnLiveManagerService.liveRtspConfig.enableMulticast, OnLiveManagerService.liveRtspConfig.multicastIP,
+                OnLiveManagerService.liveRtspConfig.multicastPort, OnLiveManagerService.liveRtspConfig.multicastTTL);
         if (ret == 0) {
+            OnLiveManagerService.liveRtspConfig.isRunning = true;
             Toast.makeText(mContext, "屏幕推流成功"+
-                            (enableMulticast==1?"(组播方式) ":"（单播方式）")+"\n"
-                            + "URL:"+URL,
+                            (OnLiveManagerService.liveRtspConfig.enableMulticast==1?"(组播方式) ":"（单播方式）")+"\n"
+                            + "URL:"+OnLiveManagerService.liveRtspConfig.URL,
                     Toast.LENGTH_SHORT).show();
         } else if (ret == JniEasyScreenLive.EasyErrorCode.EASY_SDK_ACTIVE_FAIL) {
             jniEasyScreenLive.shutdown();
@@ -102,6 +109,7 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
 
     private void stopRtspServer() {
         if (jniEasyScreenLive != null) {
+            OnLiveManagerService.liveRtspConfig.isRunning = false;
             jniEasyScreenLive.resetChannel(mChannelId);
             jniEasyScreenLive.shutdown();
             jniEasyScreenLive.unrigisterCallback(this);
@@ -156,7 +164,6 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
         }
     }
 
-
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
         Toast.makeText(mContext, "结束推流", Toast.LENGTH_SHORT).show();
@@ -167,13 +174,13 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
             easyScreenCap = null;
         }
         mServiceIsStart = false;
+
         super.onDestroy();
     }
 
 
     @Override
     public void onIPCameraCallBack(int channelId, int channelState, byte[] mediaInfo, int userPtr) {
-        Log.i(TAG, "onIPCameraCallBack, channelId="+channelId+", mChannelId="+mChannelId+", channelState="+channelState);
         if(channelId != mChannelId)
             return;
         switch(channelState){

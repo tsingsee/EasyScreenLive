@@ -15,8 +15,6 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import org.easydarwin.easyscreenlive.MainActivity;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 

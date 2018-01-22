@@ -1,1 +1,1 @@
-include ':EasyScreenLive', ':rtspservice'
+include ':EasyScreenLive', ':rtspservice', ':easyplayer'

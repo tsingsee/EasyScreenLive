@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="org.easydarwin.easyscreenlive.ScreenLiveActivity">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_action_setting"
+                style="@style/Base.Widget.AppCompat.ActionButton"
+                android:id="@+id/toolbar_setting"
+                android:layout_gravity="end"
+                android:layout_height="wrap_content" />
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:src="@drawable/ic_action_about"
+                android:id="@+id/toolbar_about"
+                style="@style/Base.Widget.AppCompat.ActionButton"
+                android:layout_gravity="end"
+                android:layout_height="wrap_content" />
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:id="@+id/fragmeng_main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/fragmeng_push"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="推屏"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/fragmeng_play_list"
+                android:layout_marginLeft="-8dp"
+                android:text="播放"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

@@ -56,7 +56,7 @@ public class Config {
 
     public static String getLiveType(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String liveType = sharedPreferences.getString(Config.LIVE_TYPE, Config.LIVE_TYPE_MULTICAST);
+        String liveType = sharedPreferences.getString(Config.LIVE_TYPE, Config.LIVE_TYPE_UNICAST);
         return liveType;
     }
 
