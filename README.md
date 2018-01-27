@@ -100,7 +100,7 @@ https://github.com/EasyDSS/EasyScreenLive/raw/master/screenshots/android_delay.j
 
 WEB：[www.EasyDarwin.org](http://www.easydarwin.org)
 
-QQ交流群：[465901074](http://jq.qq.com/?_wv=1027&k=2G045mo "EasyPusher & EasyRTSPClient")
+QQ交流群：[694451013](https://jq.qq.com/?_wv=1027&k=5GaYB7K)
 
 Copyright &copy; EasyDarwin.org 2012-2017
 
