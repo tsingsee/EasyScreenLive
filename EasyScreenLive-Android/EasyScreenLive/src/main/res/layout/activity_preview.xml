@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
-    tools:context="org.easydarwin.easyscreenlive.player.PreviewActivity">
+    tools:context=".ui.player.PreviewActivity">
 
     <TextureView
         android:id="@+id/surface_view"

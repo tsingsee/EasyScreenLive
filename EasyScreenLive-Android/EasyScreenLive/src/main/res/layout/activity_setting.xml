@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<layout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="org.easydarwin.easyscreenlive.SettingActivity">
+    tools:context="org.easydarwin.easyscreenlive.ui.setting.SettingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <RadioGroup
+            android:id="@+id/radio_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -20,6 +21,7 @@
                 android:id="@+id/live_type_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="同屏方式  ：" />
             <RadioButton
                 android:id="@+id/button_multicast_type"
@@ -32,11 +34,25 @@
                 android:layout_height="wrap_content"
                 android:text="单播"/>
         </RadioGroup>
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#ffffff"
-            />
+        <LinearLayout
+            android:id="@+id/layout_enable_audio"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_eanble_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="声音推流" />
+            <Switch
+                android:id="@+id/switch_enable_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textOff="off"
+                android:textOn="on"/>
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/rtsp_id"
             android:layout_width="match_parent"
@@ -46,7 +62,8 @@
                 android:id="@+id/text_stream_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RTSP ID     ：" />
+                android:layout_weight="1"
+                android:text="RTSP ID" />
             <EditText
                 android:id="@+id/edit_stream_id"
                 android:layout_width="wrap_content"
@@ -63,6 +80,7 @@
                 android:id="@+id/text_rtsp_port"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="RTSP 端口：" />
             <EditText
                 android:id="@+id/edit_rtsp_port"
@@ -80,6 +98,7 @@
                 android:id="@+id/text_multicast_port"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="组播端口   ：" />
             <EditText
                 android:id="@+id/edit_multicast_port"
@@ -90,7 +109,7 @@
         </LinearLayout>
         <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="1dp"
+            android:layout_height="5dp"
             android:background="#ffffff"
             />
     </LinearLayout>
@@ -99,9 +118,7 @@
         android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="保存设置"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center_horizontal"
+        android:text="保存设置" />
 </LinearLayout>
+</layout>

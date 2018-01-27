@@ -6,4 +6,7 @@
     <color name="colorText">#FFFFFF</color>
 
     <color name="black_overlay">#66000000</color>
+
+    <color name="white_background">#ffffffff</color>
+    <color name="transparent_background">#66000000</color>
 </resources>

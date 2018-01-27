@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="org.easydarwin.easyscreenlive.ScreenLiveActivity">
+        tools:context="org.easydarwin.easyscreenlive.ui.ScreenLiveActivity">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -36,27 +36,30 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:orientation="vertical">
-
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/fragmeng_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:background="?attr/colorPrimary"
             android:orientation="horizontal">
-
             <Button
                 android:id="@+id/fragmeng_push"
+                style="@style/Base.Widget.AppCompat.ActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="推屏"
+                android:textColor="@color/colorAccent"
                 android:layout_weight="1"/>
             <Button
                 android:id="@+id/fragmeng_play_list"
-                android:layout_marginLeft="-8dp"
+                style="@style/Base.Widget.AppCompat.ActionButton"
                 android:text="播放"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorText"
                 android:layout_weight="1"/>
         </LinearLayout>
     </LinearLayout>

@@ -1,38 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <TextView
-        android:id="@+id/textview_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="申请权限" />
-    <TextView
-        android:id="@+id/test_url"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="URL:" />
+    <SurfaceView
+        android:id="@+id/sv_surfaceview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffffff"
+        android:layout_centerInParent="true" />
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_gravity="center_vertical">
+        >
+        <TextView
+            android:id="@+id/textview_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textColor="@color/colorAccent"
+            android:text="申请权限" />
+        <TextView
+            android:id="@+id/test_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/colorAccent"
+            android:text="URL:" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
-            <ImageButton
-                android:id="@+id/image_button_start_push"
-                android:layout_width="wrap_content"
+            android:layout_gravity="right">
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_screen_authorty"
-                android:layout_gravity="center_vertical" />
+                android:orientation="vertical"
+                android:layout_gravity="bottom">
+                <ImageButton
+                    android:id="@+id/image_button_start_push"
+                    android:background="#00000000"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_easyscreenlive"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
+
+

@@ -11,7 +11,7 @@
         android:layout_height="100dp"
         android:layout_centerInParent="true"
         android:contentDescription="@null"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/ic_easyscreenlive" />
 
     <TextView
         android:id="@+id/txt_version"
@@ -20,7 +20,7 @@
         android:layout_below="@+id/logo"
         android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
-        android:text="EasyPlayer 1.0" />
+        android:text="EasyScreenLive 1.0" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,6 +29,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:text="Copyright @ 2012-2017 www.EasyDarwin.org" />
+        android:text="Copyright @ 2012-2018 www.EasyDarwin.org" />
 
 </RelativeLayout>

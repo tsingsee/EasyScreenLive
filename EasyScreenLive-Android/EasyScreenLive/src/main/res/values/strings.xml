@@ -80,4 +80,14 @@
 
     <string name="multicast_type">组播</string>
     <string name="unmulticast_type">单播</string>
+
+    <string name="dialog_positive">确定</string>
+    <string name="dialog_negative">取消</string>
+
+
+    <string name="wait_push">等待同屏</string>
+    <string name="screen_pushing">正在投屏</string>
+    <string name="front_camera_pushing">正在推前摄像头</string>
+    <string name="back_camera_pushing">正在推前摄像头</string>
+    <string name="req_permission">申请权限</string>
 </resources>
