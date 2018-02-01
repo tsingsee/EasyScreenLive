@@ -115,7 +115,22 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 
 	GetDlgItem(IDC_EDIT_IP)->SetWindowText(_T("www.easydss.com"));
 	GetDlgItem(IDC_EDIT_PORT)->SetWindowText(_T("10085"));	
-	GetDlgItem(IDC_EDIT_STREAMNAME)->SetWindowText(_T("Sword"));	
+
+	//ASCII可见字符范围是[32,126]
+	//首先随机生成一个长度，然后在每一位生成一个可见字符
+	srand(time(NULL));
+	int len = 3;
+	char* str = (char*)malloc(sizeof(char) * (len + 1));
+	str[len] = '\0';
+	for (int i = 0; i < len; i++)
+	{
+		str[i] = (char)(rand() % 25 + 97);//97-122
+	}
+	CString sRand = (CString)str;
+	CString sStreamName ;
+	sStreamName.Format(_T("easy-%s"),  sRand);
+
+	GetDlgItem(IDC_EDIT_STREAMNAME)->SetWindowText(sStreamName);	
 	GetDlgItem(IDC_EDIT_LISTEN_PORT)->SetWindowText(_T("8554"));	
 	GetDlgItem(IDC_EDIT_BITRATE)->SetWindowText(_T("2048"));
 
