@@ -117,6 +117,7 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 	GetDlgItem(IDC_EDIT_PORT)->SetWindowText(_T("10085"));	
 	GetDlgItem(IDC_EDIT_STREAMNAME)->SetWindowText(_T("Sword"));	
 	GetDlgItem(IDC_EDIT_LISTEN_PORT)->SetWindowText(_T("8554"));	
+	GetDlgItem(IDC_EDIT_BITRATE)->SetWindowText(_T("2048"));
 
 	
 	
@@ -204,6 +205,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 	CButton* pCapture = (CButton*)GetDlgItem(IDC_BUTTON_CAPTURE);
 	CButton* pBtnPush = (CButton*)GetDlgItem(IDC_BUTTON_PUSH);
 	CButton* pBtnPublishServer = (CButton*)GetDlgItem(IDC_BUTTON_PUBLISH_SERVER);
+
 	if (!m_bCapture)
 	{
 		HWND hShowVideo = GetDlgItem(IDC_STATIC_VIDEO)->GetSafeHwnd();
@@ -239,7 +241,18 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 				sFormat = "RGB24";
 				sSourceType = _T("屏幕采集");
 			}
-			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, 0, 0, hShowVideo, nEncoderType, 640,480,25,2048, (char*)sFormat.c_str(),8000,1);
+
+			wchar_t wszBitRate[128] = {0,};
+			char szBitRate[128] = {0,};
+			int nBitRate  = 2048;
+			GetDlgItem(IDC_EDIT_BITRATE)->GetWindowText(wszBitRate, sizeof(wszBitRate));
+			if (wcslen(wszBitRate)  > 0)//当前为空		
+			{
+				__WCharToMByte(wszBitRate, szBitRate, sizeof(szBitRate)/sizeof(szBitRate[0]));
+				nBitRate = atoi( szBitRate );
+			}
+
+			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, 0, 0, hShowVideo, nEncoderType, 640,480,25,nBitRate, (char*)sFormat.c_str(),8000,1);
 			if (ret)
 			{
 				m_bCapture = TRUE;

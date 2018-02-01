@@ -17,14 +17,6 @@ typedef enum tagSOURCE_TYPE
 
 }SOURCE_TYPE;
 
-typedef enum tagENCODER_TYPE
-{
-	ENCODER_DEFAULT 				= 0, //默认编码器
-	ENCODER_FASTSOFTWARE 	= 1,//快速软编码
-	ENCODER_FASTHARDWARE 	= 2,//快速硬件编码，需要Nvidia显卡支持
-
-}ENCODER_TYPE;
-
 typedef enum tagPUSH_TYPE
 {
 	PUSH_NONE = 0,
