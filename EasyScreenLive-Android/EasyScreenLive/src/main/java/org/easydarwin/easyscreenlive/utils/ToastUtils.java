@@ -1,6 +1,7 @@
 package org.easydarwin.easyscreenlive.utils;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.Toast;
 
 public class ToastUtils {
@@ -17,6 +18,7 @@ public class ToastUtils {
             mToast.setText(text);
             mToast.setDuration(duration);
         }
+        mToast.setGravity(Gravity.CENTER, 0, 0);
         mToast.show();
     }
 

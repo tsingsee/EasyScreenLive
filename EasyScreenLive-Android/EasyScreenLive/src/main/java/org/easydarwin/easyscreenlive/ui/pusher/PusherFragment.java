@@ -107,17 +107,21 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
         switch (status) {
             case CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE:
                 textViewStatus.setText(getActivity().getString(R.string.wait_push));
+                imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_start));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));
                 break;
             case CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK:
+                imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.back_camera_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.transparent_background));
                 break;
             case CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT:
+                imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.front_camera_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.transparent_background));
                 break;
             case CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_SCREEN:
+                imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.screen_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));
                 break;

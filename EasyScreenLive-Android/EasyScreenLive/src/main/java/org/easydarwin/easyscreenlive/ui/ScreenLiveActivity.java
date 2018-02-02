@@ -13,6 +13,8 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
+
 import org.easydarwin.easyscreenlive.base.BaseActivity;
 import org.easydarwin.easyscreenlive.R;
 import org.easydarwin.easyscreenlive.databinding.ActivityScreenLiveBinding;
@@ -42,6 +44,9 @@ public class ScreenLiveActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        CrashReport.initCrashReport(getApplicationContext(), "f6e6bd386f", false);
+
 //        ViewDataBinding mBinder = DataBindingUtil.setContentView(this, R.layout.activity_screen_live);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_screen_live);
         setSupportActionBar(mBinding.toolbar);
