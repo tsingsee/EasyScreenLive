@@ -73,6 +73,7 @@ typedef enum tagPUSH_TYPE
 }PUSH_TYPE;
 
 ## 最新版本下载 ##
+- 下载：[https://github.com/EasyDSS/EasyScreenLive/releases]
 
 - Android 版：[https://fir.im/EasyScreenLive](https://fir.im/EasyScreenLive)
 
