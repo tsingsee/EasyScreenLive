@@ -13,7 +13,8 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.beta.Beta;
 
 import org.easydarwin.easyscreenlive.base.BaseActivity;
 import org.easydarwin.easyscreenlive.R;
@@ -28,7 +29,6 @@ import org.easydarwin.easyscreenlive.ui.playlist.PlayListFragment;
 import org.easydarwin.easyscreenlive.ui.pusher.PusherFragment;
 import org.easydarwin.easyscreenlive.ui.pusher.PusherPresenter;
 
-import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 public class ScreenLiveActivity extends BaseActivity {
 
@@ -45,7 +45,9 @@ public class ScreenLiveActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        CrashReport.initCrashReport(getApplicationContext(), "f6e6bd386f", false);
+        Bugly.init(getApplicationContext(), "f6e6bd386f", false);
+        Beta.checkUpgrade(false,false);
+//        CrashReport.initCrashReport(getApplicationContext(), "f6e6bd386f", false);
 
 //        ViewDataBinding mBinder = DataBindingUtil.setContentView(this, R.layout.activity_screen_live);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_screen_live);
@@ -146,9 +148,9 @@ public class ScreenLiveActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode){
             case  REQUEST_CAMERA_RESULT:
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(this, "Cannot run application because camera service permission have not been granted", Toast.LENGTH_SHORT).show();
-                }
+//                if (grantResults[0] != PackageManager.PERMISSION_GRANTED){
+//                    Toast.makeText(this, "Cannot run application because camera service permission have not been granted", Toast.LENGTH_SHORT).show();
+//                }
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
