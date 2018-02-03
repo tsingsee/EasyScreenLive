@@ -59,10 +59,11 @@ public class ScreenLiveActivity extends BaseActivity {
         }
 
         pusherFragment = new PusherFragment();
-        playListFragment = new PlayListFragment();
-
-        getFragmentManager().beginTransaction().replace(R.id.fragmeng_main_layout, pusherFragment).commit();
         PusherPresenter.getInterface().setPusherView(pusherFragment);
+
+        playListFragment = new PlayListFragment();
+        getFragmentManager().beginTransaction().replace(R.id.fragmeng_main_layout, pusherFragment).commit();
+
 
         mBinding.toolbarSetting.setOnClickListener(new View.OnClickListener() {
             @Override

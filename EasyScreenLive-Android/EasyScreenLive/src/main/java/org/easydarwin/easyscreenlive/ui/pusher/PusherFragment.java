@@ -56,7 +56,10 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
             textViewStatus.setText("申请权限");
         }
 
-        presenter.initView(getActivity());
+        if (presenter != null) {
+            presenter.initView(getActivity());
+        }
+
 
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,11 +78,13 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
                     setTitle("抱歉").show();
             return;
         }
-        if (presenter.getPushStatus() == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
-            showMultiBtnDialog();
-        } else {
-            presenter.onStartPush(getActivity(), CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH);
-            mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));
+        if (presenter != null) {
+            if (presenter.getPushStatus() == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
+                showMultiBtnDialog();
+            } else {
+                presenter.onStartPush(getActivity(), CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH);
+                mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));
+            }
         }
 
     }
@@ -95,7 +100,9 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
         listDialog.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                presenter.onStartPush(getActivity(), which);
+                if (presenter != null) {
+                    presenter.onStartPush(getActivity(), which);
+                }
             }
         });
         listDialog.show();
@@ -197,7 +204,9 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
 
     @Override
     public void onStop() {
-        presenter.onViewStop();
+        if (presenter != null) {
+            presenter.onViewStop();
+        }
         super.onStop();
         Log.d(TAG, "onStop");
     }
