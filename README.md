@@ -8,7 +8,7 @@ EasyScreenLive是一款简单、高效、稳定的集采集，编码，组播，
 
 - **EasyScreenLive_Android**：实时采集安卓采集手机桌面屏幕（Android 5.0+支持），进行H264/AAC编码后，调用libEasyIPCamera进行同屏直播；
 
-- **EasyScreenLive_win32**：实时采集USB摄像头或者桌面屏幕，以及音频输入设备，进行H264/AAC编码后，调用libEasyIPCamera进行同屏直播，调用libEasyRTMP推行RTMP到EasyDSS服务器；
+- **EasyScreenLive_win32**：实时采集USB摄像头或者桌面屏幕，以及音频输入设备，进行H264/AAC编码后，调用libEasyIPCamera进行同屏直播，调用libEasyRTMP推行RTMP到EasyDSS等RTMP协议流媒体服务器；
 
 
 	Windows编译方法，
@@ -33,6 +33,7 @@ EasyScreenLive是一款简单、高效、稳定的集采集，编码，组播，
 
 
 ## 特殊说明 ##
+
 libEasyScreenLive windows版本库支持输入源:
 
 typedef enum tagSOURCE_TYPE
@@ -40,9 +41,9 @@ typedef enum tagSOURCE_TYPE
 {
 	SOURCE_LOCAL_CAMERA = 0,	//本地音视频
 	
-      SOURCE_SCREEN_CAPTURE =1,//屏幕捕获
+    SOURCE_SCREEN_CAPTURE =1,	//屏幕捕获
       
-	SOURCE_FILE_STREAM = 2,       //文件流推送(mp4,ts,flv???)
+	SOURCE_FILE_STREAM = 2,		//文件流推送(mp4,ts,flv???)
 
 }SOURCE_TYPE;
 
@@ -51,7 +52,7 @@ libEasyScreenLive windows版本库支持视频(H264)编码器:
 typedef enum tagENCODER_TYPE
 
 {
-	ENCODER_DEFAULT 				= 0, //默认编码器
+	ENCODER_DEFAULT 		= 0, //默认编码器
 	
 	ENCODER_FASTSOFTWARE 	= 1,//快速软编码
 	
@@ -66,24 +67,24 @@ typedef enum tagPUSH_TYPE
 {
 	PUSH_NONE = 0,
 	
-	PUSH_RTSP ,			//推送RTSP
+	PUSH_RTSP ,		//推送RTSP
 	
 	PUSH_RTMP ,		//推送RTMP
 	
 }PUSH_TYPE;
 
 ## 最新版本下载 ##
+
 - 下载：[https://github.com/EasyDSS/EasyScreenLive/releases]
 
 - Android 版：[https://fir.im/EasyScreenLive](https://fir.im/EasyScreenLive)
 
-![android_download](
-https://github.com/EasyDSS/EasyScreenLive/raw/master/screenshots/android_download.png)
+![android_download](https://github.com/EasyDSS/EasyScreenLive/raw/master/screenshots/android_download.png)
 
 
 
 Windows版本截图如下所示：
-![EasyScrnenLive](http://img.blog.csdn.net/20171229174054227?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![EasyScreenLive](http://img.blog.csdn.net/20171229174054227?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
 
 
@@ -95,7 +96,7 @@ Windows版本截图如下所示：
 硬件解码
 ![HardCodecPlayer](http://img.blog.csdn.net/20180118145734798?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
-android版本延时对比
+Android版本延时对比
 ![android_delay](
 https://github.com/EasyDSS/EasyScreenLive/raw/master/screenshots/android_delay.jpg)
 
