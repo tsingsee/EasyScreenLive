@@ -1,12 +1,12 @@
 # EasyScreenLive #
 
-EasyScreenLive是一款简单、高效、稳定的集采集，编码，组播，推流和流媒体RTSP服务于一身的同屏功能组件，具低延时，高效能，低丢包等特点。目前支持Windows，Android平台，通过EasyScreenLive我们就可以避免接触到稍显复杂的音视频源采集，编码和流媒体推送以及RTSP/RTP/RTCP/RTMP服务流程，只需要调用EasyScreenLive的几个API接口，就能轻松、稳定地把流媒体音视频数据RTMP推送给EasyDSS服务器以及发布RTSPServer服务，RTSP同屏服务支持组播和单播两种模式。
+EasyScreenLive是由[紫鲸云](http://www.pvale.com "紫鲸云")团队开发和运维的一款简单、高效、稳定的集采集、编码、组播、推流和流媒体RTSP服务于一身的同屏功能组件，具低延时，高性能，低丢包率等特点。目前支持Windows，Android两个平台，通过EasyScreenLive我们就可以避免接触到稍显复杂的音视频源采集，编码和流媒体推送以及RTSP/RTP/RTCP/RTMP服务流程，只需要调用EasyScreenLive的几个API接口，就能轻松、稳定地把流媒体音视频数据RTMP推送给EasyDSS等RTMP服务器以及发布RTSP Server服务，RTSP同屏服务支持组播和单播两种模式。
 
-使用场景：大屏显示投屏，无纸化会议同屏演示，课堂同屏等，可以配合全屏显示，反向模拟触控实现远程控制功能（android控制windows，windows控制android，windows控制windows等）
+**使用场景**：大屏显示投屏，无纸化会议同屏演示，课堂同屏等，可以配合全屏显示，反向模拟触控实现远程控制功能（Android控制Windows，Windows控制Android，Windows控制Windows等）
 
 ## 调用示例 ##
 
-- **EasyScreenLive_Android**：实时采集安卓采集手机桌面屏幕（Android 5.0+支持），进行H264/AAC编码后，调用libEasyIPCamera进行同屏直播；
+- **EasyScreenLive_Android**：实时采集安卓采集手机桌面屏幕（Android 5.0及5.0+支持），进行H264/AAC编码后，调用libEasyIPCamera进行同屏直播；
 
 - **EasyScreenLive_win32**：实时采集USB摄像头或者桌面屏幕，以及音频输入设备，进行H264/AAC编码后，调用libEasyIPCamera进行同屏直播，调用libEasyRTMP推行RTMP到EasyDSS等RTMP协议流媒体服务器；
 
@@ -75,17 +75,18 @@ typedef enum tagPUSH_TYPE
 
 ## 最新版本下载 ##
 
-- 下载：[https://github.com/EasyDSS/EasyScreenLive/releases]
+- 历史版本下载：[https://github.com/EasyDSS/EasyScreenLive/releases](https://github.com/EasyDSS/EasyScreenLive/releases)
 
 - Android 版：[https://fir.im/EasyScreenLive](https://fir.im/EasyScreenLive)
 
-![android_download](https://github.com/EasyDSS/EasyScreenLive/raw/master/screenshots/android_download.png)
+> EasyScreenLive中已经内嵌了对应的播放器功能，如果需要使用额外的播放器来进行播放，可选择使用EasyPlayer-RTSP播放器：[https://github.com/EasyDSS/EasyPlayer-RTSP](https://github.com/EasyDSS/EasyPlayer-RTSP "EasyPlayer-RTSP")
+
+![EasyScreenLive-Android](http://www.easydarwin.org/github/images/easyscreenlive/easyscreenlivefirimandroid201802.png)
 
 
 
 Windows版本截图如下所示：
 ![EasyScreenLive](http://img.blog.csdn.net/20171229174054227?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
-
 
 
 
@@ -97,8 +98,8 @@ Windows版本截图如下所示：
 ![HardCodecPlayer](http://img.blog.csdn.net/20180118145734798?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvU3dvcmRUd2VsdmU=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
 Android版本延时对比
-![android_delay](
-https://github.com/EasyDSS/EasyScreenLive/raw/master/screenshots/android_delay.jpg)
+
+![android_delay](https://github.com/EasyDSS/EasyScreenLive/raw/master/screenshots/android_delay.jpg)
 
 
 ## 技术支持 ##
