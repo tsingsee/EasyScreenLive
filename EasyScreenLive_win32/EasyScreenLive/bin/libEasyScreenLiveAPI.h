@@ -48,7 +48,7 @@ typedef struct __EASYLIVE_CHANNEL_INFO_T
 	unsigned char	ttl;
 }EASYLIVE_CHANNEL_INFO_T;
 
-LIB_EASYSLIVE_API EASYSLIVE_HANDLE EasyScreenLive_Create();
+LIB_EASYSLIVE_API EASYSLIVE_HANDLE EasyScreenLive_Create(char* EasyIPCamera_Key, char* EasyRTMP_Key, char* EasyRTSP_Key);
 LIB_EASYSLIVE_API void EasyScreenLive_Release(EASYSLIVE_HANDLE handler);
 
 //nEncoderType ±‡¬Î¿‡–Õ£∫ 

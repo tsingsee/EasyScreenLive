@@ -226,7 +226,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 		HWND hShowVideo = GetDlgItem(IDC_STATIC_VIDEO)->GetSafeHwnd();
 		
 		if(!m_pusher )
-			m_pusher =  EasyScreenLive_Create();
+			m_pusher =  EasyScreenLive_Create(EASY_IPC_KEY, EASY_RTMP_KEY, EASY_RTSP_KEY);
 
 		if (m_pusher)
 		{
