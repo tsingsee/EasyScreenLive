@@ -12,7 +12,7 @@
         android:layout_margin="15sp" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
@@ -20,17 +20,16 @@
             android:id="@+id/edit_play_url"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="rtsp://192.168.1.107:8554/12345"
+            android:text="rtsp://192.168.1.105:8554/12345"
             android:textColor="#000000"
             android:layout_weight="1"
-            android:textSize="20sp" />
-
-        <ImageButton
-            android:id="@+id/image_button_start_play"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/ic_plus" />
+            android:textSize="17sp" />
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="播放"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
 </LinearLayout>

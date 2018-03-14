@@ -1,6 +1,7 @@
 package org.easydarwin.easyscreenlive.utils;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.MediaCodec;
@@ -58,8 +59,17 @@ public class EasyScreenCap extends EasyVideoSource {
 
     @Override
     public synchronized int init(int w, int h, int fps, int bitRate, EasyVideoStreamCallback easyVideoStreamCallback) {
-        windowWidth = w;
-        windowHeight = h;
+
+        if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            //竖屏
+            windowWidth = w > h ? h:w;
+            windowHeight = w < h ? h:w;
+        } else {
+            //横屏
+            windowWidth = w < h ? h:w;
+            windowHeight = w > h ? h:w;
+        }
+
         mFrameRate = fps;
         mBitRate = bitRate;
         this.easyVideoStreamCallback = easyVideoStreamCallback;

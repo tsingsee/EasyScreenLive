@@ -129,6 +129,7 @@ public class PlayListAdapter extends BaseAdapter implements View.OnClickListener
             if (info != null && info.getCmd() == OnLiveInfo.INFO_CMD_SHARED_SCREEN) {
                 Intent intent=new Intent(context, PreviewActivity.class);
                 intent.putExtra("PLAY_URL",info.getURL());
+                intent.putExtra("PUSH_TYPE", info.getPushType());
                 context.startActivity(intent);
             } else {
                 Toast.makeText(context, "设备未进行屏幕推送",

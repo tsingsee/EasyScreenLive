@@ -1,11 +1,14 @@
 package org.easydarwin.easyscreenlive.ui.playlist;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -13,6 +16,7 @@ import android.widget.ListView;
 import org.easydarwin.easyscreenlive.service.OnLiveManagerService;
 import org.easydarwin.easyscreenlive.R;
 import org.easydarwin.easyscreenlive.base.BaseFragment;
+import org.easydarwin.easyscreenlive.ui.player.PreviewActivity;
 
 /**
  * Created by gavin on 2018/1/20.
@@ -21,7 +25,7 @@ import org.easydarwin.easyscreenlive.base.BaseFragment;
 public class PlayListFragment extends BaseFragment implements PlayListContract.View{
     View view;
     EditText editTextPlayUrl;
-    ImageButton imageButton;
+    Button addutton;
     ListView listViewPlay;
     private PlayListAdapter listAdapter;
     static public FragmentPlayListHandle fragmentPlayListHandle = null;
@@ -34,7 +38,7 @@ public class PlayListFragment extends BaseFragment implements PlayListContract.V
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_play_list, container, false);
         editTextPlayUrl = view.findViewById(R.id.edit_play_url);
-        imageButton     = view.findViewById(R.id.image_button_start_play);
+        addutton     = view.findViewById(R.id.button_add);
 
         listAdapter = new PlayListAdapter(getActivity(), OnLiveManagerService.onLiveInfoList);
         listViewPlay    = view.findViewById(R.id.list_view_url);
@@ -42,15 +46,20 @@ public class PlayListFragment extends BaseFragment implements PlayListContract.V
 
         fragmentPlayListHandle = new FragmentPlayListHandle();
 
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        addutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                listAdapter.addChannelData("rtsp://192.168.1.107:8554/12345");
 //                listAdapter.addChannelData(editTextPlayUrl.getText().toString());
+                Log.i(TAG, "play: " + editTextPlayUrl.getText().toString());
+                Intent intent=new Intent(getActivity(), PreviewActivity.class);
+                intent.putExtra("PLAY_URL",editTextPlayUrl.getText().toString());
+                intent.putExtra("PUSH_TYPE", 1);
+                getActivity().startActivity(intent);
             }
         });
-        editTextPlayUrl.setVisibility(View.INVISIBLE);
-        imageButton.setVisibility(View.INVISIBLE);
+//        editTextPlayUrl.setVisibility(View.INVISIBLE);
+//        imageButton.setVisibility(View.INVISIBLE);
 
         return view;
     }

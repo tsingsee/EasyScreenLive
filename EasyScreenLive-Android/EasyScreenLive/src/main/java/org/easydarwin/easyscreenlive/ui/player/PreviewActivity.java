@@ -26,6 +26,7 @@ public class PreviewActivity extends AppCompatActivity implements TextureView.Su
     protected TextureView mSurfaceView;
 
     private String playUrl = "";
+    private int pushType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class PreviewActivity extends AppCompatActivity implements TextureView.Su
         mSurfaceView.setSurfaceTextureListener(this);
         Intent intent = getIntent();
         playUrl = intent.getStringExtra("PLAY_URL");
+        pushType = intent.getIntExtra("PUSH_TYPE", 0);
     }
 
     @Override
@@ -94,7 +96,15 @@ public class PreviewActivity extends AppCompatActivity implements TextureView.Su
         try {
 //            Client.TRANSTYPE_UDP : Client.TRANSTYPE_TCP
 //            mStreamRender.start(mUrl, mType, Client.EASY_SDK_VIDEO_FRAME_FLAG | Client.EASY_SDK_AUDIO_FRAME_FLAG, "", "", autoRecord ? new File(f, new SimpleDateFormat("yy-MM-dd HH:mm:ss").format(new Date()) + ".mp4").getPath() : null);
-            mStreamRender.start(playUrl, Client.TRANSTYPE_UDP, Client.EASY_SDK_VIDEO_FRAME_FLAG | Client.EASY_SDK_AUDIO_FRAME_FLAG, "", "", null);
+            if (pushType == 1) {
+//              组播
+                mStreamRender.start(playUrl, Client.TRANSTYPE_UDP,
+                        Client.EASY_SDK_VIDEO_FRAME_FLAG | Client.EASY_SDK_AUDIO_FRAME_FLAG, "", "", null);
+            } else {
+//              单播
+                mStreamRender.start(playUrl, Client.TRANSTYPE_UDP,
+                        Client.EASY_SDK_VIDEO_FRAME_FLAG | Client.EASY_SDK_AUDIO_FRAME_FLAG, "", "", null);
+            }
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();

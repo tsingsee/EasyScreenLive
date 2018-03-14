@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import org.easydarwin.easyscreenlive.base.EasyAudioStreamCallback;
 import org.easydarwin.easyscreenlive.base.EasyVideoStreamCallback;
+import org.easydarwin.easyscreenlive.base.EasyVideoSource;
 import org.easydarwin.easyscreenlive.config.Config;
 import org.easydarwin.easyscreenlive.config.LiveRtspConfig;
 import org.easydarwin.easyscreenlive.ui.pusher.PusherFragment;
@@ -18,7 +19,6 @@ import org.easydarwin.easyscreenlive.ui.pusher.PusherPresenter;
 import org.easydarwin.easyscreenlive.utils.AudioStream;
 import org.easydarwin.easyscreenlive.utils.EasyCameraCap;
 import org.easydarwin.easyscreenlive.utils.EasyMediaInfoHelper;
-import org.easydarwin.easyscreenlive.base.EasyVideoSource;
 import org.easydarwin.easyscreenlive.utils.EasyScreenCap;
 import org.easydarwin.rtspservice.JniEasyScreenLive;
 
@@ -27,7 +27,7 @@ import org.easydarwin.rtspservice.JniEasyScreenLive;
  *
  */
 public class CapScreenService extends Service implements JniEasyScreenLive.IPCameraCallBack,
-        EasyVideoStreamCallback ,
+        EasyVideoStreamCallback,
         EasyAudioStreamCallback{
 
     private final static String TAG = "CapScreenService";
