@@ -12,7 +12,7 @@
     <Filter Include="EasySkinUI">
       <UniqueIdentifier>{0b79155b-8ef0-4d33-b55f-f012959b41e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="资源文件\源文件">
+    <Filter Include="源文件">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
@@ -132,13 +132,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>资源文件\源文件</Filter>
+      <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="EasyScreenLive.cpp">
-      <Filter>资源文件\源文件</Filter>
+      <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="EasyScreenLiveDlg.cpp">
-      <Filter>资源文件\源文件</Filter>
+      <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="EasySkinUI\BuildDialog.cpp">
       <Filter>EasySkinUI</Filter>
@@ -216,7 +216,7 @@
       <Filter>EasySkinUI</Filter>
     </ClCompile>
     <ClCompile Include="EasyTrayIcon.cpp">
-      <Filter>资源文件\源文件</Filter>
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
