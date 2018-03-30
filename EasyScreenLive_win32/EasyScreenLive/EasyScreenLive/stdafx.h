@@ -43,7 +43,18 @@ bool __WCharToMByte(LPCWSTR lpcwszStr, LPSTR lpszStr, DWORD dwSize);
 bool __MByteToWChar(LPCSTR lpcszStr, LPWSTR lpwszStr, DWORD dwSize);
 
 
+// SkinUI Supprot
+//图片控件
+#import "ImageOle.dll" named_guids
+//头文件
+#include "Detours.h"
+#pragma comment (lib,"detours.lib")
 
+#include "./EasySkinUI/SkinUI_ScrollBar.h"
+#pragma comment(lib,"Gdiplus.lib")
+#include "./EasySkinUI/SkinUI.h"
+
+#define _CS
 
 #ifdef _UNICODE
 #if defined _M_IX86

@@ -12,6 +12,13 @@ using namespace std;
 #include <WinSock2.h>
 #pragma comment(lib,"ws2_32")        //链接到ws2_32动态链接库
 
+#define EASY_RTSP_KEY "79397037795969576B5A7341596A5261706375647066464659584E355548567A614756794C6D56345A534E58444661672F365867523246326157346D516D466962334E68514449774D545A4659584E355247467964326C75564756686257566863336B3D"
+
+#define EASY_RTMP_KEY "79397037795969576B5A75416D7942617064396A4575314659584E3555324E795A57567554476C325A53356C65475570567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
+
+#define EASY_IPC_KEY   "6D72754B7A4969576B5A75416D7942617064396A4575314659584E3555324E795A57567554476C325A53356C65475570567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -50,16 +57,14 @@ END_MESSAGE_MAP()
 
 // CEasyScreenLiveDlg 对话框
 
-
-
-
 CEasyScreenLiveDlg::CEasyScreenLiveDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CEasyScreenLiveDlg::IDD, pParent)
+	: CDialogEx(CEasyScreenLiveDlg::IDD,  pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_pusher = NULL;
 	m_bCapture = FALSE;
-	m_bPushing = FALSE;
+	m_bPushingRtsp = FALSE;
+	m_bPushingRtmp = FALSE;
 	m_bPublishServer = FALSE;
 }
 
@@ -72,7 +77,8 @@ BEGIN_MESSAGE_MAP(CEasyScreenLiveDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BUTTON_PUSH, &CEasyScreenLiveDlg::OnBnClickedButtonPush)
+	ON_BN_CLICKED(IDC_BUTTON_PUSH_RTMP, &CEasyScreenLiveDlg::OnBnClickedButtonPushRtmp)
+	ON_BN_CLICKED(IDC_BUTTON_PUSH_RTSP, &CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp)
 	ON_BN_CLICKED(IDC_BUTTON_CAPTURE, &CEasyScreenLiveDlg::OnBnClickedButtonCapture)
 	ON_WM_DESTROY()
 	ON_CBN_SELCHANGE(IDC_COMBO_PUSHSOURCE, &CEasyScreenLiveDlg::OnCbnSelchangeComboPushsource)
@@ -113,29 +119,20 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
-	GetDlgItem(IDC_EDIT_IP)->SetWindowText(_T("www.easydss.com"));
+	GetDlgItem(IDC_EDIT_IP)->SetWindowText(_T("www.easydss.com"));//
 	GetDlgItem(IDC_EDIT_PORT)->SetWindowText(_T("10085"));	
-
-	//ASCII可见字符范围是[32,126]
-	//首先随机生成一个长度，然后在每一位生成一个可见字符
-	srand(time(NULL));
-	int len = 3;
-	char* str = (char*)malloc(sizeof(char) * (len + 1));
-	str[len] = '\0';
-	for (int i = 0; i < len; i++)
-	{
-		str[i] = (char)(rand() % 25 + 97);//97-122
-	}
-	CString sRand = (CString)str;
-	CString sStreamName ;
-	sStreamName.Format(_T("easy-%s"),  sRand);
-
-	GetDlgItem(IDC_EDIT_STREAMNAME)->SetWindowText(sStreamName);	
+	GetDlgItem(IDC_EDIT_STREAMNAME)->SetWindowText(_T("Sword"));	
 	GetDlgItem(IDC_EDIT_LISTEN_PORT)->SetWindowText(_T("8554"));	
-	GetDlgItem(IDC_EDIT_BITRATE)->SetWindowText(_T("2048"));
 
-	
-	
+	GetDlgItem(IDC_EDIT_IP_RTSPSERVER)->SetWindowText(_T("cloud.easydarwin.org"));//www.easydss.com
+	GetDlgItem(IDC_EDIT_PORT_RTSPSERVER)->SetWindowText(_T("554"));	
+	GetDlgItem(IDC_EDIT_RTSP_STREAMNAME)->SetWindowText(_T("Sword"));	
+
+	GetDlgItem(IDC_EDIT_BITRATE)->SetWindowText(_T("2048"));	
+
+	GetDlgItem(IDC_EDIT_MUTICAST_ADDR)->SetWindowText(_T("238.255.255.255"));	
+	GetDlgItem(IDC_EDIT_MUTICAST_TTL)->SetWindowText(_T("255"));	
+
 	CComboBox* pComboSource  = (CComboBox*)GetDlgItem( IDC_COMBO_PUSHSOURCE);
 	if (pComboSource)
 	{
@@ -158,7 +155,7 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 	{
 		pComboTransType->AddString(_T("单播"));
 		pComboTransType->AddString(_T("组播"));
-		pComboTransType->SetCurSel(0);
+		pComboTransType->SetCurSel(1);
 	}	
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
@@ -218,13 +215,13 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CButton* pCapture = (CButton*)GetDlgItem(IDC_BUTTON_CAPTURE);
-	CButton* pBtnPush = (CButton*)GetDlgItem(IDC_BUTTON_PUSH);
+	CButton* pBtnPushRTSP = (CButton*)GetDlgItem(IDC_BUTTON_PUSH_RTSP);
+	CButton* pBtnPushRTMP = (CButton*)GetDlgItem(IDC_BUTTON_PUSH_RTMP);
 	CButton* pBtnPublishServer = (CButton*)GetDlgItem(IDC_BUTTON_PUBLISH_SERVER);
-
 	if (!m_bCapture)
 	{
 		HWND hShowVideo = GetDlgItem(IDC_STATIC_VIDEO)->GetSafeHwnd();
-		
+
 		if(!m_pusher )
 			m_pusher =  EasyScreenLive_Create(EASY_IPC_KEY, EASY_RTMP_KEY, EASY_RTSP_KEY);
 
@@ -256,18 +253,14 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 				sFormat = "RGB24";
 				sSourceType = _T("屏幕采集");
 			}
+			CEdit* pEditBitrate = (CEdit*)GetDlgItem(IDC_EDIT_BITRATE);
+			CString sBitRate;
+			pEditBitrate->GetWindowText(sBitRate);
+			USES_CONVERSION;
 
-			wchar_t wszBitRate[128] = {0,};
-			char szBitRate[128] = {0,};
-			int nBitRate  = 2048;
-			GetDlgItem(IDC_EDIT_BITRATE)->GetWindowText(wszBitRate, sizeof(wszBitRate));
-			if (wcslen(wszBitRate)  > 0)//当前为空		
-			{
-				__WCharToMByte(wszBitRate, szBitRate, sizeof(szBitRate)/sizeof(szBitRate[0]));
-				nBitRate = atoi( szBitRate );
-			}
-
-			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, 0, 0, hShowVideo, nEncoderType, 640,480,25,nBitRate, (char*)sFormat.c_str(),8000,1);
+			int nBitRate =  atoi(T2A(sBitRate));
+			//IDC_EDIT_BITRATE
+			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, 0, 0, hShowVideo, nEncoderType, 640,480,25, nBitRate, (char*)sFormat.c_str(),44100,2);
 			if (ret)
 			{
 				m_bCapture = TRUE;
@@ -285,6 +278,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 	{		
 		if (m_pusher)
 		{
+			EasyScreenLive_StopPush(m_pusher, PUSH_RTSP);
 			EasyScreenLive_StopPush(m_pusher, PUSH_RTMP);
 			EasyScreenLive_StopServer(m_pusher);
 			EasyScreenLive_StopCapture(m_pusher);
@@ -293,22 +287,83 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 		}
 		pCapture->SetWindowText(_T("Capture"));
 		m_bCapture = FALSE;
-		pBtnPush->SetWindowText(_T("Push"));
-		m_bPushing = FALSE;
+		pBtnPushRTSP->SetWindowText(_T("Push-RTSP"));
+		pBtnPushRTMP->SetWindowText(_T("Push-RTMP"));
+		m_bPushingRtsp = FALSE;
+		m_bPushingRtmp = FALSE;
 		pBtnPublishServer->SetWindowText(_T("Publish Server"));
 		m_bPublishServer = FALSE;
 		OnLog( _T("停止采集") );
 	}
 }
 
-
-void CEasyScreenLiveDlg::OnBnClickedButtonPush()
+void CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp()
 {
-
+#if 1
 	// TODO: 在此添加控件通知处理程序代码
 	// 
-	CButton* pBtnPush = (CButton*)GetDlgItem(IDC_BUTTON_PUSH);
-	if (!m_bPushing)
+	CButton* pBtnPush = (CButton*)GetDlgItem(IDC_BUTTON_PUSH_RTSP);
+	if (!m_bPushingRtsp)
+	{
+		UpdateData(TRUE);
+		wchar_t wszIP[128] = {0,};
+		char szIP[128] = {0,};
+		wchar_t wszPort[128] = {0,};
+		char szPort[128] = {0,};
+		wchar_t wszStreamName[128] = {0,};
+		char szStreamName[128] = {0,};
+		int nPort = 0;
+
+		GetDlgItem(IDC_EDIT_IP_RTSPSERVER)->GetWindowText(wszIP,  sizeof(wszIP));
+		if (wcslen(wszIP)  > 0)//当前为空		
+		{
+			__WCharToMByte(wszIP, szIP, sizeof(szIP)/sizeof(szIP[0]));
+			//nStartTime = atoi( szStartTime );
+		}
+
+		GetDlgItem(IDC_EDIT_PORT_RTSPSERVER)->GetWindowText(wszPort,  sizeof(wszPort));	
+		if (wcslen(wszPort)  > 0)//当前为空		
+		{
+			__WCharToMByte(wszPort, szPort, sizeof(szPort)/sizeof(szPort[0]));
+			nPort = atoi( szPort );
+		}
+
+		GetDlgItem(IDC_EDIT_RTSP_STREAMNAME)->GetWindowText(wszStreamName,  sizeof(wszStreamName));	
+		if (wcslen(wszStreamName)  > 0)//当前为空		
+		{
+			__WCharToMByte(wszStreamName, szStreamName, sizeof(szStreamName)/sizeof(szStreamName[0]));
+		}
+
+		if (m_pusher)
+		{
+			EasyScreenLive_StartPush(m_pusher, PUSH_RTSP, szIP, nPort,  szStreamName );
+			m_bPushingRtsp = TRUE;
+			pBtnPush->SetWindowText(_T("Stop"));
+			CString sLog = _T("");
+
+			sLog.Format(_T("开启RTSP推送: rtsp://%s:%d/%s"), wszIP, nPort, wszStreamName);
+			OnLog( sLog );
+		}
+	}
+	else
+	{
+		EasyScreenLive_StopPush(m_pusher, PUSH_RTSP);
+
+		pBtnPush->SetWindowText(_T("Push-RTSP"));
+		m_bPushingRtsp = FALSE;
+		OnLog( _T("停止rtsp推送!") );
+	}
+#endif
+}
+
+
+void CEasyScreenLiveDlg::OnBnClickedButtonPushRtmp()
+{
+#if 1
+	// TODO: 在此添加控件通知处理程序代码
+	// 
+	CButton* pBtnPush = (CButton*)GetDlgItem(IDC_BUTTON_PUSH_RTMP);
+	if (!m_bPushingRtmp)
 	{
 		UpdateData(TRUE);
 		wchar_t wszIP[128] = {0,};
@@ -342,7 +397,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPush()
 		if (m_pusher)
 		{
 			EasyScreenLive_StartPush(m_pusher, PUSH_RTMP, szIP, nPort,  szStreamName );
-			m_bPushing = TRUE;
+			m_bPushingRtmp = TRUE;
 			pBtnPush->SetWindowText(_T("Stop"));
 			CString sLog = _T("");
 
@@ -354,19 +409,11 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPush()
 	{
 		EasyScreenLive_StopPush(m_pusher, PUSH_RTMP);
 
-		pBtnPush->SetWindowText(_T("Push"));
-		m_bPushing = FALSE;
-		OnLog( _T("停止推送") );
-
+		pBtnPush->SetWindowText(_T("Push-RTMP"));
+		m_bPushingRtmp = FALSE;
+		OnLog( _T("停止rtmp推送!") );
 	}
-}
-
-void CEasyScreenLiveDlg::OnBnClickedButtonStop()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	EasyScreenLive_StopPush(m_pusher, PUSH_RTMP);
-	EasyScreenLive_StopCapture(m_pusher);
-
+#endif
 }
 
 void CEasyScreenLiveDlg::OnCbnSelchangeComboPushsource()
@@ -436,6 +483,7 @@ bool GetLocalIPs(IPInfo* ips,int maxCnt,int* cnt)
 
 void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 {
+#if 1
 	// TODO: 在此添加控件通知处理程序代码
 	// 
 	//IDC_EDIT_LISTEN_PORT
@@ -454,6 +502,15 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 				transportType = pComboTransType->GetCurSel();
 			}
 
+			USES_CONVERSION;
+			CString sMuticastAddr ;
+			CString sMuticastTTL;
+			CEdit* pMuticastAddr = (CEdit*)GetDlgItem(IDC_EDIT_MUTICAST_ADDR);
+			pMuticastAddr->GetWindowText(sMuticastAddr);	
+			
+			CEdit* pMuticastTTL = (CEdit*)GetDlgItem(IDC_EDIT_MUTICAST_TTL);
+			pMuticastTTL->GetWindowText( sMuticastTTL);
+			int ttl = atoi(T2A(sMuticastTTL));
 			EASYLIVE_CHANNEL_INFO_T	liveChannel[MAX_CHANNEL_NUM];
 			memset(&liveChannel[0], 0x00, sizeof(EASYLIVE_CHANNEL_INFO_T)*MAX_CHANNEL_NUM);
 			for (int i=0; i<MAX_CHANNEL_NUM; i++)
@@ -465,8 +522,8 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 				if (i==0)
 				{
 					liveChannel[i].enable_multicast = transportType;
-					strcpy(liveChannel[i].multicast_addr, "238.255.255.255");
-					liveChannel[i].ttl = 255;
+					strcpy(liveChannel[i].multicast_addr, T2A(sMuticastAddr));//"238.255.255.255"
+					liveChannel[i].ttl = ttl ;//255;
 				}
 #endif
 			}
@@ -496,7 +553,14 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 			CString sLog = _T("");
 			for (int nI=0; nI<MAX_CHANNEL_NUM; nI++)
 			{
-				sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d"), CString(ip.c_str()), nPort, nI);
+				if (nRet>=0)
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 成功"), CString(ip.c_str()), nPort, nI);
+				} 
+				else
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort, nI);
+				}
 				OnLog( sLog );
 			}
 		}
@@ -508,7 +572,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 		m_bPublishServer = FALSE;
 		OnLog(_T("停止RTSP服务"));
 	}
-
+#endif
 }
 void CEasyScreenLiveDlg::OnLog(CString sLog)
 {
@@ -534,7 +598,7 @@ void CEasyScreenLiveDlg::OnLog(CString sLog)
 void CEasyScreenLiveDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
-
+#if 1
 	// TODO: 在此处添加消息处理程序代码
 	if (m_pusher)
 	{
@@ -544,4 +608,5 @@ void CEasyScreenLiveDlg::OnDestroy()
 		EasyScreenLive_Release(m_pusher);
 		m_pusher = NULL;
 	}
+#endif
 }
