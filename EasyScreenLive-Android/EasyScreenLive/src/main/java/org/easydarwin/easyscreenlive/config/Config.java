@@ -35,6 +35,9 @@ public class Config {
     public static final String LIVE_TYPE_MULTICAST = "1";
     public static final String LIVE_TYPE_UNICAST   = "0";
 
+    private static final String LIVE_BIT_RATE = "live_bit_rate";
+    private static final String LIVE_FEC_ENABLE = "live_fec_enable";
+    private static final String LIVE_FEC_PARAM = "live_fec_param";
 
     public static void saveStringIntoPref(Context context, String key, String value) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
@@ -51,6 +54,27 @@ public class Config {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
         String liveType = sharedPreferences.getString(Config.ENABLE_AUDIO_PUSH, "0");
         return liveType;
+    }
+
+    static public void saveEnablefec(Context context,String value) {
+        saveStringIntoPref(context, Config.LIVE_FEC_ENABLE,  value);
+    }
+
+    static public  String getEnablefec(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
+        String liveType = sharedPreferences.getString(Config.LIVE_FEC_ENABLE, "0");
+        return liveType;
+    }
+
+    static  public int getFecParam(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
+        String param = sharedPreferences.getString(Config.LIVE_FEC_PARAM, "40");
+        int fecParam = Integer.parseInt(param);
+        return fecParam;
+    }
+
+    static public void saveFecParam(Context context, int fecParam) {
+        saveStringIntoPref(context,Config.LIVE_FEC_PARAM, ""+fecParam);
     }
 
     static public void saveMulPort(Context context,String value ) {
@@ -100,4 +124,16 @@ public class Config {
         String url = "rtsp://"+ Util.getLocalIpAddress(context)+":"+strPort+"/"+strId;
         return url;
     }
+
+    static  public int getBitRate(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
+        String bitRate = sharedPreferences.getString(Config.LIVE_BIT_RATE, "2048");
+        int _bitRate = Integer.parseInt(bitRate);
+        return _bitRate;
+    }
+
+    static public void saveBitRate(Context context, int bitRate) {
+        saveStringIntoPref(context,Config.LIVE_BIT_RATE, ""+bitRate);
+    }
+
 }

@@ -20,4 +20,7 @@ public class LiveRtspConfig {
     static public int      multicastPort = 0;
     static public int      multicastTTL  = 7;
     static public int      enableMulticast = 0;
+    static public int      bitRate=1024;
+    static public int      enableFec=0;
+    static public int      fecParam=40;
 }

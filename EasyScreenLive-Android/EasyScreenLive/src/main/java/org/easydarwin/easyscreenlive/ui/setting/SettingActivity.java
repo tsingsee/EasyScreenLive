@@ -17,6 +17,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     boolean eanbleMulticast = false;
     boolean enableAudioPush = false;
+    boolean enableFec = false;
     private ActivitySettingBinding mBinding;
 
     @Override
@@ -27,11 +28,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mBinding.editRtspPort.setText(Config.getRtspPort(this));
         mBinding.editStreamId.setText(Config.getStreamName(this));
         mBinding.editMulticastPort.setText(Config.getMulPort(this));
+        mBinding.editBitRate.setText(""+Config.getBitRate(this));
+        mBinding.editFecParam.setText(""+Config.getFecParam(this));
 
         mBinding.buttonSave.setOnClickListener(this);
         mBinding.buttonMulticastType.setOnCheckedChangeListener(this);
         mBinding.buttonUnicastType.setOnCheckedChangeListener(this);
         mBinding.switchEnableAudio.setOnClickListener(this);
+        mBinding.switchEnableFec.setOnClickListener(this);
 
         if(Config.getLiveType(this).equals(Config.LIVE_TYPE_MULTICAST)) {
             eanbleMulticast = true;
@@ -48,6 +52,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             enableAudioPush = false;
             mBinding.switchEnableAudio.setChecked(false);
         }
+        if(Config.getEnablefec(this).equals("1")) {
+            enableFec = true;
+            mBinding.switchEnableFec.setChecked(true);
+        } else {
+            enableFec = false;
+            mBinding.switchEnableFec.setChecked(false);
+        }
     }
 
     @Override
@@ -62,6 +73,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.button_save:
                 saveConfig();
+                break;
+            case R.id.switch_enable_fec:
+                if(mBinding.switchEnableFec.isChecked()) {
+                    enableFec = true;
+                } else {
+                    enableFec = false;
+                }
                 break;
             default:
                 break;
@@ -91,6 +109,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         Config.saveRtspPort(this, mBinding.editRtspPort.getText().toString());
         Config.saveStreamName(this, mBinding.editStreamId.getText().toString());
         Config.saveMulPort(this, mBinding.editMulticastPort.getText().toString());
+        Config.saveBitRate(this, Integer.parseInt(mBinding.editBitRate.getText().toString()));
+        Config.saveFecParam(this, Integer.parseInt(mBinding.editFecParam.getText().toString()));
 
         if (eanbleMulticast) {
             Config.saveLiveType(this, Config.LIVE_TYPE_MULTICAST);
@@ -101,6 +121,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             Config.saveEnableAudio(this, "1");
         } else {
             Config.saveEnableAudio(this,"0");
+        }
+        if (enableFec) {
+            Config.saveEnablefec(this, "1");
+        } else {
+            Config.saveEnablefec(this,"0");
         }
     }
 }

@@ -97,11 +97,11 @@ public class PreviewActivity extends AppCompatActivity implements TextureView.Su
 //            Client.TRANSTYPE_UDP : Client.TRANSTYPE_TCP
 //            mStreamRender.start(mUrl, mType, Client.EASY_SDK_VIDEO_FRAME_FLAG | Client.EASY_SDK_AUDIO_FRAME_FLAG, "", "", autoRecord ? new File(f, new SimpleDateFormat("yy-MM-dd HH:mm:ss").format(new Date()) + ".mp4").getPath() : null);
             if (pushType == 1) {
-//              组播
+//              单播
                 mStreamRender.start(playUrl, Client.TRANSTYPE_UDP,
                         Client.EASY_SDK_VIDEO_FRAME_FLAG | Client.EASY_SDK_AUDIO_FRAME_FLAG, "", "", null);
             } else {
-//              单播
+//              组播
                 mStreamRender.start(playUrl, Client.TRANSTYPE_UDP,
                         Client.EASY_SDK_VIDEO_FRAME_FLAG | Client.EASY_SDK_AUDIO_FRAME_FLAG, "", "", null);
             }

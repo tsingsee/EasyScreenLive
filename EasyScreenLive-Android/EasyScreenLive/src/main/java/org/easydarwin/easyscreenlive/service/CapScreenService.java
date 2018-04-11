@@ -34,7 +34,6 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
     private int windowWidth = 1280;
     private int windowHeight = 720;
     private int mFrameRate = 30;
-    private int mBitRate = 0;//4*1000*1000;
 
 
     public Context mContext;
@@ -73,13 +72,6 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
     @Override
     public void onCreate() {
         super.onCreate();
-        if(mBitRate == 0) {
-            int bitrate = (int) (windowWidth * windowHeight * 20 * 2 * 0.05f);
-            if (windowWidth >= 1920 || windowHeight >= 1920) bitrate *= 0.3;
-            else if (windowWidth >= 1280 || windowHeight >= 1280) bitrate *= 0.4;
-            else if (windowWidth >= 720 || windowHeight >= 720) bitrate *= 0.6;
-            mBitRate = bitrate;
-        }
 
         easyVideoStreamCallback = this;
         easyAudioStreamCallback = this;
@@ -133,7 +125,8 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
                         easyVideoSource = new EasyCameraCap(mContext, PusherFragment.mSurfaceView,
                                 android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
                     }
-                    ret = easyVideoSource.init(windowWidth, windowHeight, mFrameRate, mBitRate, easyVideoStreamCallback);
+                    ret = easyVideoSource.init(windowWidth, windowHeight, mFrameRate,
+                            LiveRtspConfig.bitRate, easyVideoStreamCallback);
                     if (ret < 0) {
                         Log.e(TAG, "init easyCamreaCap fail");
                         easyVideoSource.uninit();
@@ -161,7 +154,8 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
                     }
 
                     easyVideoSource = new EasyScreenCap(mContext);
-                    ret = easyVideoSource.init(windowWidth, windowHeight, mFrameRate, mBitRate, easyVideoStreamCallback);
+                    ret = easyVideoSource.init(windowWidth, windowHeight, mFrameRate,
+                            LiveRtspConfig.bitRate, easyVideoStreamCallback);
                     if (ret < 0) {
                         PusherFragment.mResultIntent = null;
                         PusherFragment.mResultCode = 0;
@@ -217,6 +211,9 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
         LiveRtspConfig.multicastIP      = "239.255.42.42";
         LiveRtspConfig.multicastPort    = Integer.parseInt(Config.getMulPort(this));
         LiveRtspConfig.multicastTTL     = 7;
+        LiveRtspConfig.bitRate          = Config.getBitRate(this)*1024;
+        LiveRtspConfig.enableFec        = Integer.parseInt(Config.getEnablefec(this));
+        LiveRtspConfig.fecParam         = Config.getFecParam(this);
 
 
         int ret = jniEasyScreenLive.startup(LiveRtspConfig.port,
@@ -224,7 +221,8 @@ public class CapScreenService extends Service implements JniEasyScreenLive.IPCam
                 "","", "",
                 0,mChannelId,LiveRtspConfig.strName.getBytes(),
                 LiveRtspConfig.enableMulticast, LiveRtspConfig.multicastIP,
-                LiveRtspConfig.multicastPort, LiveRtspConfig.multicastTTL);
+                LiveRtspConfig.multicastPort, LiveRtspConfig.multicastTTL,
+                LiveRtspConfig.enableFec,LiveRtspConfig.fecParam);
         if (ret == 0) {
             LiveRtspConfig.isRunning = true;
         } else if (ret != JniEasyScreenLive.EasyErrorCode.EASY_SDK_ACTIVE_FAIL){
