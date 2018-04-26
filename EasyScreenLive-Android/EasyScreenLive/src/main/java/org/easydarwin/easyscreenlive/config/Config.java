@@ -20,24 +20,26 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by Kim on 8/8/2016.
  */
 public class Config {
-    public static final String SERVER_PORT = "serverPort";
-    public static final String STREAM_ID = "streamId";
-    public static final String DEFAULT_SERVER_PORT = "8554";
+    public static final String  SERVER_PORT = "SERVER_PORT";
+    public static final String  STREAM_ID = "STREAM_ID";
+    public static final String  DEFAULT_SERVER_PORT = "8554";
 //    public static final String DEFAULT_STREAM_ID = String.valueOf((int) (Math.random() * 1000000 + 100000));
-    public static final String DEFAULT_STREAM_ID = String.valueOf((int) (12345));
-    public static final String PREF_NAME = "easy_pref";
-    public static final String K_RESOLUTION = "k_resolution";
-    public static final String LIVE_TYPE = "easy_live_type";
-    public static final String LIVE_MUL_PORT = "easy_mul_port";
-    public static final String ENABLE_AUDIO_PUSH = "enable_audio_push";
+    public static final String  DEFAULT_STREAM_ID = String.valueOf((int) (12345));
+    public static final String  PREF_NAME = "easy_pref";
+    public static final String  K_RESOLUTION = "k_resolution";
 
+    public static final String  LIVE_TYPE = "LIVE_TYPE";
+    public static final String  LIVE_MUL_PORT = "LIVE_MUL_PORT";
+    public static final String  LIVE_ENABLE_AUDIO_PUSH = "LIVE_ENABLE_AUDIO_PUSH";
+    public static final String  LIVE_BIT_RATE = "LIVE_BIT_RATE";
 
-    public static final String LIVE_TYPE_MULTICAST = "1";
-    public static final String LIVE_TYPE_UNICAST   = "0";
+    public static final String  LIVE_ARQ_ENABLE     = "LIVE_ARQ_ENABLE";
+    public static final String  LIVE_FEC_ENABLE     = "LIVE_FEC_ENABLE";
+    public static final String  LIVE_FEC_GROUD_SIZE = "LIVE_FEC_GROUD_SIZE";
+    public static final String  LIVE_FEC_PARAM      = "LIVE_FEC_PARAM";
 
-    private static final String LIVE_BIT_RATE = "live_bit_rate";
-    private static final String LIVE_FEC_ENABLE = "live_fec_enable";
-    private static final String LIVE_FEC_PARAM = "live_fec_param";
+    public static final String  LIVE_TYPE_MULTICAST = "1";
+    public static final String  LIVE_TYPE_UNICAST   = "0";
 
     public static void saveStringIntoPref(Context context, String key, String value) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
@@ -47,12 +49,22 @@ public class Config {
     }
 
     static public void saveEnableAudio(Context context,String value) {
-        saveStringIntoPref(context, Config.ENABLE_AUDIO_PUSH,  value);
+        saveStringIntoPref(context, Config.LIVE_ENABLE_AUDIO_PUSH,  value);
     }
 
     static public  String getEnableAudio(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
-        String liveType = sharedPreferences.getString(Config.ENABLE_AUDIO_PUSH, "0");
+        String liveType = sharedPreferences.getString(Config.LIVE_ENABLE_AUDIO_PUSH, "0");
+        return liveType;
+    }
+
+    static public void saveEnableArq(Context context,String value) {
+        saveStringIntoPref(context, Config.LIVE_ARQ_ENABLE,  value);
+    }
+
+    static public  String getEnableArq(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
+        String liveType = sharedPreferences.getString(Config.LIVE_ARQ_ENABLE, "0");
         return liveType;
     }
 
@@ -64,6 +76,17 @@ public class Config {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
         String liveType = sharedPreferences.getString(Config.LIVE_FEC_ENABLE, "0");
         return liveType;
+    }
+
+    static  public int getFecGroudSize(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
+        String param = sharedPreferences.getString(Config.LIVE_FEC_GROUD_SIZE, "10");
+        int fecParam = Integer.parseInt(param);
+        return fecParam;
+    }
+
+    static  public void saveFecGroudSize(Context context, int groudSize) {
+        saveStringIntoPref(context,Config.LIVE_FEC_GROUD_SIZE, ""+groudSize);
     }
 
     static  public int getFecParam(Context context) {

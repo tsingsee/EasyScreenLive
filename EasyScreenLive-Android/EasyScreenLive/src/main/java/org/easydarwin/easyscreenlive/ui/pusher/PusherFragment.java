@@ -19,7 +19,8 @@ import android.widget.TextView;
 import org.easydarwin.easyscreenlive.R;
 import org.easydarwin.easyscreenlive.base.BaseFragment;
 
-import org.easydarwin.easyscreenlive.service.CapScreenService;
+import org.easydarwin.easyscreenlive.screen_live.CapScreenService;
+import org.easydarwin.easyscreenlive.screen_live.ScreenLiveManager;
 import org.easydarwin.easyscreenlive.ui.ScreenLiveActivity;
 
 import static android.app.Activity.RESULT_OK;
@@ -79,7 +80,7 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
             return;
         }
         if (presenter != null) {
-            if (presenter.getPushStatus() == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
+            if (presenter.getPushStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
                 showMultiBtnDialog();
             } else {
                 presenter.onStartPush(getActivity(), CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH);
@@ -112,22 +113,22 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
     @Override
     public void changeViewStatus(int status, String URL) {
         switch (status) {
-            case CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE:
+            case ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE:
                 textViewStatus.setText(getActivity().getString(R.string.wait_push));
                 imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_start));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));
                 break;
-            case CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK:
+            case ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK:
                 imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.back_camera_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.transparent_background));
                 break;
-            case CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT:
+            case ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT:
                 imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.front_camera_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.transparent_background));
                 break;
-            case CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_SCREEN:
+            case ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_SCREEN:
                 imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.screen_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));

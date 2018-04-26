@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Base64;
 
 import org.easydarwin.easyscreenlive.hw.EncoderDebugger;
-import org.easydarwin.easyscreenlive.service.CapScreenService;
 import org.easydarwin.rtspservice.JniEasyScreenLive;
 
 import java.nio.ByteBuffer;

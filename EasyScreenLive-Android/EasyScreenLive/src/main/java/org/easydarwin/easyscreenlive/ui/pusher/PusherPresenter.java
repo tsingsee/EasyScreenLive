@@ -1,12 +1,11 @@
 package org.easydarwin.easyscreenlive.ui.pusher;
 
 import android.content.Context;
-import android.content.Intent;
 
 import org.easydarwin.easyscreenlive.config.LiveRtspConfig;
-import org.easydarwin.easyscreenlive.service.CapScreenService;
-import org.easydarwin.easyscreenlive.R;
+import org.easydarwin.easyscreenlive.screen_live.CapScreenService;
 import org.easydarwin.easyscreenlive.config.Config;
+import org.easydarwin.easyscreenlive.screen_live.ScreenLiveManager;
 import org.easydarwin.rtspservice.JniEasyScreenLive;
 
 /**
@@ -35,7 +34,7 @@ public class PusherPresenter implements PusherContract.Presenter {
     @Override
     public void initView(Context context) {
         if (view != null && view.isActive()) {
-            if (CapScreenService.getPushServiceStatus() == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
+            if (ScreenLiveManager.getPushServiceStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
                 view.changeViewStatus(getPushStatus(), "");
             } else {
                 view.changeViewStatus(getPushStatus(), Config.getRtspUrl(context));
@@ -45,12 +44,12 @@ public class PusherPresenter implements PusherContract.Presenter {
 
     @Override
     public int getPushStatus() {
-        return CapScreenService.getPushServiceStatus();
+        return ScreenLiveManager.getPushServiceStatus();
     }
 
     @Override
     public void onStartPush(Context context, int pushDev) {
-        if (getPushStatus() == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
+        if (getPushStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
             if (pushDev == 0) {
                 CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN);
             } else if (pushDev == 1){
@@ -96,8 +95,8 @@ public class PusherPresenter implements PusherContract.Presenter {
 
     @Override
     public void onViewStop() {
-        if (CapScreenService.getPushServiceStatus() == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK
-                || CapScreenService.getPushServiceStatus() == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT) {
+        if (ScreenLiveManager.getPushServiceStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK
+                || ScreenLiveManager.getPushServiceStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT) {
             CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH);
         }
     }

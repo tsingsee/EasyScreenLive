@@ -94,6 +94,25 @@
             android:background="#ffffff"
             />
         <LinearLayout
+            android:id="@+id/layout_enable_arq"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_enable_arq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="组播丢包重传：" />
+            <Switch
+                android:id="@+id/switch_enable_arq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textOff="off"
+                android:textOn="on"/>
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/layout_enable_fec"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -113,6 +132,24 @@
                 android:textOn="on"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/layout_fec_groud_size"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_fec_groud_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="纠错组大小（10-30）：" />
+            <EditText
+                android:id="@+id/edit_fec_groud_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="10" />
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/layout_fec_param"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -122,7 +159,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="纠错参数（10-100）：" />
+                android:text="纠错参数（冗余度，10-100）：" />
             <EditText
                 android:id="@+id/edit_fec_param"
                 android:layout_width="wrap_content"

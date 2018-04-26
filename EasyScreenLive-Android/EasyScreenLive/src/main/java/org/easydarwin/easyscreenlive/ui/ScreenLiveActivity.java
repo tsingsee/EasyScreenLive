@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Surface;
@@ -19,10 +20,10 @@ import com.tencent.bugly.beta.Beta;
 import org.easydarwin.easyscreenlive.base.BaseActivity;
 import org.easydarwin.easyscreenlive.R;
 import org.easydarwin.easyscreenlive.databinding.ActivityScreenLiveBinding;
-import org.easydarwin.easyscreenlive.service.CapScreenService;
-import org.easydarwin.easyscreenlive.service.OnLiveManagerService;
+import org.easydarwin.easyscreenlive.screen_live.CapScreenService;
 
 
+import org.easydarwin.easyscreenlive.screen_live.ScreenLiveManager;
 import org.easydarwin.easyscreenlive.ui.setting.SettingActivity;
 
 import org.easydarwin.easyscreenlive.ui.playlist.PlayListFragment;
@@ -41,10 +42,12 @@ public class ScreenLiveActivity extends BaseActivity {
     PlayListFragment playListFragment;
     static public int mDgree= 0;
 
+    PowerManager.WakeLock wakeLock = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        acquireWakeLock();
         Bugly.init(getApplicationContext(), "f6e6bd386f", false);
         Beta.checkUpgrade(false,false);
 //        CrashReport.initCrashReport(getApplicationContext(), "f6e6bd386f", false);
@@ -83,11 +86,11 @@ public class ScreenLiveActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if(!playListFragment.isActive()) {
-                    Log.e(TAG, "-------------" + CapScreenService.getPushServiceStatus());
-                    if (CapScreenService.getPushServiceStatus()
-                            == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK
-                        || CapScreenService.getPushServiceStatus()
-                            == CapScreenService.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT) {
+                    Log.e(TAG, "-------------" + ScreenLiveManager.getPushServiceStatus());
+                    if (ScreenLiveManager.getPushServiceStatus()
+                            == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK
+                        || ScreenLiveManager.getPushServiceStatus()
+                            == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT) {
                         showToast("请先停止摄像头推流");
                     } else {
                         getFragmentManager().beginTransaction().replace(R.id.fragmeng_main_layout, playListFragment).commit();
@@ -113,8 +116,6 @@ public class ScreenLiveActivity extends BaseActivity {
         requestAudioPermissions();
         mDgree = getDgree();
 
-        Intent intent = new Intent(getApplicationContext(), OnLiveManagerService.class);
-        startService(intent);
         Intent pushintent = new Intent(getApplicationContext(), CapScreenService.class);
         startService(pushintent);
     }
@@ -177,5 +178,36 @@ public class ScreenLiveActivity extends BaseActivity {
                 break;// Landscape right
         }
         return degrees;
+    }
+
+    //获取电源锁，保持该服务在屏幕熄灭时仍然获取CPU时，保持运行
+    private void acquireWakeLock()
+    {
+        if (null == wakeLock)
+        {
+            PowerManager pm = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
+            wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "PostLocationService");
+            if (null != wakeLock)
+            {
+                wakeLock.acquire();
+            }
+        }
+    }
+
+    //释放设备电源锁
+    private void releaseWakeLock()
+    {
+        if (null != wakeLock)
+        {
+            wakeLock.release();
+            wakeLock = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releaseWakeLock();
+        Log.d(TAG, "onDestroy");
     }
 }

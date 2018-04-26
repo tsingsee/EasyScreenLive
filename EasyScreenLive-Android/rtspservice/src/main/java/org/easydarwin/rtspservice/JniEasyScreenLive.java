@@ -102,7 +102,7 @@ public class JniEasyScreenLive {
     public native int startup(int listenport, int authType, String realm, String username, String password,
                               int userptr,int channelid, byte[] channelinfo,
                               int enableMulticast, String MulticastIp, int MulticastPort, int ttl,
-                              int enableFec, int fecParam);
+                              int enableArq, int enableFec, int fecGroudSize, int fecParam);
 
     /* 终止 Rtsp Server */
     public native int shutdown();

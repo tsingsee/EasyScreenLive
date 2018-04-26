@@ -10,12 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 
-import org.easydarwin.easyscreenlive.service.OnLiveManagerService;
 import org.easydarwin.easyscreenlive.R;
 import org.easydarwin.easyscreenlive.base.BaseFragment;
+import org.easydarwin.easyscreenlive.screen_live.OnLiveManager;
 import org.easydarwin.easyscreenlive.ui.player.PreviewActivity;
 
 /**
@@ -40,7 +39,7 @@ public class PlayListFragment extends BaseFragment implements PlayListContract.V
         editTextPlayUrl = view.findViewById(R.id.edit_play_url);
         addutton     = view.findViewById(R.id.button_add);
 
-        listAdapter = new PlayListAdapter(getActivity(), OnLiveManagerService.onLiveInfoList);
+        listAdapter = new PlayListAdapter(getActivity(), OnLiveManager.onLiveInfoList);
         listViewPlay    = view.findViewById(R.id.list_view_url);
         listViewPlay.setAdapter(listAdapter);
 
