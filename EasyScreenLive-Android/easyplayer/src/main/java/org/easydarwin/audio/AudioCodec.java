@@ -14,4 +14,5 @@ public class AudioCodec {
     public static native int decode(long handle, byte[] buffer, int offset, int length, byte[] pcm, int[] outLen);
 
     public static native void close(long handle);
+
 }
