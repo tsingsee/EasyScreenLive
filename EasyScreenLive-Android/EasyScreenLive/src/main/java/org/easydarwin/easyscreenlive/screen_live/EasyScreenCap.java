@@ -21,6 +21,7 @@ import android.view.WindowManager;
 
 import org.easydarwin.easyscreenlive.base.EasyVideoSource;
 import org.easydarwin.easyscreenlive.base.EasyVideoStreamCallback;
+import org.easydarwin.easyscreenlive.config.Config;
 import org.easydarwin.easyscreenlive.hw.CodecInfo;
 import org.easydarwin.easyscreenlive.hw.HWConsumer;
 import org.easydarwin.easyscreenlive.ui.pusher.PusherFragment;
@@ -67,6 +68,7 @@ public class EasyScreenCap extends EasyVideoSource {
     public EasyScreenCap(Context context) {
         SOURCE_TYPE = SOURCE_TYPE_SCREEN;
         mContext = context;
+        isUsedCaptureImageReader = Config.getEnableFrame(context).equals("1");
     }
 
     @Override
