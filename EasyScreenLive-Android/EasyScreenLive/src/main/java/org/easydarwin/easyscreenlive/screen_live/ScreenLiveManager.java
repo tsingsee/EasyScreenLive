@@ -2,7 +2,9 @@ package org.easydarwin.easyscreenlive.screen_live;
 
 import android.content.Context;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 import org.easydarwin.easyscreenlive.base.EasyAudioStreamCallback;
 import org.easydarwin.easyscreenlive.base.EasyVideoSource;
@@ -83,8 +85,14 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                 }
 
                 if (msg.what == CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN) {
-                    windowWidth = 1080;
-                    windowHeight = 1920;
+                    Context context = mContext.getApplicationContext();
+                    DisplayMetrics dm = new DisplayMetrics();
+                    WindowManager windowMgr = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+                    windowMgr.getDefaultDisplay().getRealMetrics(dm);
+                    // 获取高度
+                    windowHeight = dm.heightPixels;
+                    // 获取宽度
+                    windowWidth = dm.widthPixels;
                 }
 
                 ret = easyVideoSource.init(windowWidth, windowHeight, mFrameRate,

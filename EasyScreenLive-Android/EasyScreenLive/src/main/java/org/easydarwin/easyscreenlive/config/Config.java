@@ -30,6 +30,7 @@ public class Config {
 
     public static final String  LIVE_TYPE = "LIVE_TYPE";
     public static final String  LIVE_MUL_PORT = "LIVE_MUL_PORT";
+    public static final String  LIVE_ENABLE_FRAME = "LIVE_ENABLE_FRAME";
     public static final String  LIVE_ENABLE_AUDIO_PUSH = "LIVE_ENABLE_AUDIO_PUSH";
     public static final String  LIVE_BIT_RATE = "LIVE_BIT_RATE";
 
@@ -55,6 +56,16 @@ public class Config {
     static public  String getEnableAudio(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
         String liveType = sharedPreferences.getString(Config.LIVE_ENABLE_AUDIO_PUSH, "0");
+        return liveType;
+    }
+
+    static public void saveEnableFrame(Context context,String value) {
+        saveStringIntoPref(context, Config.LIVE_ENABLE_FRAME,  value);
+    }
+
+    static public  String getEnableFrame(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
+        String liveType = sharedPreferences.getString(Config.LIVE_ENABLE_FRAME, "1");
         return liveType;
     }
 

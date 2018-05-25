@@ -173,6 +173,25 @@
             android:background="#ffffff"
             />
         <LinearLayout
+            android:id="@+id/layout_enable_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/text_eanble_frame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="固定帧率" />
+            <Switch
+                android:id="@+id/switch_enable_frame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:textOff="off"
+                android:textOn="on"/>
+        </LinearLayout>
+        <LinearLayout
             android:id="@+id/layout_enable_audio"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
