@@ -19,6 +19,7 @@ public class JniEasyScreenLive {
     private static int sKey;
     private int mCtx;
     private static final SparseArray<IPCameraCallBack> sCallbacks = new SparseArray<>();
+    private int[] channalIdArr = {1,2,3,4,5,6,7,8,9};
 
     private static final String TAG = "JniEasyScreenLive";
 
@@ -63,9 +64,19 @@ public class JniEasyScreenLive {
         public static final int EASY_SDK_ACTIVE_FAIL = -1000;
     }
 
+    private int getNotUsed(){
+        for (int i=0; i < channalIdArr.length; i++) {
+            if (sCallbacks.get(channalIdArr[i]) == null) {
+                return channalIdArr[i];
+            }
+        }
+        return 100;
+    }
+
     public int registerCallback(IPCameraCallBack cb) {
         synchronized (sCallbacks) {
-            sCallbacks.put(++sKey, cb);
+            sKey = getNotUsed();
+            sCallbacks.put(sKey, cb);
             return sKey;
         }
     }
