@@ -162,7 +162,7 @@ class AudioStream {
 
 
                         int size = mBufferInfo.size + 7;
-//                        Log.e(TAG, "kim mChannelState="+mChannelState+", mChannelId="+mChannelId+", length="+size);
+                        Log.e(TAG, "length="+size);
                         if(mPushAudio) {
 //                            byte[] buffer = new byte[size];
 //                            mBuffer.get(buffer, 0, size);

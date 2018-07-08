@@ -34,6 +34,8 @@ public class CapScreenService extends Service{
         static public final int CMD_START_PUSH_CAMREA_BACK  = 2;
         static public final int CMD_START_PUSH_CAMREA_FRONT = 3;
         static public final int CMD_UPDATA_ONLIVE_LIST      = 4;
+        static public final int CMD_START_PUSH_AUDIO        = 5;
+        static public final int CMD_STOP_PUSH_AUDIO         = 6;
 
     }
 
@@ -102,7 +104,9 @@ public class CapScreenService extends Service{
                 case EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_BACK:
                 case EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_FRONT:
                 case EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN:
-                case EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH:{
+                case EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH:
+                case EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_AUDIO:
+                case EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH_AUDIO:{
                     if (screenLiveManager != null) {
                         screenLiveManager.onScreenLiveCmd(msg);
                     }

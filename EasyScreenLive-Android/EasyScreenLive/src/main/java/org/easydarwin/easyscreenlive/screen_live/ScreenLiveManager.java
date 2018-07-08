@@ -38,6 +38,7 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
     private JniEasyScreenLive jniEasyScreenLive;
     EasyVideoSource easyVideoSource;
     private int mChannelId = 1;
+    boolean isEnablePushAudio = true;
 
     private static int pushServiceStatus = EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE;
 
@@ -117,8 +118,13 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                 pushServiceStatus = EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE;
                 PusherPresenter.getInterface().onStopPushSuccess(mContext.getApplicationContext());
             }
-            break;
-
+                break;
+            case CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_AUDIO:
+                isEnablePushAudio = true;
+                break;
+            case CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH_AUDIO:
+                isEnablePushAudio = false;
+                break;
             default:
                 break;
         }
@@ -208,9 +214,11 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
 
     @Override
     public void audioDataBack(long timestamp, byte[] pBuffer, int offset, int length) {
-        jniEasyScreenLive.pushFrame(mChannelId, JniEasyScreenLive.FrameFlag.EASY_SDK_AUDIO_FRAME_FLAG,
-                timestamp,
-                pBuffer, offset,length);
+        if(isEnablePushAudio) {
+            jniEasyScreenLive.pushFrame(mChannelId, JniEasyScreenLive.FrameFlag.EASY_SDK_AUDIO_FRAME_FLAG,
+                    timestamp,
+                    pBuffer, offset, length);
+        }
     }
 
     @Override
