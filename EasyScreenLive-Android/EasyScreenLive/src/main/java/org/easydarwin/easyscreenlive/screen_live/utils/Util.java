@@ -5,7 +5,7 @@
 	Website: http://www.easydarwin.org
 */
 
-package org.easydarwin.easyscreenlive.utils;
+package org.easydarwin.easyscreenlive.screen_live.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,7 +14,6 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.easydarwin.easyscreenlive.config.Config;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -218,7 +217,9 @@ public class Util {
      * @return
      */
     public static List<String> getSupportResolution(Context context){
+
         List<String> resolutions=new ArrayList<>();
+        /*
         SharedPreferences sharedPreferences=context.getSharedPreferences(Config.PREF_NAME, Context.MODE_PRIVATE);
         String r=sharedPreferences.getString(Config.K_RESOLUTION, "");
         if(!TextUtils.isEmpty(r)){
@@ -227,7 +228,7 @@ public class Util {
                 resolutions= Arrays.asList(arr);
             }
         }
-
+        */
         return resolutions;
     }
 
@@ -237,8 +238,8 @@ public class Util {
      * @param value
      */
     public static void saveSupportResolution(Context context, String value){
-        SharedPreferences sharedPreferences=context.getSharedPreferences(Config.PREF_NAME, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(Config.K_RESOLUTION, value).commit();
+        //SharedPreferences sharedPreferences=context.getSharedPreferences(Config.PREF_NAME, Context.MODE_PRIVATE);
+        //sharedPreferences.edit().putString(Config.K_RESOLUTION, value).commit();
     }
 
     private static String intToIp(int i) {

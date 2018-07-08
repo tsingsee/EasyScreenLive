@@ -5,10 +5,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import org.easydarwin.easyscreenlive.config.LiveRtspConfig;
 import org.easydarwin.easyscreenlive.ui.playlist.PlayListFragment;
-import org.easydarwin.easyscreenlive.utils.OnLiveInfo;
-import org.easydarwin.easyscreenlive.utils.Util;
+import org.easydarwin.easyscreenlive.screen_live.utils.OnLiveInfo;
+import org.easydarwin.easyscreenlive.screen_live.utils.Util;
+import org.easydarwin.easyscreenlive.ui.playlist.PlayListPresenter;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -22,7 +22,7 @@ import java.util.List;
  * Created by gavin on 2018/4/21.
  */
 
-public class OnLiveManager {
+public class OnLiveManager extends PlayListPresenter {
     private final String TAG = "OnLiveManager";
 
     private Context mContext;
@@ -36,7 +36,7 @@ public class OnLiveManager {
     }
 
     void create(){
-        LiveRtspConfig.localIp = Util.getLocalIpAddress(mContext);
+        EasyScreenLiveAPI.liveRtspConfig.localIp = Util.getLocalIpAddress(mContext);
         sendOnlineBroadcastThread = new SendOnlineBroadcastThread();
         sendOnlineBroadcastThread.start();
         receiveOnlineBroadcastThread = new ReceiveOnlineBroadcastThread();
@@ -82,9 +82,7 @@ public class OnLiveManager {
     }
 
     private void updateOnliveListView() {
-        if (PlayListFragment.fragmentPlayListHandle != null) {
-            PlayListFragment.fragmentPlayListHandle.sendEmptyMessage(PlayListFragment.UPDATA_ONLIVE_LIST_VIEW);
-        }
+        updteOnliveList();
     }
 
     private void OnBroadcastCmd(OnLiveInfo onLiveInfo){
@@ -171,15 +169,15 @@ public class OnLiveManager {
             Gson gson = new Gson();
             OnLiveInfo onLiveInfo = new OnLiveInfo();
 //            Log.e(TAG, "src ip" + liveRtspConfig.localIp);
-            onLiveInfo.setSrcIP(LiveRtspConfig.localIp);
-            if (!LiveRtspConfig.isRunning) {
+            onLiveInfo.setSrcIP(EasyScreenLiveAPI.liveRtspConfig.localIp);
+            if (!EasyScreenLiveAPI.liveRtspConfig.isRunning) {
                 onLiveInfo.setCmd(OnLiveInfo.INFO_CMD_ONLIVE);
                 onLiveInfo.setPushType(OnLiveInfo.PUSH_TYPE_UNMULTICAST);
                 onLiveInfo.setURL("");
             } else {
                 onLiveInfo.setCmd(OnLiveInfo.INFO_CMD_SHARED_SCREEN);
-                onLiveInfo.setPushType(LiveRtspConfig.enableMulticast);
-                onLiveInfo.setURL(LiveRtspConfig.URL);
+                onLiveInfo.setPushType(EasyScreenLiveAPI.liveRtspConfig.enableMulticast);
+                onLiveInfo.setURL(EasyScreenLiveAPI.liveRtspConfig.URL);
             }
 
             String jsonObject = gson.toJson(onLiveInfo);

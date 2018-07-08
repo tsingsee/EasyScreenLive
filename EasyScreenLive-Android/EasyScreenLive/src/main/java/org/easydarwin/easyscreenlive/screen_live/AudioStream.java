@@ -17,7 +17,7 @@ import android.os.Build;
 import android.os.Process;
 import android.util.Log;
 
-import org.easydarwin.easyscreenlive.base.EasyAudioStreamCallback;
+import org.easydarwin.easyscreenlive.screen_live.base.EasyAudioStreamCallback;
 import org.easydarwin.rtspservice.JniEasyScreenLive.AudioCodec;
 
 import java.io.PrintWriter;
@@ -27,7 +27,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by Kim on 8/8/2016.
  */
-public class AudioStream {
+class AudioStream {
     private int mAudioEncCodec = AudioCodec.EASY_SDK_AUDIO_CODEC_AAC;
     private int mSamplingRate = 8000;
     private int mBitsPerSample = AudioFormat.ENCODING_PCM_16BIT;

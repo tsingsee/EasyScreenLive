@@ -1,11 +1,12 @@
 package org.easydarwin.easyscreenlive.ui.pusher;
 
 import android.content.Context;
+import android.content.Intent;
+import android.view.SurfaceView;
 
-import org.easydarwin.easyscreenlive.config.LiveRtspConfig;
-import org.easydarwin.easyscreenlive.screen_live.CapScreenService;
 import org.easydarwin.easyscreenlive.config.Config;
-import org.easydarwin.easyscreenlive.screen_live.ScreenLiveManager;
+import org.easydarwin.easyscreenlive.screen_live.LiveRtspConfig;
+import org.easydarwin.easyscreenlive.screen_live.EasyScreenLiveAPI;
 import org.easydarwin.rtspservice.JniEasyScreenLive;
 
 /**
@@ -34,7 +35,7 @@ public class PusherPresenter implements PusherContract.Presenter {
     @Override
     public void initView(Context context) {
         if (view != null && view.isActive()) {
-            if (ScreenLiveManager.getPushServiceStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
+            if (EasyScreenLiveAPI.getPushStatus() == EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
                 view.changeViewStatus(getPushStatus(), "");
             } else {
                 view.changeViewStatus(getPushStatus(), Config.getRtspUrl(context));
@@ -44,31 +45,34 @@ public class PusherPresenter implements PusherContract.Presenter {
 
     @Override
     public int getPushStatus() {
-        return ScreenLiveManager.getPushServiceStatus();
+        return EasyScreenLiveAPI.getPushStatus();
     }
 
     @Override
-    public void onStartPush(Context context, int pushDev) {
-        if (getPushStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
-            if (pushDev == 0) {
-                CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN);
-            } else if (pushDev == 1){
-                CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_FRONT);
-            } else if (pushDev == 2) {
-                CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_BACK);
-            }
-        } else {
-            CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH);
-        }
+    public void onStartPush(Context context, int pushDev, Intent capScreenIntent,
+             int capScreenCode, SurfaceView mSurfaceView) {
+        LiveRtspConfig config = new LiveRtspConfig();
+        config.pushdev = pushDev;
+        config.capScreenIntent = capScreenIntent;
+        config.capScreenCode = capScreenCode;
+
+
+        config.initLiveRtspConfig(context);
+        EasyScreenLiveAPI.startPush(config, mSurfaceView);
+    }
+
+    @Override
+    public void onStopPush() {
+        EasyScreenLiveAPI.stopPush();
     }
 
 
     @Override
-    public void onStartPushSuccess(Context context, String URL) {
+    public void onStartPushSuccess(Context context, int isEnableMulticast,String URL) {
         if(view != null && view.isActive()) {
             view.showTip("屏幕推流成功"+
-                    (LiveRtspConfig.enableMulticast==1?"(组播方式) ":"（单播方式）")+"\n"
-                    + "URL:"+LiveRtspConfig.URL);
+                    (isEnableMulticast==1?"(组播方式) ":"（单播方式）")+"\n"
+                    + "URL:"+URL);
             view.changeViewStatus(getPushStatus(),URL);
         }
     }
@@ -93,11 +97,5 @@ public class PusherPresenter implements PusherContract.Presenter {
         }
     }
 
-    @Override
-    public void onViewStop() {
-        if (ScreenLiveManager.getPushServiceStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK
-                || ScreenLiveManager.getPushServiceStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT) {
-            CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH);
-        }
-    }
+
 }

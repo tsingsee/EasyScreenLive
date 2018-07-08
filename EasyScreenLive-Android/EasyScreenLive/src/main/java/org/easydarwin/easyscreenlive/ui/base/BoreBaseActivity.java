@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.base;
+package org.easydarwin.easyscreenlive.ui.base;
 
 
 import android.app.Activity;
@@ -9,9 +9,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
-
-import org.easydarwin.easyscreenlive.utils.DialogUtils;
-import org.easydarwin.easyscreenlive.utils.ToastUtils;
 
 
 public class BoreBaseActivity extends AppCompatActivity {

@@ -4,23 +4,22 @@ import android.content.Context;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import org.easydarwin.easyscreenlive.base.EasyAudioStreamCallback;
-import org.easydarwin.easyscreenlive.base.EasyVideoSource;
-import org.easydarwin.easyscreenlive.base.EasyVideoStreamCallback;
-import org.easydarwin.easyscreenlive.config.Config;
-import org.easydarwin.easyscreenlive.config.LiveRtspConfig;
-import org.easydarwin.easyscreenlive.ui.pusher.PusherFragment;
+import org.easydarwin.easyscreenlive.screen_live.base.EasyAudioStreamCallback;
+import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoSource;
+import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoStreamCallback;
+import org.easydarwin.easyscreenlive.screen_live.utils.EasyMediaInfoHelper;
 import org.easydarwin.easyscreenlive.ui.pusher.PusherPresenter;
-import org.easydarwin.easyscreenlive.utils.EasyMediaInfoHelper;
+
 import org.easydarwin.rtspservice.JniEasyScreenLive;
 
 /**
  * Created by gavin on 2018/4/21.
  */
 
-public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
+class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
         EasyVideoStreamCallback,
         EasyAudioStreamCallback {
     private final static String TAG = "ScreenLiveManager";
@@ -40,15 +39,10 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
     EasyVideoSource easyVideoSource;
     private int mChannelId = 1;
 
-    private static int pushServiceStatus = EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE;
+    private static int pushServiceStatus = EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE;
 
 
-    public static class EASY_PUSH_SERVICE_STATUS {
-        static public final int STATUS_LEISURE              =  0; //服务空闲
-        static public final int STATUS_PUSH_SCREEN          =  1; //服务推屏
-        static public final int STATUS_PUSH_CAMREA_BACK     =  2; //服务推后摄像头
-        static public final int STATUS_PUSH_CAMREA_FRONT    =  3; //服务推前摄像头
-    }
+
 
     ScreenLiveManager(Context context) {
         mContext = context;
@@ -73,12 +67,17 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                     PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(), ret);
                     break;
                 }
+                SurfaceView mSurfaceView = null;
+                if(msg.obj != null)
+                {
+                    mSurfaceView = (SurfaceView)msg.obj;
+                }
 
                 if (msg.what == CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_BACK) {
-                    easyVideoSource = new EasyCameraCap(mContext, PusherFragment.mSurfaceView,
+                    easyVideoSource = new EasyCameraCap(mContext, mSurfaceView,
                             android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
                 } else if (msg.what == CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_FRONT){
-                    easyVideoSource = new EasyCameraCap(mContext, PusherFragment.mSurfaceView,
+                    easyVideoSource = new EasyCameraCap(mContext, mSurfaceView,
                             android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
                 } else if (msg.what == CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN) {
                     easyVideoSource = new EasyScreenCap(mContext);
@@ -96,7 +95,7 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                 }
 
                 ret = easyVideoSource.init(windowWidth, windowHeight, mFrameRate,
-                        LiveRtspConfig.bitRate, easyVideoStreamCallback);
+                        EasyScreenLiveAPI.liveRtspConfig.bitRate, easyVideoStreamCallback);
                 if (ret < 0) {
                     Log.e(TAG, "init easyCamreaCap fail");
                     easyVideoSource.uninit();
@@ -105,7 +104,8 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                     break;
                 }
                 pushServiceStatus = msg.what;
-                PusherPresenter.getInterface().onStartPushSuccess(mContext.getApplicationContext(),LiveRtspConfig.URL);
+                PusherPresenter.getInterface().onStartPushSuccess(mContext.getApplicationContext(),
+                        EasyScreenLiveAPI.liveRtspConfig.enableMulticast, EasyScreenLiveAPI.liveRtspConfig.URL);
             }
             break;
             case CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH:{
@@ -114,7 +114,7 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                     easyVideoSource = null;
                 }
                 stopRtspServer();
-                pushServiceStatus = EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE;
+                pushServiceStatus = EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE;
                 PusherPresenter.getInterface().onStopPushSuccess(mContext.getApplicationContext());
             }
             break;
@@ -134,24 +134,25 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
             return -1;
         }
 
-        LiveRtspConfig.initLiveRtspConfig(mContext);
+
 
         jniEasyScreenLive = new JniEasyScreenLive();
         mChannelId = jniEasyScreenLive.registerCallback(this);
         jniEasyScreenLive.active(mContext);
 
-        int ret = jniEasyScreenLive.startup(LiveRtspConfig.port,
+        int ret = jniEasyScreenLive.startup(EasyScreenLiveAPI.liveRtspConfig.port,
                 JniEasyScreenLive.AuthType.AUTHENTICATION_TYPE_BASIC,
                 "","", "",
-                0,mChannelId,LiveRtspConfig.strName.getBytes(),
-                LiveRtspConfig.enableMulticast, LiveRtspConfig.multicastIP,
-                LiveRtspConfig.multicastPort, LiveRtspConfig.multicastTTL,
-                LiveRtspConfig.enableArq, LiveRtspConfig.enableFec,LiveRtspConfig.fecGroudSize, LiveRtspConfig.fecParam);
+                0,mChannelId,EasyScreenLiveAPI.liveRtspConfig.strName.getBytes(),
+                EasyScreenLiveAPI.liveRtspConfig.enableMulticast, EasyScreenLiveAPI.liveRtspConfig.multicastIP,
+                EasyScreenLiveAPI.liveRtspConfig.multicastPort, EasyScreenLiveAPI.liveRtspConfig.multicastTTL,
+                EasyScreenLiveAPI.liveRtspConfig.enableArq, EasyScreenLiveAPI.liveRtspConfig.enableFec,
+                EasyScreenLiveAPI.liveRtspConfig.fecGroudSize, EasyScreenLiveAPI.liveRtspConfig.fecParam);
         if (ret == 0) {
-            LiveRtspConfig.isRunning = true;
+            EasyScreenLiveAPI.liveRtspConfig.isRunning = true;
         } else if (ret != JniEasyScreenLive.EasyErrorCode.EASY_SDK_ACTIVE_FAIL){
-            LiveRtspConfig.port ++;
-            Config.saveRtspPort(mContext, ""+ LiveRtspConfig.port ++);
+            EasyScreenLiveAPI.liveRtspConfig.port ++;
+            //Config.saveRtspPort(mContext, ""+ EasyScreenLiveAPI.liveRtspConfig.port ++);
             jniEasyScreenLive.shutdown();
             jniEasyScreenLive = null;
         } else {
@@ -164,7 +165,7 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
 
     private void stopRtspServer() {
         if (jniEasyScreenLive != null) {
-            LiveRtspConfig.isRunning = false;
+            EasyScreenLiveAPI.liveRtspConfig.isRunning = false;
             jniEasyScreenLive.resetChannel(mChannelId);
             jniEasyScreenLive.shutdown();
             jniEasyScreenLive.unrigisterCallback(this);
@@ -176,7 +177,7 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
         if (easyVideoSource != null && easyVideoSource.startStream() != 0) {
             Log.e(TAG, "easyScreenCap.startMediaCodec fail");
         }
-        if(LiveRtspConfig.enableAudio == 1 && audioStream != null) {
+        if(EasyScreenLiveAPI.liveRtspConfig.enableAudio == 1 && audioStream != null) {
             audioStream.startRecord();
             audioStream.startPush();
         }
@@ -188,7 +189,7 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
     private void stopPush() {
         if(easyVideoSource != null)
             easyVideoSource.stopStream();
-        if(LiveRtspConfig.enableAudio == 1 && audioStream != null) {
+        if(EasyScreenLiveAPI.liveRtspConfig.enableAudio == 1 && audioStream != null) {
             audioStream.stopPush();
             audioStream.stop();
         }
@@ -223,7 +224,7 @@ public class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
             case JniEasyScreenLive.ChannelState.EASY_IPCAMERA_STATE_REQUEST_MEDIA_INFO:
                 Log.i(TAG, "Screen Record EASY_IPCAMERA_STATE_REQUEST_MEDIA_INFO");
                 EasyMediaInfoHelper easyMediaInfoHelper = new EasyMediaInfoHelper();
-                if(LiveRtspConfig.enableAudio == 1) {
+                if(EasyScreenLiveAPI.liveRtspConfig.enableAudio == 1) {
                     if(audioStream == null)
                         audioStream = new AudioStream(easyAudioStreamCallback);
                     easyMediaInfoHelper.setAACMediaInfo(audioStream.getSamplingRate(), audioStream.getChannelNum(),

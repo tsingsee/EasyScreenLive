@@ -17,13 +17,14 @@ import android.widget.Toast;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 
-import org.easydarwin.easyscreenlive.base.BaseActivity;
+import org.easydarwin.easyscreenlive.ui.base.BaseActivity;
 import org.easydarwin.easyscreenlive.R;
 import org.easydarwin.easyscreenlive.databinding.ActivityScreenLiveBinding;
 import org.easydarwin.easyscreenlive.screen_live.CapScreenService;
 
 
-import org.easydarwin.easyscreenlive.screen_live.ScreenLiveManager;
+import org.easydarwin.easyscreenlive.screen_live.EasyScreenLiveAPI;
+import org.easydarwin.easyscreenlive.ui.playlist.PlayListPresenter;
 import org.easydarwin.easyscreenlive.ui.setting.SettingActivity;
 
 import org.easydarwin.easyscreenlive.ui.playlist.PlayListFragment;
@@ -65,6 +66,7 @@ public class ScreenLiveActivity extends BaseActivity {
         PusherPresenter.getInterface().setPusherView(pusherFragment);
 
         playListFragment = new PlayListFragment();
+        PlayListPresenter.getInterface().setPlayListView(playListFragment);
         getFragmentManager().beginTransaction().replace(R.id.fragmeng_main_layout, pusherFragment).commit();
 
 
@@ -86,11 +88,11 @@ public class ScreenLiveActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if(!playListFragment.isActive()) {
-                    Log.e(TAG, "-------------" + ScreenLiveManager.getPushServiceStatus());
-                    if (ScreenLiveManager.getPushServiceStatus()
-                            == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK
-                        || ScreenLiveManager.getPushServiceStatus()
-                            == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT) {
+                    Log.e(TAG, "-------------" + EasyScreenLiveAPI.getPushStatus());
+                    if (EasyScreenLiveAPI.getPushStatus()
+                            == EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK
+                        || EasyScreenLiveAPI.getPushStatus()
+                            == EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT) {
                         showToast("请先停止摄像头推流");
                     } else {
                         getFragmentManager().beginTransaction().replace(R.id.fragmeng_main_layout, playListFragment).commit();

@@ -12,7 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.easydarwin.easyscreenlive.utils.OnLiveInfo;
+import org.easydarwin.easyscreenlive.screen_live.utils.OnLiveInfo;
 import org.easydarwin.easyscreenlive.R;
 import org.easydarwin.easyscreenlive.ui.player.PreviewActivity;
 

@@ -78,6 +78,13 @@ public class CapScreenService extends Service{
         }
     }
 
+    static public void sendMsg(Message msg)
+    {
+        if (serviceCommondHandle != null) {
+            serviceCommondHandle.sendMessage(msg);
+        }
+    }
+
     public void clearHandleMessage() {
         if(serviceCommondHandle != null){
             for (int i=0; i<100; i++) {
@@ -133,11 +140,4 @@ public class CapScreenService extends Service{
         }
         super.onDestroy();
     }
-
-
-
-
-
-
-
 }//end

@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.utils;
+package org.easydarwin.easyscreenlive.ui.base;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;

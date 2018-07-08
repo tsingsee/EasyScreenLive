@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.hw;
+package org.easydarwin.easyscreenlive.screen_live.hw;
 
 import android.content.Context;
 import android.media.MediaCodec;

@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.base;
+package org.easydarwin.easyscreenlive.ui.base;
 
 
 import android.content.SharedPreferences;

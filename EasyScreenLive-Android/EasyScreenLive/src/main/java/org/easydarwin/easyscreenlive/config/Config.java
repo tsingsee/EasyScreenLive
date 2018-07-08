@@ -10,7 +10,7 @@ package org.easydarwin.easyscreenlive.config;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.easydarwin.easyscreenlive.utils.Util;
+import org.easydarwin.easyscreenlive.screen_live.utils.Util;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -65,7 +65,7 @@ public class Config {
 
     static public  String getEnableFrame(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
-        String liveType = sharedPreferences.getString(Config.LIVE_ENABLE_FRAME, "1");
+        String liveType = sharedPreferences.getString(Config.LIVE_ENABLE_FRAME, "0");
         return liveType;
     }
 

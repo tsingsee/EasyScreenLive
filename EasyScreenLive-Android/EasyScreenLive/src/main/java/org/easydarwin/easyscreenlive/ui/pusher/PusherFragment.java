@@ -17,11 +17,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.easydarwin.easyscreenlive.R;
-import org.easydarwin.easyscreenlive.base.BaseFragment;
+import org.easydarwin.easyscreenlive.ui.base.BaseFragment;
 
 import org.easydarwin.easyscreenlive.screen_live.CapScreenService;
-import org.easydarwin.easyscreenlive.screen_live.ScreenLiveManager;
 import org.easydarwin.easyscreenlive.ui.ScreenLiveActivity;
+import org.easydarwin.easyscreenlive.screen_live.EasyScreenLiveAPI;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;
@@ -33,8 +33,8 @@ import static android.content.Context.MEDIA_PROJECTION_SERVICE;
 public class PusherFragment extends BaseFragment implements PusherContract.View, SurfaceHolder.Callback{
     private final String TAG = "PusherFragment";
 
-    public static Intent mResultIntent;
-    public static int mResultCode;
+    static public Intent mResultIntent;
+    static public int mResultCode;
 
 
     View view;
@@ -80,10 +80,13 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
             return;
         }
         if (presenter != null) {
-            if (presenter.getPushStatus() == ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
+            if (presenter.getPushStatus() == EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
                 showMultiBtnDialog();
             } else {
-                presenter.onStartPush(getActivity(), CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH);
+                presenter.onStartPush(getActivity(),
+                        CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH,
+                        mResultIntent,
+                        mResultCode,null);
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));
             }
         }
@@ -102,7 +105,10 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (presenter != null) {
-                    presenter.onStartPush(getActivity(), which);
+                    presenter.onStartPush(getActivity(), which,
+                            PusherFragment.mResultIntent,
+                            PusherFragment.mResultCode,
+                            mSurfaceView);
                 }
             }
         });
@@ -113,22 +119,22 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
     @Override
     public void changeViewStatus(int status, String URL) {
         switch (status) {
-            case ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE:
+            case EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE:
                 textViewStatus.setText(getActivity().getString(R.string.wait_push));
                 imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_start));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));
                 break;
-            case ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK:
+            case EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK:
                 imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.back_camera_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.transparent_background));
                 break;
-            case ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT:
+            case EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT:
                 imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.front_camera_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.transparent_background));
                 break;
-            case ScreenLiveManager.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_SCREEN:
+            case EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_SCREEN:
                 imageButton.setBackground(getActivity().getDrawable(R.drawable.ic_stop));
                 textViewStatus.setText(getActivity().getString(R.string.screen_pushing));
                 mSurfaceView.setBackground(getResources().getDrawable(R.color.white_background));
@@ -191,7 +197,7 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
     @Override
     public void onResume() {
         super.onResume();
-        if (PusherFragment.mResultCode == 0 && mResultIntent == null) {
+        if (mResultCode == 0 && mResultIntent == null) {
             checkCapScreenPermission();
         }
         Log.d(TAG, "onResume");
@@ -206,7 +212,7 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
     @Override
     public void onStop() {
         if (presenter != null) {
-            presenter.onViewStop();
+            presenter.onStopPush();
         }
         super.onStop();
         Log.d(TAG, "onStop");

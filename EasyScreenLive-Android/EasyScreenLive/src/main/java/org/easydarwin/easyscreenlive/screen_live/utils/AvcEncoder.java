@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.utils;
+package org.easydarwin.easyscreenlive.screen_live.utils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,7 +10,6 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Environment;
-import android.util.Log;
 
 
 

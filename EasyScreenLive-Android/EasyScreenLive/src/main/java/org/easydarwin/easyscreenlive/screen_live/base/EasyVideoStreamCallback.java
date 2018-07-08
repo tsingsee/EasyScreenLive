@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.base;
+package org.easydarwin.easyscreenlive.screen_live.base;
 
 /**
  * Created by gavin on 2017/12/30.

@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.hw;
+package org.easydarwin.easyscreenlive.screen_live.hw;
 
 /**
  * Created by gavin on 2018/4/26.

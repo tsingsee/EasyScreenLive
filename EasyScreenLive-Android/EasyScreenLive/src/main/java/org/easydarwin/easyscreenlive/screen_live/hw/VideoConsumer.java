@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.hw;
+package org.easydarwin.easyscreenlive.screen_live.hw;
 
 import java.io.IOException;
 

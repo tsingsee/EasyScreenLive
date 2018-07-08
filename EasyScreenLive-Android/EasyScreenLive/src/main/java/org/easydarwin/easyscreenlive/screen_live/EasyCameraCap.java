@@ -20,12 +20,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 
-import org.easydarwin.easyscreenlive.base.EasyVideoStreamCallback;
-import org.easydarwin.easyscreenlive.base.EasyVideoSource;
-import org.easydarwin.easyscreenlive.hw.EncoderDebugger;
-import org.easydarwin.easyscreenlive.hw.NV21Convertor;
+import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoStreamCallback;
+import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoSource;
+import org.easydarwin.easyscreenlive.screen_live.hw.EncoderDebugger;
+import org.easydarwin.easyscreenlive.screen_live.hw.NV21Convertor;
 import org.easydarwin.easyscreenlive.ui.ScreenLiveActivity;
-import org.easydarwin.easyscreenlive.utils.Util;
+import org.easydarwin.easyscreenlive.screen_live.utils.Util;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class EasyCameraCap extends EasyVideoSource {
+class EasyCameraCap extends EasyVideoSource {
     static final String TAG = "EasyCameraCap";
     private int width = 640, height = 480;
     private int framerate = 25;

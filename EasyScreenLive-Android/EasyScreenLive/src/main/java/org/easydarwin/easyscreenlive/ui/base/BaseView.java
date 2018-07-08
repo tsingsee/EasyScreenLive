@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.easydarwin.easyscreenlive.base;
+package org.easydarwin.easyscreenlive.ui.base;
 
 public interface BaseView<T> {
 

@@ -1,7 +1,6 @@
 package org.easydarwin.easyscreenlive.screen_live;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -12,19 +11,15 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import org.easydarwin.easyscreenlive.base.EasyVideoSource;
-import org.easydarwin.easyscreenlive.base.EasyVideoStreamCallback;
-import org.easydarwin.easyscreenlive.config.Config;
-import org.easydarwin.easyscreenlive.hw.CodecInfo;
-import org.easydarwin.easyscreenlive.hw.HWConsumer;
-import org.easydarwin.easyscreenlive.ui.pusher.PusherFragment;
+import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoSource;
+import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoStreamCallback;
+import org.easydarwin.easyscreenlive.screen_live.hw.CodecInfo;
 import org.easydarwin.rtspservice.JniLibYuv;
 
 import java.io.IOException;
@@ -32,13 +27,13 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import static android.content.Context.MEDIA_PROJECTION_SERVICE;
-import static org.easydarwin.easyscreenlive.hw.HWConsumer.listEncoders;
+import static org.easydarwin.easyscreenlive.screen_live.hw.HWConsumer.listEncoders;
 
 /**
  * Created by gavin on 2017/12/30.
  */
 
-public class EasyScreenCap extends EasyVideoSource {
+class EasyScreenCap extends EasyVideoSource {
     private final static String TAG = "EasyScreenCap";
 
     public Context mContext;
@@ -62,13 +57,13 @@ public class EasyScreenCap extends EasyVideoSource {
     private boolean mediaCodecRunning = false;
 
     private EncodecThread encodecThread = null;
-    private boolean isUsedCaptureImageReader = true;
+    private boolean isUsedCaptureImageReader = false;
     private CodecInfo codecInfo = new CodecInfo();
 
     public EasyScreenCap(Context context) {
         SOURCE_TYPE = SOURCE_TYPE_SCREEN;
         mContext = context;
-        isUsedCaptureImageReader = Config.getEnableFrame(context).equals("1");
+        isUsedCaptureImageReader = EasyScreenLiveAPI.liveRtspConfig.isUsedCaptureImageReader;
     }
 
     @Override
@@ -92,7 +87,8 @@ public class EasyScreenCap extends EasyVideoSource {
         wm.getDefaultDisplay().getMetrics(displayMetrics);
         screenDensity = displayMetrics.densityDpi;
         mMpmngr = (MediaProjectionManager) mContext.getApplicationContext().getSystemService(MEDIA_PROJECTION_SERVICE);
-        mMpj = mMpmngr.getMediaProjection(PusherFragment.mResultCode, PusherFragment.mResultIntent);
+        mMpj = mMpmngr.getMediaProjection(EasyScreenLiveAPI.liveRtspConfig.capScreenCode,
+                EasyScreenLiveAPI.liveRtspConfig.capScreenIntent);
         if (mMpj == null) {
             mMpmngr = null;
             return -1;

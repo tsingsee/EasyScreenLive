@@ -1,9 +1,9 @@
-package org.easydarwin.easyscreenlive.utils;
+package org.easydarwin.easyscreenlive.screen_live.utils;
 
 import android.content.Context;
 import android.util.Base64;
 
-import org.easydarwin.easyscreenlive.hw.EncoderDebugger;
+import org.easydarwin.easyscreenlive.screen_live.hw.EncoderDebugger;
 import org.easydarwin.rtspservice.JniEasyScreenLive;
 
 import java.nio.ByteBuffer;

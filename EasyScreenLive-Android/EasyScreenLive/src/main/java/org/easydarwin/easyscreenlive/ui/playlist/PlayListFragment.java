@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import org.easydarwin.easyscreenlive.R;
-import org.easydarwin.easyscreenlive.base.BaseFragment;
+import org.easydarwin.easyscreenlive.ui.base.BaseFragment;
 import org.easydarwin.easyscreenlive.screen_live.OnLiveManager;
 import org.easydarwin.easyscreenlive.ui.player.PreviewActivity;
 
@@ -61,6 +61,14 @@ public class PlayListFragment extends BaseFragment implements PlayListContract.V
 //        imageButton.setVisibility(View.INVISIBLE);
 
         return view;
+    }
+
+    @Override
+    public void updateOnliveList()
+    {
+        if (PlayListFragment.fragmentPlayListHandle != null) {
+            PlayListFragment.fragmentPlayListHandle.sendEmptyMessage(PlayListFragment.UPDATA_ONLIVE_LIST_VIEW);
+        }
     }
 
     public class FragmentPlayListHandle extends Handler{

@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.easydarwin.easyscreenlive.hw;
+package org.easydarwin.easyscreenlive.screen_live.hw;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

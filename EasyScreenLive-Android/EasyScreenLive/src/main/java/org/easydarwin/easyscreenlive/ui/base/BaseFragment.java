@@ -1,4 +1,4 @@
-package org.easydarwin.easyscreenlive.base;
+package org.easydarwin.easyscreenlive.ui.base;
 
 
 import android.app.Activity;
@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
-import org.easydarwin.easyscreenlive.utils.ToastUtils;
 
 
 public abstract class BaseFragment extends Fragment {
