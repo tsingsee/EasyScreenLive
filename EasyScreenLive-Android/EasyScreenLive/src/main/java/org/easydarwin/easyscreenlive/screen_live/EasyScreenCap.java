@@ -119,6 +119,16 @@ class EasyScreenCap extends EasyVideoSource {
     @Override
     public int startStream(){
         synchronized(this) {
+            if (EasyScreenLiveAPI.liveRtspConfig.pushdev == 0 && windowWidth < windowHeight) { // 横屏
+                int tmp = windowWidth;
+                windowWidth     = windowHeight;
+                windowHeight    = tmp;
+            } else if(EasyScreenLiveAPI.liveRtspConfig.pushdev == 1 && windowWidth > windowHeight){ // 竖屏
+                int tmp = windowWidth;
+                windowWidth     = windowHeight;
+                windowHeight    = tmp;
+            }
+
             return startMediaCodec();
         }
 

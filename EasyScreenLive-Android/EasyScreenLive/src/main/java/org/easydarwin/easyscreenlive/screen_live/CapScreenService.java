@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,6 +28,7 @@ public class CapScreenService extends Service{
     public static ServiceCommondHandle serviceCommondHandle = null;
     OnLiveManager onLiveManager = null;
     ScreenLiveManager screenLiveManager = null;
+    private ConfigUrationChangeBroadcastReceive broadcastReceive;
 
 
     public static class EASY_PUSH_SERVICE_CMD {
@@ -36,8 +39,20 @@ public class CapScreenService extends Service{
         static public final int CMD_UPDATA_ONLIVE_LIST      = 4;
         static public final int CMD_START_PUSH_AUDIO        = 5;
         static public final int CMD_STOP_PUSH_AUDIO         = 6;
+        static public final int CMD_SCREEN_ROTATE           = 7;
 
     }
+
+    class ConfigUrationChangeBroadcastReceive extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context arg0, Intent arg1) {
+            // TODO Auto-generated method stub
+            sendCmd(EASY_PUSH_SERVICE_CMD.CMD_SCREEN_ROTATE);
+            Log.e(TAG, "屏幕旋转角度:" /* String.valueOf(mContext.getWindowManager().getDefaultDisplay().getRotation() * 90)*/);
+        }
+    }
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -59,6 +74,13 @@ public class CapScreenService extends Service{
                     .setContentText("EasyScreenLive").build();
             startForeground(1, notification);
         }
+
+        broadcastReceive = new ConfigUrationChangeBroadcastReceive();
+//注册广播接收,注意：要监听这个系统广播就必须用这种方式来注册，不能再xml中注册，否则不能生效
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.intent.action.CONFIGURATION_CHANGED");
+        registerReceiver(broadcastReceive,filter);
+
 
 
         serviceCommondHandle = new ServiceCommondHandle();
@@ -106,7 +128,8 @@ public class CapScreenService extends Service{
                 case EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN:
                 case EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH:
                 case EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_AUDIO:
-                case EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH_AUDIO:{
+                case EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH_AUDIO:
+                case EASY_PUSH_SERVICE_CMD.CMD_SCREEN_ROTATE:{
                     if (screenLiveManager != null) {
                         screenLiveManager.onScreenLiveCmd(msg);
                     }
@@ -142,6 +165,7 @@ public class CapScreenService extends Service{
             screenLiveManager.destory();
             screenLiveManager = null;
         }
+        unregisterReceiver(broadcastReceive);
         super.onDestroy();
     }
 }//end

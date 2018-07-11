@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
@@ -124,11 +125,42 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                 break;
             case CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH_AUDIO:
                 isEnablePushAudio = false;
+            case CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_SCREEN_ROTATE:
+                onScreenRotate();
                 break;
             default:
                 break;
         }
         return 0;
+    }
+
+    /**
+     * 屏幕旋转了
+     */
+    void onScreenRotate()
+    {
+        Context context = mContext.getApplicationContext();
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager windowMgr = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        int roate = windowMgr.getDefaultDisplay().getRotation();
+        if (roate == Surface.ROTATION_0 || roate == Surface.ROTATION_180) //竖屏
+        {
+            if (EasyScreenLiveAPI.liveRtspConfig.pushdev == 0) {
+                EasyScreenLiveAPI.liveRtspConfig.pushdev = 1;
+                stopPush();
+                startPush();
+            }
+
+        } else { //横屏
+            if (EasyScreenLiveAPI.liveRtspConfig.pushdev == 1) {
+                EasyScreenLiveAPI.liveRtspConfig.pushdev = 0;
+                stopPush();
+                startPush();
+
+            }
+
+        }
+        Log.e(TAG, "rotate: " + roate);
     }
 
     static public int getPushServiceStatus() {
