@@ -23,9 +23,9 @@ public class PusherContract {
         /**
          *
          * @param context
-         * @param pushDev 0 - 屏幕  1-前摄像头 2-后置摄像头 3-停止
+         * @param pushDev 0 - 横屏  1 - 竖屏 2-前摄像头 3-后置摄像头 4-停止
          */
-        void onStartPush(Context context, int pushDev,Intent capScreenIntent,
+        void onStartPush(Context context, int pushDev, Intent capScreenIntent,
                          int capScreenCode, SurfaceView mSurfaceView);
         void onStopPush();
         int  getPushStatus();

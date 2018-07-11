@@ -97,7 +97,7 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
     * 若只需一个按钮，仅设置 setPositiveButton 即可
     */
     private void showMultiBtnDialog(){
-        final String[] items = { "屏幕","前置摄像头","后置摄像头"};
+        final String[] items = { "横屏推送", "竖屏推送","前置摄像头","后置摄像头"};
         AlertDialog.Builder listDialog =
                 new AlertDialog.Builder(getActivity());
         listDialog.setTitle("选择推送内容");

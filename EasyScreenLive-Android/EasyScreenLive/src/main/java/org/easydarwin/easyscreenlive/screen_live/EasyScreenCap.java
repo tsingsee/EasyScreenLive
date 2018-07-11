@@ -68,14 +68,23 @@ class EasyScreenCap extends EasyVideoSource {
 
     @Override
     public synchronized int init(int w, int h, int fps, int bitRate, EasyVideoStreamCallback easyVideoStreamCallback) {
-
-        if (w % 64 == 0) {
-            windowWidth = w;
+        Log.i(TAG, "------pusdev :" + EasyScreenLiveAPI.liveRtspConfig.pushdev);
+        if (EasyScreenLiveAPI.liveRtspConfig.pushdev == 0 && w < h) { // 横屏
+            windowWidth     = h;
+            windowHeight    = w;
+        } else if(EasyScreenLiveAPI.liveRtspConfig.pushdev == 1 && w > h){ // 竖屏
+            windowWidth     = h;
+            windowHeight    = w;
         } else {
-            windowWidth = 64*((w/64) +1);
+            windowWidth     = w;
+            windowHeight    = h;
         }
 
-        windowHeight = h;
+        // 宽 64 位对齐
+        if (w % 64 != 0) {
+            windowWidth = 64*((windowWidth/64) +1);
+        }
+        Log.i(TAG, "w:" + windowWidth + " h:" +windowHeight);
 
         mFrameRate = fps;
         mBitRate = bitRate;

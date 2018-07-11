@@ -25,14 +25,14 @@ public class EasyScreenLiveAPI {
     static public int startPush(LiveRtspConfig config, SurfaceView mSurfaceView) {
         liveRtspConfig.intConfig(config);
         if (getPushStatus() == EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
-            if (liveRtspConfig.pushdev == 0) {
+            if (liveRtspConfig.pushdev == 0 || liveRtspConfig.pushdev == 1) {
                 CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN);
-            } else if (liveRtspConfig.pushdev == 1) {
+            } else if (liveRtspConfig.pushdev == 2) {
                 Message msg = new Message();
                 msg.what = CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_FRONT;
                 msg.obj = mSurfaceView;
                 CapScreenService.sendMsg(msg);
-            } else if (liveRtspConfig.pushdev == 2) {
+            } else if (liveRtspConfig.pushdev == 3) {
                 Message msg = new Message();
                 msg.what = CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_BACK;
                 msg.obj = mSurfaceView;

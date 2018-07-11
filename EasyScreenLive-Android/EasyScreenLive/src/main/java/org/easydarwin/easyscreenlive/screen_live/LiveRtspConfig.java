@@ -16,9 +16,10 @@ public class LiveRtspConfig {
 
     /**
      * 推送设备
-     * 0 - 屏幕
-     * 1 - 前摄像头
-     * 2 - 后摄像头
+     * 0 - 横屏
+     * 1 - 竖屏
+     * 2 - 前摄像头
+     * 3 - 后摄像头
      */
     public int      pushdev      = 0;
     public boolean  isRunning    = false;
@@ -86,6 +87,7 @@ public class LiveRtspConfig {
 
     public void intConfig(LiveRtspConfig config) {
         this.pushdev            = config.pushdev;
+
         this.isRunning          = config.isRunning;
         this.localIp            = config.localIp;
         this.strName            = config.strName;

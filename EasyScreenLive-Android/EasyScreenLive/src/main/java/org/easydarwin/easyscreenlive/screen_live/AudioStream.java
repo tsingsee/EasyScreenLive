@@ -154,7 +154,7 @@ class AudioStream {
                             } else if (mIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
                                 Log.v(TAG, "output format changed...");
                             } else if (mIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
-                                Log.v(TAG, "No buffer available...");
+                                //Log.v(TAG, "No buffer available...");
                             } else {
                                 Log.e(TAG, "Message: " + mIndex);
                             }
@@ -162,7 +162,7 @@ class AudioStream {
 
 
                         int size = mBufferInfo.size + 7;
-                        Log.e(TAG, "length="+size);
+//                        Log.e(TAG, "length="+size);
                         if(mPushAudio) {
 //                            byte[] buffer = new byte[size];
 //                            mBuffer.get(buffer, 0, size);
