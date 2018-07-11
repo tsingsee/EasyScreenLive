@@ -45,8 +45,8 @@ public class EasyScreenLiveAPI {
     }
 
     static public int stopPush() {
-        if (ScreenLiveManager.getPushServiceStatus() == EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_BACK
-                || ScreenLiveManager.getPushServiceStatus() == EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_PUSH_CAMREA_FRONT) {
+        if (ScreenLiveManager.getPushServiceStatus() !=
+                EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE) {
             CapScreenService.sendCmd(CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_STOP_PUSH);
         }
         return 0;
