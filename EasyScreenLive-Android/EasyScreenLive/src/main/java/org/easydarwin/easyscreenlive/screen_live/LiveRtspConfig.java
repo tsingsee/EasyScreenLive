@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import org.easydarwin.easyscreenlive.config.Config;
+import org.easydarwin.easyscreenlive.screen_live.utils.Util;
 
 /**
  * EasyScreenLive 推送屏幕参数设置
@@ -80,8 +81,8 @@ public class LiveRtspConfig {
     /**
      * 推送设备为屏幕时，权限生请返回值，如推送摄像头则无效
      */
-    public Intent   capScreenIntent = null;
-    public int      capScreenCode    = 0;
+    public Intent   capScreenIntent     = null;
+    public int      capScreenCode       = 0;
 
     public void intConfig(LiveRtspConfig config) {
         this.pushdev            = config.pushdev;
@@ -112,6 +113,7 @@ public class LiveRtspConfig {
         port             = Integer.parseInt(Config.getRtspPort(context));
         URL              = Config.getRtspUrl(context);
         strName          = Config.getStreamName(context);
+        localIp          = Util.getLocalIpAddress(context);
 
         enableAudio      = Integer.parseInt(Config.getEnableAudio(context));
 

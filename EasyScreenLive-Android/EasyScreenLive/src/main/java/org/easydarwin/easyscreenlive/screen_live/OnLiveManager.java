@@ -134,7 +134,7 @@ public class OnLiveManager extends PlayListPresenter {
                     Gson gson = new Gson();
                     OnLiveInfo onLiveInfo = gson.fromJson(jsonString, OnLiveInfo.class);
                     OnBroadcastCmd(onLiveInfo);
-//                    Log.i(TAG, "recv:" + onLiveInfo.getDevName());
+                    Log.i(TAG, "recv:" + onLiveInfo.getDevName());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -168,7 +168,7 @@ public class OnLiveManager extends PlayListPresenter {
 
             Gson gson = new Gson();
             OnLiveInfo onLiveInfo = new OnLiveInfo();
-//            Log.e(TAG, "src ip" + liveRtspConfig.localIp);
+            Log.e(TAG, "src ip" + EasyScreenLiveAPI.liveRtspConfig.isRunning);
             onLiveInfo.setSrcIP(EasyScreenLiveAPI.liveRtspConfig.localIp);
             if (!EasyScreenLiveAPI.liveRtspConfig.isRunning) {
                 onLiveInfo.setCmd(OnLiveInfo.INFO_CMD_ONLIVE);
@@ -181,7 +181,7 @@ public class OnLiveManager extends PlayListPresenter {
             }
 
             String jsonObject = gson.toJson(onLiveInfo);
-//            Log.i(TAG, "send:" + jsonObject);
+            Log.i(TAG, "send:" + jsonObject);
             byte[] msg =  jsonObject.getBytes();
 //            Log.e(TAG, "Client send msg complete:" + msg.length);
             DatagramPacket sendPack = new DatagramPacket(msg, msg.length, inetAddr,
