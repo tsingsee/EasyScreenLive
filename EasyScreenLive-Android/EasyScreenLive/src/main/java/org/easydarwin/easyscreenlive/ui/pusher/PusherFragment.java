@@ -212,7 +212,7 @@ public class PusherFragment extends BaseFragment implements PusherContract.View,
     @Override
     public void onStop() {
         if (presenter != null) {
-            presenter.onStopPush();
+            //presenter.onStopPush();
         }
         super.onStop();
         Log.d(TAG, "onStop");
