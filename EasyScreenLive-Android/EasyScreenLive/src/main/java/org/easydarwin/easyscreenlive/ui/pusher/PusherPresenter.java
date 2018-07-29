@@ -91,6 +91,15 @@ public class PusherPresenter implements PusherContract.Presenter {
     }
 
     @Override
+    public void onStartPushFail(Context context, String str) {
+        if(view != null && view.isActive()) {
+            view.changeViewStatus(getPushStatus(),"");
+            view.showTip(str);
+            view.changeViewStatus(getPushStatus(),"");
+        }
+    }
+
+    @Override
     public void onStopPushSuccess(Context context) {
         if(view != null && view.isActive()) {
             view.changeViewStatus(getPushStatus(),"");

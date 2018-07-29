@@ -159,6 +159,7 @@ class EasyScreenCap extends EasyVideoSource {
 
         try {
             mMediaCodec = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_VIDEO_AVC);
+            //mMediaCodec = MediaCodec.createByCodecName();
         } catch (IOException e) {
             e.printStackTrace();
             return -1;

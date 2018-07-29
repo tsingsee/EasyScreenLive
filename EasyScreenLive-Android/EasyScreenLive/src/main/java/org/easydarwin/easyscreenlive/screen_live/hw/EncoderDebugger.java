@@ -218,7 +218,7 @@ public class EncoderDebugger {
             mB64SPS = mPreferences.getString(PREF_PREFIX + resolution + "sps",
                     "");
 
-            return;
+            //return;
         }
 
         if (VERBOSE)
@@ -234,6 +234,7 @@ public class EncoderDebugger {
         int count = 0, n = 1;
         for (int i = 0; i < encoders.length; i++) {
             count += encoders[i].formats.length;
+            Log.i(TAG, "support encode name:" + encoders[i].name);
         }
 
         // Tries available encoders
@@ -245,7 +246,7 @@ public class EncoderDebugger {
 
                 //2017.02.20
                 // fix: ignore sw encoder
-                if (mEncoderName.contains("google.h264.encoder"))
+                if (!mEncoderName.contains("google.h264.encoder"))
                     continue;
 
                 mEncoderColorFormat = encoders[i].formats[j];
@@ -271,9 +272,11 @@ public class EncoderDebugger {
 
                     // Starts the encoder
                     configureEncoder();
+                    Log.d(TAG, "---1----");
                     searchSPSandPPS();
-
+                    Log.d(TAG, "---2----");
                     saveTestResult(true);
+                    Log.d(TAG, "---3----");
                     Log.v(TAG, "The encoder " + mEncoderName
                             + " is usable with resolution " + mWidth + "x"
                             + mHeight);
@@ -394,17 +397,22 @@ public class EncoderDebugger {
      * @throws IOException
      */
     private void configureEncoder() throws IOException {
-        mEncoder = MediaCodec.createByCodecName(mEncoderName);
-        MediaFormat mediaFormat = MediaFormat.createVideoFormat(MIME_TYPE,
-                mWidth, mHeight);
-        mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, BITRATE);
-        mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, FRAMERATE);
-        mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT,
-                mEncoderColorFormat);
-        mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
-        mEncoder.configure(mediaFormat, null, null,
-                MediaCodec.CONFIGURE_FLAG_ENCODE);
-        mEncoder.start();
+        try {
+            mEncoder = MediaCodec.createByCodecName(mEncoderName);
+            MediaFormat mediaFormat = MediaFormat.createVideoFormat(MIME_TYPE,
+                    mWidth, mHeight);
+            mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, BITRATE);
+            mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, FRAMERATE);
+            mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT,
+                    mEncoderColorFormat);
+            mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
+            mEncoder.configure(mediaFormat, null, null,
+                    MediaCodec.CONFIGURE_FLAG_ENCODE);
+            mEncoder.start();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void releaseEncoder() {

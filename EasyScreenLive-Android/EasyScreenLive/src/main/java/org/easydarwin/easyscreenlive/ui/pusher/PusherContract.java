@@ -32,6 +32,7 @@ public class PusherContract {
 
         void onStartPushSuccess(Context context,int isEnableMulticast, String URL);
         void onStartPushFail(Context context, int result);
+        void onStartPushFail(Context context, String str);
         void onStopPushSuccess(Context context);
     }
 }

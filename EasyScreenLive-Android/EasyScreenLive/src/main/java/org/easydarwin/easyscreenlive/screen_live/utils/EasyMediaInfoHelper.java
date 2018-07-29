@@ -42,16 +42,25 @@ public class EasyMediaInfoHelper {
         this.u32AudioBitsPerSample = u32AudioBitsPerSample;
     }
 
-    public void setH264MediaInfo(Context context, int w, int h, int frameRate) {
+    public boolean setH264MediaInfo(Context context, int w, int h, int frameRate) {
+
+        EncoderDebugger debugger;
         u32VideoCodec = JniEasyScreenLive.VideoCodec.EASY_SDK_VIDEO_CODEC_H264;
         u32VideoFps = frameRate;
-        EncoderDebugger debugger = EncoderDebugger.debug(context, w, h, frameRate);
-        mSps = Base64.decode(debugger.getB64SPS(), Base64.NO_WRAP);
-        mPps = Base64.decode(debugger.getB64PPS(), Base64.NO_WRAP);
-        u32SpsLength = mSps.length;
-        u32PpsLength = mPps.length;
-        u32VpsLength = 0;
-        u32SeiLength = 0;
+        try {
+            debugger = EncoderDebugger.debug(context, w, h, frameRate);
+            mSps = Base64.decode(debugger.getB64SPS(), Base64.NO_WRAP);
+            mPps = Base64.decode(debugger.getB64PPS(), Base64.NO_WRAP);
+            u32SpsLength = mSps.length;
+            u32PpsLength = mPps.length;
+            u32VpsLength = 0;
+            u32SeiLength = 0;
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     public void fillMediaInfo(byte[] mediaInfo) {

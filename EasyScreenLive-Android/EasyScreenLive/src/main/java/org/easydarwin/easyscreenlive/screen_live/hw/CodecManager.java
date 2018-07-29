@@ -42,6 +42,50 @@ public class CodecManager {
 	}
 
 	/**
+	 *
+	 * @param isHardwareSupport
+	 * @param w
+	 * @param h
+	 * @return  0 - support
+	 * 			-1 - 不支持硬件编码/google软件编码
+	 * 		    -2 - 编码不支持该分辨率
+	 */
+	public synchronized static int isSupportH264(boolean isHardwareSupport, int w, int h) {
+		String MIME_TYPE = "video/avc";
+		int ret = -1;
+
+		for(int j = MediaCodecList.getCodecCount() - 1; j >= 0; j--){
+			MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(j);
+			if (!codecInfo.isEncoder()) continue;
+
+
+			if (!isHardwareSupport && codecInfo.getName().contains("google.h264.encoder"))
+			{
+				ret = -2;
+				MediaCodecInfo.VideoCapabilities videoCapabilities = codecInfo.getCapabilitiesForType(MIME_TYPE).getVideoCapabilities();
+				if (videoCapabilities.isSizeSupported(w,h)) {
+					ret = 0;
+				}
+
+			} else if (isHardwareSupport && !codecInfo.getName().contains("google.h264.encoder")) {
+				String[] types = codecInfo.getSupportedTypes();
+				for (int i = 0; i < types.length; i++) {
+					Log.e(TAG , "" + codecInfo.getName() + "  support:" + types[i]);
+					if (types[i].equalsIgnoreCase(MIME_TYPE)) {
+						ret = -2;
+						MediaCodecInfo.VideoCapabilities videoCapabilities = codecInfo.getCapabilitiesForType(MIME_TYPE).getVideoCapabilities();
+						if (videoCapabilities.isSizeSupported(w,h)) {
+							ret = 0;
+						}
+					}
+				}
+			}
+
+		}
+		return ret;
+	}
+
+	/**
 	 * Lists all encoders that claim to support a color format that we know how to use.
 	 * @return A list of those encoders
 	 */
@@ -58,6 +102,7 @@ public class CodecManager {
 
 			String[] types = codecInfo.getSupportedTypes();
 			for (int i = 0; i < types.length; i++) {
+				Log.e(TAG , "" + codecInfo.getName() + "  support:" + types[i]);
 				if (types[i].equalsIgnoreCase(mimeType)) {
 					try {
 						MediaCodecInfo.CodecCapabilities capabilities = codecInfo.getCapabilitiesForType(mimeType);

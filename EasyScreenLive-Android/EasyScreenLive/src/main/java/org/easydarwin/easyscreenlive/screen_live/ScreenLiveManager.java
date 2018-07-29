@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import org.easydarwin.easyscreenlive.screen_live.base.EasyAudioStreamCallback;
 import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoSource;
 import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoStreamCallback;
+import org.easydarwin.easyscreenlive.screen_live.hw.CodecManager;
 import org.easydarwin.easyscreenlive.screen_live.utils.EasyMediaInfoHelper;
 import org.easydarwin.easyscreenlive.ui.pusher.PusherPresenter;
 
@@ -94,6 +95,23 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                     windowHeight = dm.heightPixels;
                     // 获取宽度
                     windowWidth = dm.widthPixels;
+                }
+                windowWidth = 1920;
+                windowHeight = 1080;
+                boolean isHardwareEncoder = false;
+                int supportH264 = CodecManager.isSupportH264(isHardwareEncoder, windowWidth, windowHeight);
+                if (supportH264 == -1) {
+                    PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(),
+                            "H264不支持" + (isHardwareEncoder ? "硬件":"软件") +
+                                    "编码器");
+                    easyVideoSource = null;
+                    break;
+                } else if (supportH264 == -2) {
+                    PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(),
+                            "H264" + (isHardwareEncoder ? "硬件":"软件") +
+                                    "编码器不支持 " + windowWidth + " * " + windowHeight + " 分辨率");
+                    easyVideoSource = null;
+                    break;
                 }
 
                 ret = easyVideoSource.init(windowWidth, windowHeight, mFrameRate,
@@ -276,7 +294,6 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
             case JniEasyScreenLive.ChannelState.EASY_IPCAMERA_STATE_REQUEST_PLAY_STREAM:
                 Log.i(TAG, "Screen Record EASY_IPCAMERA_STATE_REQUEST_PLAY_STREAM");
                 startPush();
-
                 break;
             case JniEasyScreenLive.ChannelState.EASY_IPCAMERA_STATE_REQUEST_STOP_STREAM:
                 Log.i(TAG, "Screen Record EASY_IPCAMERA_STATE_REQUEST_STOP_STREAM");
