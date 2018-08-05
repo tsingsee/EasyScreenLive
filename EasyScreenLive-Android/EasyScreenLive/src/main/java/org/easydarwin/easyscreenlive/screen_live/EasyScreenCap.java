@@ -353,7 +353,6 @@ class EasyScreenCap extends EasyVideoSource {
                     if (MIMETYPE.equals(MediaFormat.MIMETYPE_VIDEO_AVC)) {
                         //记录pps和sps
                         int type = outData[4] & 0x07;
-
                         if (type == 7 || type == 8) {
                             mPpsSps = new byte[outData.length];
                             mPpsSps = outData;
@@ -369,8 +368,8 @@ class EasyScreenCap extends EasyVideoSource {
                             lastKeyFrmaeTime = systemTimeNow;
                         }
                     } else {
-                        int type = (outData[4]>>1) & 0x3f;
-                        if (type == 0x40 || type == 0x42 || type == 0x44) {
+                        int type =  (outData[4] & 0x7E)>>1;
+                        if (type == 32 || type == 33 || type == 34) {
                             mPpsSps = new byte[outData.length];
                             mPpsSps = outData;
                         } else if (type >= 16 && type <=21) {

@@ -33,8 +33,8 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
     private int windowWidth = 1280;
     private int windowHeight = 720;
     private int mFrameRate = 20;
-//    private String MIME_TYPE = MediaFormat.MIMETYPE_VIDEO_HEVC;
-    private String MIME_TYPE = MediaFormat.MIMETYPE_VIDEO_AVC;
+    private String MIME_TYPE = MediaFormat.MIMETYPE_VIDEO_HEVC;
+//    private String MIME_TYPE = MediaFormat.MIMETYPE_VIDEO_AVC;
 
 
     public Context mContext;

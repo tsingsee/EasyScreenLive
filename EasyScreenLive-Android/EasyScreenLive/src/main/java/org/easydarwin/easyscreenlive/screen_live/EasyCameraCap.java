@@ -92,8 +92,6 @@ class EasyCameraCap extends EasyVideoSource {
         if (mCamera == null) return;
         stopStream();
         uninit();
-
-
         init(MIMETYPE, width, height, framerate, bitrate, easyVideoStreamCallback);
         stopStream();
     }
@@ -181,9 +179,7 @@ class EasyCameraCap extends EasyVideoSource {
             Camera.Size previewSize = getCamera().getParameters().getPreviewSize();
             byte[] h264 = new byte[(int) (previewSize.width * previewSize.height * 3/2)];
             try {
-
                 startMediaCodec();
-
                 while (mConsumer != null && codecAvailable) {
                     TimedBuffer tb;
                     tb = yuvs.take();
@@ -224,35 +220,66 @@ class EasyCameraCap extends EasyVideoSource {
                                 }
                                 ByteBuffer outputBuffer = outputBuffers[outputBufferIndex];
                                 //记录pps和sps
-                                int type = outputBuffer.get(4) & 0x1F;
-
-                                Log.d(TAG, String.format("type is %d", type));
-                                if (type == 7 || type == 8) {
-                                    byte[] outData = new byte[bufferInfo.size];
-                                    outputBuffer.get(outData, 0, bufferInfo.size);
-                                    mPpsSps = outData;
-                                } else if (type == 5) {
-                                    //在关键帧前面加上pps和sps数据
-                                    System.arraycopy(mPpsSps, 0, h264, 0, mPpsSps.length);
-                                    outputBuffer.get(h264, mPpsSps.length, bufferInfo.size);
-                                    if (easyVideoStreamCallback != null) {
-                                        easyVideoStreamCallback.videoDataBack(bufferInfo.presentationTimeUs / 1000, h264, 0, mPpsSps.length + bufferInfo.size);
+                                if (MIMETYPE.equals(MediaFormat.MIMETYPE_VIDEO_AVC)) {
+                                    int type = outputBuffer.get(4) & 0x1F;
+                                    Log.d(TAG, String.format("type is %d", type));
+                                    if (type == 7 || type == 8) {
+                                        byte[] outData = new byte[bufferInfo.size];
+                                        outputBuffer.get(outData, 0, bufferInfo.size);
+                                        mPpsSps = outData;
+                                    } else if (type == 5) {
+                                        //在关键帧前面加上pps和sps数据
+                                        System.arraycopy(mPpsSps, 0, h264, 0, mPpsSps.length);
+                                        outputBuffer.get(h264, mPpsSps.length, bufferInfo.size);
+                                        if (easyVideoStreamCallback != null) {
+                                            easyVideoStreamCallback.videoDataBack(bufferInfo.presentationTimeUs / 1000, h264, 0, mPpsSps.length + bufferInfo.size);
+                                        }
+                                    } else {
+                                        outputBuffer.get(h264, 0, bufferInfo.size);
+                                        if (System.currentTimeMillis() - timeStamp >= 3000) {
+                                            timeStamp = System.currentTimeMillis();
+                                            if (Build.VERSION.SDK_INT >= 23) {
+                                                Bundle params = new Bundle();
+                                                params.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
+                                                mMediaCodec.setParameters(params);
+                                            }
+                                        }
+                                        if (easyVideoStreamCallback != null) {
+                                            easyVideoStreamCallback.videoDataBack(bufferInfo.presentationTimeUs / 1000, h264, 0, bufferInfo.size);
+                                        }
+//                                    Log.i(TAG, "---len:"+ bufferInfo.size);
                                     }
                                 } else {
-                                    outputBuffer.get(h264, 0, bufferInfo.size);
-                                    if (System.currentTimeMillis() - timeStamp >= 3000) {
-                                        timeStamp = System.currentTimeMillis();
-                                        if (Build.VERSION.SDK_INT >= 23) {
-                                            Bundle params = new Bundle();
-                                            params.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
-                                            mMediaCodec.setParameters(params);
+                                    //int type = (outputBuffer.get(4)>>1) & 0x3f;
+                                    int type =  (outputBuffer.get(4) & 0x7E)>>1;
+                                    Log.i(TAG, "---type:"+ type);
+                                    if (type == 32 || type == 33 || type == 34) {
+                                        byte[] outData = new byte[bufferInfo.size];
+                                        outputBuffer.get(outData, 0, bufferInfo.size);
+                                        mPpsSps = outData;
+                                    } else if (type >= 16 && type <=21) {
+                                        //在关键帧前面加上pps和sps数据
+                                        System.arraycopy(mPpsSps, 0, h264, 0, mPpsSps.length);
+                                        outputBuffer.get(h264, mPpsSps.length, bufferInfo.size);
+                                        if (easyVideoStreamCallback != null) {
+                                            easyVideoStreamCallback.videoDataBack(bufferInfo.presentationTimeUs / 1000, h264, 0, mPpsSps.length + bufferInfo.size);
+                                        }
+                                    } else {
+                                        outputBuffer.get(h264, 0, bufferInfo.size);
+                                        if (System.currentTimeMillis() - timeStamp >= 3000) {
+                                            timeStamp = System.currentTimeMillis();
+                                            if (Build.VERSION.SDK_INT >= 23) {
+                                                Bundle params = new Bundle();
+                                                params.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
+                                                mMediaCodec.setParameters(params);
+                                            }
+                                        }
+                                        if (easyVideoStreamCallback != null) {
+                                            easyVideoStreamCallback.videoDataBack(bufferInfo.presentationTimeUs / 1000, h264, 0, bufferInfo.size);
                                         }
                                     }
-                                    if (easyVideoStreamCallback != null) {
-                                        easyVideoStreamCallback.videoDataBack(bufferInfo.presentationTimeUs / 1000, h264, 0, bufferInfo.size);
-                                    }
-//                                    Log.i(TAG, "---len:"+ bufferInfo.size);
                                 }
+
                                 mMediaCodec.releaseOutputBuffer(outputBufferIndex, false);
                             }
                             while(outputBufferIndex >= 0);
@@ -399,18 +426,19 @@ class EasyCameraCap extends EasyVideoSource {
     private void startMediaCodec() {
         EncoderDebugger debugger;
         if(mPortraitScreen)
-            debugger = EncoderDebugger.buildDebug(mApplicationContext, MediaFormat.MIMETYPE_VIDEO_HEVC, true, width, height, framerate);//width, height
+            debugger = EncoderDebugger.buildDebug(mApplicationContext, MIMETYPE, true, width, height, framerate);//width, height
         else
-            debugger = EncoderDebugger.buildDebug(mApplicationContext, MediaFormat.MIMETYPE_VIDEO_HEVC, true, height, width, framerate);//width, height
+            debugger = EncoderDebugger.buildDebug(mApplicationContext, MIMETYPE, true, height, width, framerate);//width, height
         mConvertor = debugger.getNV21Convertor();
 
         try {
+            Log.i(TAG, "gavin codec name" + debugger.getEncoderName());
             mMediaCodec = MediaCodec.createByCodecName(debugger.getEncoderName());
             MediaFormat mediaFormat;
             if (mDgree == 0 && mPortraitScreen) {
-                mediaFormat = MediaFormat.createVideoFormat("video/avc", height, width);
+                mediaFormat = MediaFormat.createVideoFormat(MIMETYPE, height, width);
             } else {
-                mediaFormat = MediaFormat.createVideoFormat("video/avc", width, height);
+                mediaFormat = MediaFormat.createVideoFormat(MIMETYPE, width, height);
             }
             mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
             mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, framerate);
@@ -427,6 +455,7 @@ class EasyCameraCap extends EasyVideoSource {
 
     @Override
     public  int init(String mimeType, int w, int h, int fps, int bitRate, EasyVideoStreamCallback cb){
+        MIMETYPE = mimeType;
         this.width = w;
         this.height = h;
         this.framerate = fps;
