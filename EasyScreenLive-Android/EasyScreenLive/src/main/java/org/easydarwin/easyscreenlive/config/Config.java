@@ -63,10 +63,10 @@ public class Config {
         saveStringIntoPref(context, Config.LIVE_ENABLE_FRAME,  value);
     }
 
-    static public  String getEnableFrame(Context context) {
+    static public  int getEnableFrame(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
         String liveType = sharedPreferences.getString(Config.LIVE_ENABLE_FRAME, "0");
-        return liveType;
+        return Integer.parseInt(liveType);
     }
 
     static public void saveEnableArq(Context context,String value) {
@@ -102,7 +102,7 @@ public class Config {
 
     static  public int getFecParam(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
-        String param = sharedPreferences.getString(Config.LIVE_FEC_PARAM, "40");
+        String param = sharedPreferences.getString(Config.LIVE_FEC_PARAM, "30");
         int fecParam = Integer.parseInt(param);
         return fecParam;
     }
@@ -161,7 +161,7 @@ public class Config {
 
     static  public int getBitRate(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
-        String bitRate = sharedPreferences.getString(Config.LIVE_BIT_RATE, "2048");
+        String bitRate = sharedPreferences.getString(Config.LIVE_BIT_RATE, "4096");
         int _bitRate = Integer.parseInt(bitRate);
         return _bitRate;
     }

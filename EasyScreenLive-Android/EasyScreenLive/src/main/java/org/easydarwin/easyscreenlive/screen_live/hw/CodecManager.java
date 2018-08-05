@@ -10,6 +10,7 @@ package org.easydarwin.easyscreenlive.screen_live.hw;
 import android.annotation.SuppressLint;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
+import android.media.MediaFormat;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -50,14 +51,17 @@ public class CodecManager {
 	 * 			-1 - 不支持硬件编码/google软件编码
 	 * 		    -2 - 编码不支持该分辨率
 	 */
-	public synchronized static int isSupportH264(boolean isHardwareSupport, int w, int h) {
-		String MIME_TYPE = "video/avc";
+	public synchronized static int isSupportH264OrH265(boolean isHardwareSupport, String mimeType, int w, int h) {
+		String MIME_TYPE = mimeType;
 		int ret = -1;
+
+		if (mimeType.equals("video/hevc") && !isHardwareSupport) {
+			return -1;
+		}
 
 		for(int j = MediaCodecList.getCodecCount() - 1; j >= 0; j--){
 			MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(j);
 			if (!codecInfo.isEncoder()) continue;
-
 
 			if (!isHardwareSupport && codecInfo.getName().contains("google.h264.encoder"))
 			{

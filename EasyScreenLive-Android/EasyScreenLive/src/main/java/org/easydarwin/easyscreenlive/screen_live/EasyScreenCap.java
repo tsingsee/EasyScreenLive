@@ -41,7 +41,7 @@ class EasyScreenCap extends EasyVideoSource {
     private int windowHeight = 1080;
     private int mFrameRate = 30;
     private int mBitRate = 4000 * 1000;
-    private int mKeyFrameTimeMs = 1000;
+    private int mKeyFrameTimeMs = 3*1000;
 
     private int screenDensity;
     private MediaProjectionManager mMpmngr;
@@ -59,16 +59,24 @@ class EasyScreenCap extends EasyVideoSource {
     private EncodecThread encodecThread = null;
     private boolean isUsedCaptureImageReader = false;
     private CodecInfo codecInfo = new CodecInfo();
+    private String MIMETYPE = MediaFormat.MIMETYPE_VIDEO_AVC;
 
     public EasyScreenCap(Context context) {
         SOURCE_TYPE = SOURCE_TYPE_SCREEN;
         mContext = context;
-        isUsedCaptureImageReader = EasyScreenLiveAPI.liveRtspConfig.isUsedCaptureImageReader;
+        if (EasyScreenLiveAPI.liveRtspConfig.frameRate != 0) {
+            isUsedCaptureImageReader = true;
+            mFrameRate = EasyScreenLiveAPI.liveRtspConfig.frameRate;
+        } else {
+            isUsedCaptureImageReader = false;
+        }
     }
 
     @Override
-    public synchronized int init(int w, int h, int fps, int bitRate, EasyVideoStreamCallback easyVideoStreamCallback) {
-        Log.i(TAG, "------pusdev :" + EasyScreenLiveAPI.liveRtspConfig.pushdev);
+    public synchronized int init(String mimeType, int w, int h, int fps, int bitRate, EasyVideoStreamCallback easyVideoStreamCallback) {
+        if (mimeType != null) {
+            MIMETYPE = mimeType;
+        }
         if (EasyScreenLiveAPI.liveRtspConfig.pushdev == 0 && w < h) { // 横屏
             windowWidth     = h;
             windowHeight    = w;
@@ -83,6 +91,9 @@ class EasyScreenCap extends EasyVideoSource {
         // 宽 64 位对齐
         if (w % 64 != 0) {
             windowWidth = 64*((windowWidth/64) +1);
+        }
+        if (w % 64 != 0) {
+            windowHeight = 64*((windowHeight/64) +1);
         }
         Log.i(TAG, "w:" + windowWidth + " h:" +windowHeight);
 
@@ -128,7 +139,7 @@ class EasyScreenCap extends EasyVideoSource {
                 windowWidth     = windowHeight;
                 windowHeight    = tmp;
             }
-
+            Log.e(TAG, "res:"+windowWidth+" * " +windowHeight);
             return startMediaCodec();
         }
 
@@ -149,7 +160,7 @@ class EasyScreenCap extends EasyVideoSource {
         }
         lastKeyFrmaeTime = System.currentTimeMillis();
 
-        ArrayList<CodecInfo> infos = listEncoders(MediaFormat.MIMETYPE_VIDEO_AVC);
+        ArrayList<CodecInfo> infos = listEncoders(MIMETYPE);
         if (infos.size() > 0) {
             CodecInfo ci = infos.get(0);
             codecInfo.mMimeType = ci.mMimeType;
@@ -158,17 +169,17 @@ class EasyScreenCap extends EasyVideoSource {
         }
 
         try {
-            mMediaCodec = MediaCodec.createEncoderByType(MediaFormat.MIMETYPE_VIDEO_AVC);
-            //mMediaCodec = MediaCodec.createByCodecName();
+            mMediaCodec = MediaCodec.createEncoderByType(MIMETYPE);
         } catch (IOException e) {
             e.printStackTrace();
             return -1;
         }
 
-        MediaFormat mediaFormat = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, windowWidth, windowHeight);
+        MediaFormat mediaFormat = MediaFormat.createVideoFormat(MIMETYPE, windowWidth, windowHeight);
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, mBitRate);
         mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, mFrameRate);
-        mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, mFrameRate);
+        mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, mFrameRate*3);
+        mediaFormat.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
         if (isUsedCaptureImageReader) {
             mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, codecInfo.mInColorFormat);
         } else {
@@ -185,7 +196,6 @@ class EasyScreenCap extends EasyVideoSource {
         } else {
             mSurface = mMediaCodec.createInputSurface();
         }
-
 
         mVirtualDisplay = mMpj.createVirtualDisplay("record_screen", windowWidth, windowHeight, screenDensity,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC |
@@ -262,7 +272,6 @@ class EasyScreenCap extends EasyVideoSource {
 
                 byte[] outData = getVideoOutData(systemNow);
                 if(easyVideoStreamCallback != null && outData != null ) {
-                    lastFrameTime = systemNow;
                     easyVideoStreamCallback.videoDataBack(System.currentTimeMillis(),
                             outData, 0, outData.length);
                 } else {
@@ -283,6 +292,7 @@ class EasyScreenCap extends EasyVideoSource {
             if (isUsedCaptureImageReader && mImageReader != null) {
                 Image image = mImageReader.acquireLatestImage();
                 if (image != null) {
+                    lastFrameTime = systemTimeNow;
                     ByteBuffer byteBuffer = image.getPlanes()[0].getBuffer();
                     byteBuffer.get(argbFrame);
 
@@ -340,23 +350,43 @@ class EasyScreenCap extends EasyVideoSource {
                     byte[] outData = new byte[mBufferInfo.size];
                     outputBuffer.get(outData);
 
-                    //记录pps和sps
-                    int type = outData[4] & 0x07;
+                    if (MIMETYPE.equals(MediaFormat.MIMETYPE_VIDEO_AVC)) {
+                        //记录pps和sps
+                        int type = outData[4] & 0x07;
 
-                    if (type == 7 || type == 8) {
-                        mPpsSps = new byte[outData.length];
-                        mPpsSps = outData;
-                    } else if (type == 5) {
-                        //在关键帧前面加上pps和sps数据
-                        if (mPpsSps != null) {
-                            byte[] iframeData = new byte[mPpsSps.length + outData.length];
-                            System.arraycopy(mPpsSps, 0, iframeData, 0, mPpsSps.length);
-                            System.arraycopy(outData, 0, iframeData, mPpsSps.length, outData.length);
-                            outData = iframeData;
-                        }
+                        if (type == 7 || type == 8) {
+                            mPpsSps = new byte[outData.length];
+                            mPpsSps = outData;
+                        } else if (type == 5) {
+                            //在关键帧前面加上pps和sps数据
+                            if (mPpsSps != null) {
+                                byte[] iframeData = new byte[mPpsSps.length + outData.length];
+                                System.arraycopy(mPpsSps, 0, iframeData, 0, mPpsSps.length);
+                                System.arraycopy(outData, 0, iframeData, mPpsSps.length, outData.length);
+                                outData = iframeData;
+                            }
 //                       收到一个关键帧，重置关键帧时间
-                        lastKeyFrmaeTime = systemTimeNow;
+                            lastKeyFrmaeTime = systemTimeNow;
+                        }
+                    } else {
+                        int type = (outData[4]>>1) & 0x3f;
+                        if (type == 0x40 || type == 0x42 || type == 0x44) {
+                            mPpsSps = new byte[outData.length];
+                            mPpsSps = outData;
+                        } else if (type >= 16 && type <=21) {
+                            //在关键帧前面加上pps和sps数据
+                            if (mPpsSps != null) {
+                                byte[] iframeData = new byte[mPpsSps.length + outData.length];
+                                System.arraycopy(mPpsSps, 0, iframeData, 0, mPpsSps.length);
+                                System.arraycopy(outData, 0, iframeData, mPpsSps.length, outData.length);
+                                outData = iframeData;
+                            }
+//                       收到一个关键帧，重置关键帧时间
+                            lastKeyFrmaeTime = systemTimeNow;
+                        } else {
+                        }
                     }
+
 //                  每秒过一秒申请一个关键帧
                     if (System.currentTimeMillis() - lastKeyFrmaeTime > mKeyFrameTimeMs) {
                         requestKeyFram();

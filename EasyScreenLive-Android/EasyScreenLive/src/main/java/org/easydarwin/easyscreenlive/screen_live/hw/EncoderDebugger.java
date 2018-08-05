@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
+import java.text.Format;
 import java.util.Arrays;
 
 /**
@@ -67,12 +68,12 @@ public class EncoderDebugger {
      * If this is set to false the test will be run only once and the result
      * will be saved in the shared preferences.
      */
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     /**
      * Set this to true to see more logs.
      */
-    private static final boolean VERBOSE = false;
+    private static final boolean VERBOSE = true;
 
     /**
      * Will be incremented every time this test is modified.
@@ -82,14 +83,15 @@ public class EncoderDebugger {
     /**
      * Bitrate that will be used with the encoder.
      */
-    private static int BITRATE = 1000000;
+    private int BITRATE = 1000000;
 
     /**
      * Framerate that will be used to test the encoder.
      */
-    private static int FRAMERATE = 20;
+    private int FRAMERATE = 20;
 
-    private final static String MIME_TYPE = "video/avc";
+    private String MIME_TYPE = MediaFormat.MIMETYPE_VIDEO_AVC;
+    private boolean isHardwareEncoder = true;
 
     private final static int NB_DECODED = 34;
     private final static int NB_ENCODED = 50;
@@ -98,14 +100,15 @@ public class EncoderDebugger {
     private String mEncoderName, mErrorLog;
     private MediaCodec mEncoder;
     private int mWidth, mHeight, mSize;
-    private byte[] mSPS, mPPS;
+    private byte[] mSPS, mPPS, mVPS;
 
     private byte[] mData, mInitialImage;
     private NV21Convertor mNV21;
     private SharedPreferences mPreferences;
     private byte[][] mVideo, mDecodedVideo;
-    private String mB64PPS, mB64SPS;
+    private String mB64VPS, mB64PPS, mB64SPS;
 
+    /*
     public synchronized static void asyncDebug(final Context context,
                                                final int width, final int height) {
         new Thread(new Runnable() {
@@ -120,17 +123,20 @@ public class EncoderDebugger {
             }
         }).start();
     }
+    */
 
-    public synchronized static EncoderDebugger debug(Context context, int width, int height, int framerate) {
+    public synchronized static EncoderDebugger buildDebug(Context context, String mimiType, boolean isHardwareEncoder, int width, int height, int framerate) {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
-        FRAMERATE = framerate;
-        BITRATE = 2* width*height*FRAMERATE/20;
-        return debug(prefs, width, height);
+        return buildDebug(prefs, mimiType, isHardwareEncoder, width, height, framerate);
     }
 
-    public synchronized static EncoderDebugger debug(SharedPreferences prefs, int width, int height) {
+    private synchronized static EncoderDebugger buildDebug(SharedPreferences prefs, String mimiType, boolean isHardwareEncoder, int width, int height, int framerate) {
         EncoderDebugger debugger = new EncoderDebugger(prefs, width, height);
+        debugger.MIME_TYPE = mimiType;
+        debugger.FRAMERATE = framerate;
+        debugger.BITRATE = 2* width*height*debugger.FRAMERATE/20;
+        debugger.isHardwareEncoder = isHardwareEncoder;
         debugger.debug();
         return debugger;
     }
@@ -141,6 +147,10 @@ public class EncoderDebugger {
 
     public String getB64SPS() {
         return mB64SPS;
+    }
+
+    public String getB64VPS() {
+        return mB64VPS;
     }
 
     public String getEncoderName() {
@@ -184,17 +194,16 @@ public class EncoderDebugger {
     }
 
     private void debug() {
-
         // If testing the phone again is not needed,
         // we just restore the result from the shared preferences
-        if (!checkTestNeeded()) {
-            String resolution = mWidth + "x" + mHeight + "-";
-
-            boolean success = mPreferences.getBoolean(PREF_PREFIX + resolution
+//        if (!checkTestNeeded()) {
+        if (false) {
+            String resolution = MIME_TYPE+"-"+mWidth + "x" + mHeight + "-";
+            boolean success = mPreferences.getBoolean(PREF_PREFIX + MIME_TYPE + "-"+ resolution
                     + "success", false);
             if (!success) {
                 throw new RuntimeException(
-                        "Phone not supported with this resolution (" + mWidth
+                        MIME_TYPE + " Phone not supported with this resolution (" + mWidth
                                 + "x" + mHeight + ")");
             }
 
@@ -218,7 +227,12 @@ public class EncoderDebugger {
             mB64SPS = mPreferences.getString(PREF_PREFIX + resolution + "sps",
                     "");
 
-            //return;
+            if (MIME_TYPE.equals(MediaFormat.MIMETYPE_VIDEO_HEVC)) {
+                mB64SPS = mPreferences.getString(PREF_PREFIX + resolution + "sps",
+                        "");
+            }
+
+            return;
         }
 
         if (VERBOSE)
@@ -246,8 +260,9 @@ public class EncoderDebugger {
 
                 //2017.02.20
                 // fix: ignore sw encoder
-                if (!mEncoderName.contains("google.h264.encoder"))
+                if (isHardwareEncoder && mEncoderName.contains("google.h264.encoder")) {
                     continue;
+                }
 
                 mEncoderColorFormat = encoders[i].formats[j];
 
@@ -272,11 +287,8 @@ public class EncoderDebugger {
 
                     // Starts the encoder
                     configureEncoder();
-                    Log.d(TAG, "---1----");
                     searchSPSandPPS();
-                    Log.d(TAG, "---2----");
                     saveTestResult(true);
-                    Log.d(TAG, "---3----");
                     Log.v(TAG, "The encoder " + mEncoderName
                             + " is usable with resolution " + mWidth + "x"
                             + mHeight);
@@ -320,10 +332,10 @@ public class EncoderDebugger {
 
         // If the sdk has changed on the phone, or the version of the test
         // it has to be run again
-        if (mPreferences.contains(PREF_PREFIX + resolution + "lastSdk")) {
-            int lastSdk = mPreferences.getInt(PREF_PREFIX + resolution
+        if (mPreferences.contains(PREF_PREFIX + MIME_TYPE + "-" + resolution + "lastSdk")) {
+            int lastSdk = mPreferences.getInt(PREF_PREFIX + MIME_TYPE + "-" + resolution
                     + "lastSdk", 0);
-            int lastVersion = mPreferences.getInt(PREF_PREFIX + resolution
+            int lastVersion = mPreferences.getInt(PREF_PREFIX + MIME_TYPE + "-"+ resolution
                     + "lastVersion", 0);
             if (Build.VERSION.SDK_INT > lastSdk || VERSION > lastVersion) {
                 return true;
@@ -340,7 +352,7 @@ public class EncoderDebugger {
      * modified.
      */
     private void saveTestResult(boolean success) {
-        String resolution = mWidth + "x" + mHeight + "-";
+        String resolution = MIME_TYPE+"-"+mWidth + "x" + mHeight + "-";
         Editor editor = mPreferences.edit();
 
         editor.putBoolean(PREF_PREFIX + resolution + "success", success);
@@ -367,6 +379,9 @@ public class EncoderDebugger {
                     mEncoderName);
             editor.putString(PREF_PREFIX + resolution + "pps", mB64PPS);
             editor.putString(PREF_PREFIX + resolution + "sps", mB64SPS);
+            if (MIME_TYPE.equals(MediaFormat.MIMETYPE_VIDEO_HEVC)) {
+                editor.putString(PREF_PREFIX  + resolution + "vps", mB64VPS);
+            }
         }
 
         editor.commit();
@@ -398,7 +413,7 @@ public class EncoderDebugger {
      */
     private void configureEncoder() throws IOException {
         try {
-            mEncoder = MediaCodec.createByCodecName(mEncoderName);
+            mEncoder = MediaCodec.createEncoderByType(MIME_TYPE);//MediaCodec.createByCodecName(mEncoderName);
             MediaFormat mediaFormat = MediaFormat.createVideoFormat(MIME_TYPE,
                     mWidth, mHeight);
             mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, BITRATE);
@@ -426,7 +441,6 @@ public class EncoderDebugger {
             } catch (Exception ignore) {
             }
         }
-
     }
 
     /**
@@ -439,6 +453,7 @@ public class EncoderDebugger {
         BufferInfo info = new BufferInfo();
         byte[] csd = new byte[128];
         int len = 0, p = 4, q = 4;
+        Log.e(TAG, "---------------------------" + MIME_TYPE);
 
         while (elapsed < 3000000 && (mSPS == null || mPPS == null)) {
 
@@ -466,24 +481,27 @@ public class EncoderDebugger {
 
             int index = mEncoder.dequeueOutputBuffer(info, 1000000 / FRAMERATE);
 
-            if (index == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-
+            if (index == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED && MIME_TYPE.equals(MediaFormat.MIMETYPE_VIDEO_AVC)) {
                 // The PPS and PPS shoud be there
                 MediaFormat format = mEncoder.getOutputFormat();
                 ByteBuffer spsb = format.getByteBuffer("csd-0");
                 ByteBuffer ppsb = format.getByteBuffer("csd-1");
-                mSPS = new byte[spsb.capacity() - 4];
-                spsb.position(4);
-                spsb.get(mSPS, 0, mSPS.length);
-                mPPS = new byte[ppsb.capacity() - 4];
-                ppsb.position(4);
-                ppsb.get(mPPS, 0, mPPS.length);
-                break;
 
+                if (spsb != null) {
+                    mSPS = new byte[spsb.capacity() - 4];
+                    spsb.position(4);
+                    spsb.get(mSPS, 0, mSPS.length);
+                }
+
+                if (ppsb != null) {
+                    mPPS = new byte[ppsb.capacity() - 4];
+                    ppsb.position(4);
+                    ppsb.get(mPPS, 0, mPPS.length);
+                }
+                break;
             } else if (index == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
                 outputBuffers = mEncoder.getOutputBuffers();
             } else if (index >= 0) {
-
                 len = info.size;
                 if (len < 128) {
                     outputBuffers[index].get(csd, 0, len);
@@ -500,13 +518,28 @@ public class EncoderDebugger {
                                 p++;
                             if (p + 3 >= len)
                                 p = len;
-                            if ((csd[q] & 0x1F) == 7) {
-                                mSPS = new byte[p - q];
-                                System.arraycopy(csd, q, mSPS, 0, p - q);
-                            } else {
-                                mPPS = new byte[p - q];
-                                System.arraycopy(csd, q, mPPS, 0, p - q);
+                            if (MIME_TYPE.equals(MediaFormat.MIMETYPE_VIDEO_AVC)) {
+                                if ((csd[q] & 0x1F) == 7) {
+                                    mSPS = new byte[p - q];
+                                    System.arraycopy(csd, q, mSPS, 0, p - q);
+                                } else {
+                                    mPPS = new byte[p - q];
+                                    System.arraycopy(csd, q, mPPS, 0, p - q);
+                                }
+                            } else if (MIME_TYPE.equals(MediaFormat.MIMETYPE_VIDEO_HEVC)) {
+                                Log.e(TAG, "csd[q]   " + csd[q]);
+                                if (csd[q]  == 64) {
+                                    mVPS = new byte[p - q];
+                                    System.arraycopy(csd, q, mVPS, 0, p - q);
+                                } else if (csd[q]  == 66){
+                                    mSPS = new byte[p - q];
+                                    System.arraycopy(csd, q, mSPS, 0, p - q);
+                                } else if (csd[q]  == 68){
+                                    mPPS = new byte[p - q];
+                                    System.arraycopy(csd, q, mPPS, 0, p - q);
+                                }
                             }
+
                             p += 4;
                             q = p;
                         }
@@ -518,7 +551,13 @@ public class EncoderDebugger {
             elapsed = timestamp() - now;
         }
 
-        check(mPPS != null & mSPS != null, "Could not determine the SPS & PPS.");
+        if (MIME_TYPE.equals(MediaFormat.MIMETYPE_VIDEO_AVC)) {
+            check(mPPS != null & mSPS != null, "Could not determine the SPS & PPS.");
+        }  else {
+            check(mPPS != null & mSPS != null & mVPS != null, "Could not determine the SPS & PPS & VPS.");
+            mB64VPS = Base64.encodeToString(mVPS, 0, mVPS.length, Base64.NO_WRAP);
+        }
+
         mB64PPS = Base64.encodeToString(mPPS, 0, mPPS.length, Base64.NO_WRAP);
         mB64SPS = Base64.encodeToString(mSPS, 0, mSPS.length, Base64.NO_WRAP);
 

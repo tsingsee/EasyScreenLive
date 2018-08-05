@@ -17,7 +17,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     boolean eanbleMulticast = false;
     boolean enableAudioPush = false;
-    boolean enableFrame     = false;
     boolean enableFec = false;
     boolean enableArq = false;
     private ActivitySettingBinding mBinding;
@@ -33,13 +32,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         mBinding.editBitRate.setText(""+Config.getBitRate(this));
         mBinding.editFecGroudSize.setText(""+Config.getFecGroudSize(this));
         mBinding.editFecParam.setText(""+Config.getFecParam(this));
-
+        mBinding.switchEnableFrame.setText(""+Config.getEnableFrame(this));
 
         mBinding.buttonSave.setOnClickListener(this);
         mBinding.buttonMulticastType.setOnCheckedChangeListener(this);
         mBinding.buttonUnicastType.setOnCheckedChangeListener(this);
         mBinding.switchEnableAudio.setOnClickListener(this);
-        mBinding.switchEnableFrame.setOnClickListener(this);
+
         mBinding.switchEnableFec.setOnClickListener(this);
         mBinding.switchEnableArq.setOnClickListener(this);
 
@@ -57,14 +56,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             enableAudioPush = false;
             mBinding.switchEnableAudio.setChecked(false);
-        }
-
-        if(Config.getEnableFrame(this).equals("1")) {
-            enableFrame = true;
-            mBinding.switchEnableFrame.setChecked(true);
-        } else {
-            enableFrame = false;
-            mBinding.switchEnableFrame.setChecked(false);
         }
 
         if(Config.getEnableArq(this).equals("1")) {
@@ -92,13 +83,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                     enableAudioPush = true;
                 } else {
                     enableAudioPush = false;
-                }
-                break;
-            case R.id.switch_enable_frame:
-                if(mBinding.switchEnableFrame.isChecked()) {
-                    enableFrame = true;
-                } else {
-                    enableFrame = false;
                 }
                 break;
             case R.id.button_save:
@@ -149,6 +133,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         Config.saveBitRate(this, Integer.parseInt(mBinding.editBitRate.getText().toString()));
         Config.saveFecGroudSize(this, Integer.parseInt(mBinding.editFecGroudSize.getText().toString()));
         Config.saveFecParam(this, Integer.parseInt(mBinding.editFecParam.getText().toString()));
+        Config.saveEnableFrame(this, ""+Integer.parseInt(mBinding.switchEnableFrame.getText().toString()));
+
 
         if (eanbleMulticast) {
             Config.saveLiveType(this, Config.LIVE_TYPE_MULTICAST);
@@ -159,11 +145,6 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             Config.saveEnableAudio(this, "1");
         } else {
             Config.saveEnableAudio(this,"0");
-        }
-        if (enableFrame) {
-            Config.saveEnableFrame(this, "1");
-        } else {
-            Config.saveEnableFrame(this,"0");
         }
 
         if (enableArq) {

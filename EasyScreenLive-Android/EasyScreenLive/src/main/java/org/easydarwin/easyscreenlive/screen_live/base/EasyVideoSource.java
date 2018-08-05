@@ -10,7 +10,7 @@ abstract public class EasyVideoSource {
 
     public int SOURCE_TYPE;
     public EasyVideoStreamCallback easyVideoStreamCallback;
-    public abstract int init(int w, int h, int fps, int bitRate, EasyVideoStreamCallback cb);
+    public abstract int init(String mimeType, int w, int h, int fps, int bitRate, EasyVideoStreamCallback cb);
     public abstract int uninit();
     public abstract int startStream();
     public abstract int stopStream();

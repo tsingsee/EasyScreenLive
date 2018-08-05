@@ -182,14 +182,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="固定帧率" />
-            <Switch
+                android:text="固定帧率 (0表示不控制帧率):" />
+            <EditText
                 android:id="@+id/switch_enable_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:textOff="off"
-                android:textOn="on"/>
+                android:inputType="number"
+                android:text="0"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/layout_enable_audio"

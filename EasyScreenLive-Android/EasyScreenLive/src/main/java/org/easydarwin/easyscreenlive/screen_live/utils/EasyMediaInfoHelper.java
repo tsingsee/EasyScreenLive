@@ -1,6 +1,7 @@
 package org.easydarwin.easyscreenlive.screen_live.utils;
 
 import android.content.Context;
+import android.media.MediaFormat;
 import android.util.Base64;
 
 import org.easydarwin.easyscreenlive.screen_live.hw.EncoderDebugger;
@@ -43,12 +44,12 @@ public class EasyMediaInfoHelper {
     }
 
     public boolean setH264MediaInfo(Context context, int w, int h, int frameRate) {
-
         EncoderDebugger debugger;
         u32VideoCodec = JniEasyScreenLive.VideoCodec.EASY_SDK_VIDEO_CODEC_H264;
         u32VideoFps = frameRate;
         try {
-            debugger = EncoderDebugger.debug(context, w, h, frameRate);
+            debugger = EncoderDebugger.buildDebug(context, MediaFormat.MIMETYPE_VIDEO_AVC, true,  w, h, frameRate);
+//            debugger = EncoderDebugger.buildDebug(context, MediaFormat.MIMETYPE_VIDEO_AVC, true,  w, h, frameRate);
             mSps = Base64.decode(debugger.getB64SPS(), Base64.NO_WRAP);
             mPps = Base64.decode(debugger.getB64PPS(), Base64.NO_WRAP);
             u32SpsLength = mSps.length;
@@ -59,7 +60,29 @@ public class EasyMediaInfoHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
+    }
 
+    public boolean setH265MediaInfo(Context context, int w, int h, int frameRate) {
+        EncoderDebugger debugger;
+        u32VideoCodec = JniEasyScreenLive.VideoCodec.EASY_SDK_VIDEO_CODEC_H265;
+        u32VideoFps = frameRate;
+        try {
+            debugger = EncoderDebugger.buildDebug(context, MediaFormat.MIMETYPE_VIDEO_HEVC, true,  w, h, frameRate);
+//            byte vps[] = {0, 0, 1, 64, 1, 12, 1, -1, -1, 1, 96, 0, 0, 3, 0, -80, 0, 0, 3, 0, 0, 3, 0, 93, -84, 89};
+//            byte sps[] = {0, 0, 1, 66, 1, 1, 96, 0, 0, 3, 0, -80, 0, 0, 3, 0, 0, 3, 0, 93, -96, 3, -32, -128, 17, 7, -53, -106, -69, -109, 36, -69, -108, -126, -125, 3, 1, 118, -123, 9, 64};
+//            byte pps[] = {0, 0, 1, 68, 1, -64, -15, -128, 4, 32};
+            mSps = Base64.decode(debugger.getB64SPS(), Base64.NO_WRAP);
+            mPps = Base64.decode(debugger.getB64PPS(), Base64.NO_WRAP);
+            mVps = Base64.decode(debugger.getB64VPS(), Base64.NO_WRAP);
+            u32SpsLength = mSps.length;
+            u32PpsLength = mPps.length;
+            u32VpsLength = mVps.length;
+            u32SeiLength = 0;
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

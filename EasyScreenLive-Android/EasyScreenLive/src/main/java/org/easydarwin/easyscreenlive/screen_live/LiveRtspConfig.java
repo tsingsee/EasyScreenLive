@@ -76,9 +76,9 @@ public class LiveRtspConfig {
      */
     public int      fecParam=40;
     /**
-     * 是否使用可以固定帧率方式抓屏，现在分辨率适配有些问题
+     * 设置帧率，0 为不固定帧率
      */
-    public boolean  isUsedCaptureImageReader = false;
+    public int frameRate  = 0;
     /**
      * 推送设备为屏幕时，权限生请返回值，如推送摄像头则无效
      */
@@ -105,7 +105,7 @@ public class LiveRtspConfig {
         this.enableFec          = config.enableFec;
         this.fecGroudSize       = config.fecGroudSize;
         this.fecParam           = config.fecParam;
-        isUsedCaptureImageReader= config.isUsedCaptureImageReader;
+        frameRate               = config.frameRate;
         capScreenIntent         = config.capScreenIntent;
         capScreenCode           = config.capScreenCode;
 
@@ -128,6 +128,6 @@ public class LiveRtspConfig {
         enableFec        = Integer.parseInt(Config.getEnablefec(context));
         fecGroudSize     = Config.getFecGroudSize(context);
         fecParam         = Config.getFecParam(context);
-        isUsedCaptureImageReader = Config.getEnableFrame(context).equals("1");
+        frameRate         = Config.getEnableFrame(context);
     }
 }

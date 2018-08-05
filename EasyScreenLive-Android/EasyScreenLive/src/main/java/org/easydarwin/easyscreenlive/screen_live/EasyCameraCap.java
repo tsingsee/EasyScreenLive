@@ -54,6 +54,7 @@ class EasyCameraCap extends EasyVideoSource {
     private boolean codecAvailable = false;
 
     private boolean mPortraitScreen = true;
+    private String MIMETYPE = MediaFormat.MIMETYPE_VIDEO_AVC;
 
     public EasyCameraCap(Context context, SurfaceView mSurfaceView, int cameraId) {
         mApplicationContext = context;
@@ -93,7 +94,7 @@ class EasyCameraCap extends EasyVideoSource {
         uninit();
 
 
-        init(width, height, framerate, bitrate, easyVideoStreamCallback);
+        init(MIMETYPE, width, height, framerate, bitrate, easyVideoStreamCallback);
         stopStream();
     }
 
@@ -398,9 +399,9 @@ class EasyCameraCap extends EasyVideoSource {
     private void startMediaCodec() {
         EncoderDebugger debugger;
         if(mPortraitScreen)
-            debugger = EncoderDebugger.debug(mApplicationContext, width, height, framerate);//width, height
+            debugger = EncoderDebugger.buildDebug(mApplicationContext, MediaFormat.MIMETYPE_VIDEO_HEVC, true, width, height, framerate);//width, height
         else
-            debugger = EncoderDebugger.debug(mApplicationContext, height, width, framerate);//width, height
+            debugger = EncoderDebugger.buildDebug(mApplicationContext, MediaFormat.MIMETYPE_VIDEO_HEVC, true, height, width, framerate);//width, height
         mConvertor = debugger.getNV21Convertor();
 
         try {
@@ -425,7 +426,7 @@ class EasyCameraCap extends EasyVideoSource {
 
 
     @Override
-    public  int init(int w, int h, int fps, int bitRate, EasyVideoStreamCallback cb){
+    public  int init(String mimeType, int w, int h, int fps, int bitRate, EasyVideoStreamCallback cb){
         this.width = w;
         this.height = h;
         this.framerate = fps;

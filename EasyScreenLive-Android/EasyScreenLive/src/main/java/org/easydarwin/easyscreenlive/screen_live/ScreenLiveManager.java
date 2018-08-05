@@ -1,6 +1,7 @@
 package org.easydarwin.easyscreenlive.screen_live;
 
 import android.content.Context;
+import android.media.MediaFormat;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -8,11 +9,14 @@ import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
+import com.google.gson.annotations.Until;
+
 import org.easydarwin.easyscreenlive.screen_live.base.EasyAudioStreamCallback;
 import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoSource;
 import org.easydarwin.easyscreenlive.screen_live.base.EasyVideoStreamCallback;
 import org.easydarwin.easyscreenlive.screen_live.hw.CodecManager;
 import org.easydarwin.easyscreenlive.screen_live.utils.EasyMediaInfoHelper;
+import org.easydarwin.easyscreenlive.screen_live.utils.Util;
 import org.easydarwin.easyscreenlive.ui.pusher.PusherPresenter;
 
 import org.easydarwin.rtspservice.JniEasyScreenLive;
@@ -28,7 +32,9 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
 
     private int windowWidth = 1280;
     private int windowHeight = 720;
-    private int mFrameRate = 30;
+    private int mFrameRate = 20;
+//    private String MIME_TYPE = MediaFormat.MIMETYPE_VIDEO_HEVC;
+    private String MIME_TYPE = MediaFormat.MIMETYPE_VIDEO_AVC;
 
 
     public Context mContext;
@@ -45,8 +51,6 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
     private static int pushServiceStatus = EasyScreenLiveAPI.EASY_PUSH_SERVICE_STATUS.STATUS_LEISURE;
 
 
-
-
     ScreenLiveManager(Context context) {
         mContext = context;
         easyVideoStreamCallback = this;
@@ -58,6 +62,32 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
         stopRtspServer();
     }
 
+    int checkEncoder() {
+        boolean isHardwareEncoder = true;
+        int supportH264 = CodecManager.isSupportH264OrH265(isHardwareEncoder, MIME_TYPE, windowWidth, windowHeight);
+        if (supportH264 == -1) {
+            PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(),
+                    MIME_TYPE + "不支持" + (isHardwareEncoder ? "硬件":"软件") +
+                            "编码器");
+            return -1;
+        } else if (supportH264 == -2) {
+            PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(),
+                    MIME_TYPE + (isHardwareEncoder ? "硬件":"软件") +
+                            "编码器不支持 " + windowWidth + " * " + windowHeight + " 分辨率");
+            int supportNewH264 = CodecManager.isSupportH264OrH265(isHardwareEncoder, MIME_TYPE,1280, 720);
+            if (supportNewH264 == -2) {
+                PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(),
+                        MIME_TYPE + (isHardwareEncoder ? "硬件":"软件") +
+                                "编码器不支持 " + windowWidth + " * " + windowHeight + "和 1280*720"+ " 分辨率" );
+            } else {
+                PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(),
+                        MIME_TYPE + (isHardwareEncoder ? "硬件":"软件") +
+                                "编码器不支持 " + windowWidth + " * " + windowHeight + " 分辨率"+ "修改为 1280*720"+ " 分辨率" );
+            }
+            return -1;
+        }
+        return 0;
+    }
 
     int onScreenLiveCmd(Message msg) {
         switch(msg.what)
@@ -65,6 +95,20 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
             case CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_BACK:
             case CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_FRONT:
             case CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN: {
+                if (msg.what == CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN) {
+                    int  []resolution = new int[2];
+                    Util.getScreenresolution(mContext.getApplicationContext(), resolution);
+                    //默认使用 720 分辨率，事件感官效果720和1080差别不大，但是编码速度会加快
+                    resolution[0] = 1280;
+                    resolution[1] = 720;
+                    Util.adapterResolution(resolution[0], resolution[1], resolution);
+                    Log.e(TAG, "w" +resolution[0] + " " + resolution[1]);
+                    windowWidth  = resolution[0] ;
+                    windowHeight = resolution[1];
+                }
+                if (checkEncoder() < 0) {
+                    break;
+                }
                 int ret = startRtspServer();
                 if (ret != 0) {
                     PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(), ret);
@@ -75,7 +119,6 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                 {
                     mSurfaceView = (SurfaceView)msg.obj;
                 }
-
                 if (msg.what == CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_CAMREA_BACK) {
                     easyVideoSource = new EasyCameraCap(mContext, mSurfaceView,
                             android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
@@ -85,36 +128,7 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                 } else if (msg.what == CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN) {
                     easyVideoSource = new EasyScreenCap(mContext);
                 }
-
-                if (msg.what == CapScreenService.EASY_PUSH_SERVICE_CMD.CMD_START_PUSH_SCREEN) {
-                    Context context = mContext.getApplicationContext();
-                    DisplayMetrics dm = new DisplayMetrics();
-                    WindowManager windowMgr = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-                    windowMgr.getDefaultDisplay().getRealMetrics(dm);
-                    // 获取高度
-                    windowHeight = dm.heightPixels;
-                    // 获取宽度
-                    windowWidth = dm.widthPixels;
-                }
-                windowWidth = 1920;
-                windowHeight = 1080;
-                boolean isHardwareEncoder = false;
-                int supportH264 = CodecManager.isSupportH264(isHardwareEncoder, windowWidth, windowHeight);
-                if (supportH264 == -1) {
-                    PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(),
-                            "H264不支持" + (isHardwareEncoder ? "硬件":"软件") +
-                                    "编码器");
-                    easyVideoSource = null;
-                    break;
-                } else if (supportH264 == -2) {
-                    PusherPresenter.getInterface().onStartPushFail(mContext.getApplicationContext(),
-                            "H264" + (isHardwareEncoder ? "硬件":"软件") +
-                                    "编码器不支持 " + windowWidth + " * " + windowHeight + " 分辨率");
-                    easyVideoSource = null;
-                    break;
-                }
-
-                ret = easyVideoSource.init(windowWidth, windowHeight, mFrameRate,
+                ret = easyVideoSource.init(MIME_TYPE, windowWidth, windowHeight, mFrameRate,
                         EasyScreenLiveAPI.liveRtspConfig.bitRate, easyVideoStreamCallback);
                 if (ret < 0) {
                     Log.e(TAG, "init easyCamreaCap fail");
@@ -174,7 +188,6 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                 EasyScreenLiveAPI.liveRtspConfig.pushdev = 0;
                 stopPush();
                 startPush();
-
             }
 
         }
@@ -189,8 +202,6 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
         if (jniEasyScreenLive != null) {
             return -1;
         }
-
-
 
         jniEasyScreenLive = new JniEasyScreenLive();
         mChannelId = jniEasyScreenLive.registerCallback(this);
@@ -288,7 +299,11 @@ class ScreenLiveManager implements JniEasyScreenLive.IPCameraCallBack,
                     easyMediaInfoHelper.setAACMediaInfo(audioStream.getSamplingRate(), audioStream.getChannelNum(),
                             audioStream.getBitsPerSample());
                 }
-                easyMediaInfoHelper.setH264MediaInfo(mContext, windowWidth, windowHeight, mFrameRate);
+                if (MIME_TYPE.equals(MediaFormat.MIMETYPE_VIDEO_HEVC)) {
+                    easyMediaInfoHelper.setH265MediaInfo(mContext, windowWidth, windowHeight, mFrameRate);
+                } else {
+                    easyMediaInfoHelper.setH264MediaInfo(mContext, windowWidth, windowHeight, mFrameRate);
+                }
                 easyMediaInfoHelper.fillMediaInfo(mediaInfo);
                 break;
             case JniEasyScreenLive.ChannelState.EASY_IPCAMERA_STATE_REQUEST_PLAY_STREAM:

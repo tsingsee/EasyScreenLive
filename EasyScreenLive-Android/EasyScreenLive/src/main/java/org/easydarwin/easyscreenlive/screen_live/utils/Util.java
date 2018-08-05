@@ -9,10 +9,13 @@ package org.easydarwin.easyscreenlive.screen_live.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 
 
 import java.io.FileNotFoundException;
@@ -240,6 +243,32 @@ public class Util {
     public static void saveSupportResolution(Context context, String value){
         //SharedPreferences sharedPreferences=context.getSharedPreferences(Config.PREF_NAME, Context.MODE_PRIVATE);
         //sharedPreferences.edit().putString(Config.K_RESOLUTION, value).commit();
+    }
+
+    /**
+     * 获取屏幕分辨率
+     * @param resolution
+     */
+    public static void getScreenresolution(Context context, int []resolution) {
+        //Context context = mContext.getApplicationContext();
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager windowMgr = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+        windowMgr.getDefaultDisplay().getRealMetrics(dm);
+        // 获取高度,宽度
+        resolution[0] = dm.widthPixels;
+        resolution[1] = dm.heightPixels;
+    }
+
+    public static void adapterResolution(int inW, int inH, int []resolution) {
+        int w = inW > inH ? inW : inH;
+        int h = inW > inH ? inH : inW;
+        if (w < 1920 || h < 1080) {
+            resolution[0] = 1280;
+            resolution[1] = 720;
+        } else {
+            resolution[0] = 1920;
+            resolution[1] = 1080;
+        }
     }
 
     private static String intToIp(int i) {
