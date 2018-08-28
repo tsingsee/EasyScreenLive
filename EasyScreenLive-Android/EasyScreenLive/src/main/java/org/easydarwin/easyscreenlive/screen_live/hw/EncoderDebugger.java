@@ -196,8 +196,8 @@ public class EncoderDebugger {
     private void debug() {
         // If testing the phone again is not needed,
         // we just restore the result from the shared preferences
-//        if (!checkTestNeeded()) {
-        if (false) {
+        if (!checkTestNeeded()) {
+//        if (false) {
             String resolution = MIME_TYPE+"-"+mWidth + "x" + mHeight + "-";
             boolean success = mPreferences.getBoolean(PREF_PREFIX + MIME_TYPE + "-"+ resolution
                     + "success", false);

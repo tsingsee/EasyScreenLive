@@ -91,7 +91,7 @@ public class Config {
 
     static  public int getFecGroudSize(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
-        String param = sharedPreferences.getString(Config.LIVE_FEC_GROUD_SIZE, "10");
+        String param = sharedPreferences.getString(Config.LIVE_FEC_GROUD_SIZE, "100");
         int fecParam = Integer.parseInt(param);
         return fecParam;
     }
