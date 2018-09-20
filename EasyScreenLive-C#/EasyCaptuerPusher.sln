@@ -1,0 +1,84 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyCaptuerPusher", "EasyCaptuerPusher\EasyCaptuerPusher.csproj", "{A3135F97-7260-42C4-951D-32F41F355B3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CapturePusherSDK", "CapturePusherSDK\CapturePusherSDK.csproj", "{531545F3-6A74-4B04-84DF-6D73096BBD06}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{6ECEAD1B-140B-4665-9297-5845B20C91C3}"
+	ProjectSection(SolutionItems) = preProject
+		Lib\avcodec-57.dll = Lib\avcodec-57.dll
+		Lib\avdevice-57.dll = Lib\avdevice-57.dll
+		Lib\avfilter-6.dll = Lib\avfilter-6.dll
+		Lib\avformat-57.dll = Lib\avformat-57.dll
+		Lib\avutil-55.dll = Lib\avutil-55.dll
+		Lib\D3DRender.dll = Lib\D3DRender.dll
+		Lib\D3DX9_43.dll = Lib\D3DX9_43.dll
+		Lib\dxva2.dll = Lib\dxva2.dll
+		Lib\FFDecoder.dll = Lib\FFDecoder.dll
+		Lib\FFEncoder.dll = Lib\FFEncoder.dll
+		Lib\IntelHardCodec.dll = Lib\IntelHardCodec.dll
+		Lib\js.dll = Lib\js.dll
+		Lib\libEasyAACEncoder.dll = Lib\libEasyAACEncoder.dll
+		Lib\libEasyIPCamera.dll = Lib\libEasyIPCamera.dll
+		Lib\libEasyPlayer.dll = Lib\libEasyPlayer.dll
+		Lib\libeasypusher.dll = Lib\libeasypusher.dll
+		Lib\libeasyrtmp.dll = Lib\libeasyrtmp.dll
+		Lib\libeasyrtmpclient.dll = Lib\libeasyrtmpclient.dll
+		Lib\libEasyRTSPClient.dll = Lib\libEasyRTSPClient.dll
+		Lib\libEasyScreenLive.dll = Lib\libEasyScreenLive.dll
+		Lib\libEasyScreenLiveAPI.h = Lib\libEasyScreenLiveAPI.h
+		Lib\libeay32.dll = Lib\libeay32.dll
+		Lib\libfaac.dll = Lib\libfaac.dll
+		Lib\libgcc_s_dw2-1.dll = Lib\libgcc_s_dw2-1.dll
+		Lib\libgcc_s_sjlj-1.dll = Lib\libgcc_s_sjlj-1.dll
+		Lib\libgpac.dll = Lib\libgpac.dll
+		Lib\libmfxsw32.dll = Lib\libmfxsw32.dll
+		Lib\libstdc++-6.dll = Lib\libstdc++-6.dll
+		Lib\libx264.dll = Lib\libx264.dll
+		Lib\ssleay32.dll = Lib\ssleay32.dll
+		Lib\swresample-2.dll = Lib\swresample-2.dll
+		Lib\swscale-4.dll = Lib\swscale-4.dll
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Debug|x64.Build.0 = Debug|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Debug|x86.Build.0 = Debug|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Release|x64.ActiveCfg = Release|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Release|x64.Build.0 = Release|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Release|x86.ActiveCfg = Release|Any CPU
+		{A3135F97-7260-42C4-951D-32F41F355B3E}.Release|x86.Build.0 = Release|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Debug|x64.Build.0 = Debug|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Debug|x86.Build.0 = Debug|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Release|x64.ActiveCfg = Release|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Release|x64.Build.0 = Release|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Release|x86.ActiveCfg = Release|Any CPU
+		{531545F3-6A74-4B04-84DF-6D73096BBD06}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

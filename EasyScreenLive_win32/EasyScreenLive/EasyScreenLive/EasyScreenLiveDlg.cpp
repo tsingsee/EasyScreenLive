@@ -1,5 +1,5 @@
-
-// EasyScreenLiveDlg.cpp : ÊµÏÖÎÄ¼ş
+ï»¿
+// EasyScreenLiveDlg.cpp : å®ç°æ–‡ä»¶
 //
 
 #include "stdafx.h"
@@ -10,10 +10,10 @@
 using namespace std;
 
 #include <WinSock2.h>
-#pragma comment(lib,"ws2_32")        //Á´½Óµ½ws2_32¶¯Ì¬Á´½Ó¿â
+#pragma comment(lib,"ws2_32")        //é“¾æ¥åˆ°ws2_32åŠ¨æ€é“¾æ¥åº“
 
-#define EASY_RTSP_KEY "79397037795969576B5A7341596A5261706375647066464659584E355548567A614756794C6D56345A534E58444661672F365867523246326157346D516D466962334E68514449774D545A4659584E355247467964326C75564756686257566863336B3D"
-
+//#define EASY_RTSP_KEY "79397037795969576B5A7341596A5261706375647066464659584E355548567A614756794C6D56345A534E58444661672F365867523246326157346D516D466962334E68514449774D545A4659584E355247467964326C75564756686257566863336B3D"
+#define EASY_RTSP_KEY "6A36334A743469576B5A734150437862704E50447065314659584E3555324E795A57567554476C325A53356C6547556A567778576F502B6C34456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
 #define EASY_RTMP_KEY "79397037795969576B5A75416D7942617064396A4575314659584E3555324E795A57567554476C325A53356C65475570567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
 
 #define EASY_IPC_KEY   "6D72754B7A4969576B5A75416D7942617064396A4575314659584E3555324E795A57567554476C325A53356C65475570567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
@@ -24,20 +24,20 @@ using namespace std;
 #endif
 
 
-// ÓÃÓÚÓ¦ÓÃ³ÌĞò¡°¹ØÓÚ¡±²Ëµ¥ÏîµÄ CAboutDlg ¶Ô»°¿ò
+// ç”¨äºåº”ç”¨ç¨‹åºâ€œå…³äºâ€èœå•é¡¹çš„ CAboutDlg å¯¹è¯æ¡†
 
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
 
-// ¶Ô»°¿òÊı¾İ
+// å¯¹è¯æ¡†æ•°æ®
 	enum { IDD = IDD_ABOUTBOX };
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV æ”¯æŒ
 
-// ÊµÏÖ
+// å®ç°
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -55,7 +55,7 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CEasyScreenLiveDlg ¶Ô»°¿ò
+// CEasyScreenLiveDlg å¯¹è¯æ¡†
 
 CEasyScreenLiveDlg::CEasyScreenLiveDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CEasyScreenLiveDlg::IDD,  pParent)
@@ -83,18 +83,19 @@ BEGIN_MESSAGE_MAP(CEasyScreenLiveDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_CBN_SELCHANGE(IDC_COMBO_PUSHSOURCE, &CEasyScreenLiveDlg::OnCbnSelchangeComboPushsource)
 	ON_BN_CLICKED(IDC_BUTTON_PUBLISH_SERVER, &CEasyScreenLiveDlg::OnBnClickedButtonPublishServer)
+	ON_BN_CLICKED(IDC_CHECK_CAPCURSOR, &CEasyScreenLiveDlg::OnBnClickedCheckCapcursor)
 END_MESSAGE_MAP()
 
 
-// CEasyScreenLiveDlg ÏûÏ¢´¦Àí³ÌĞò
+// CEasyScreenLiveDlg æ¶ˆæ¯å¤„ç†ç¨‹åº
 
 BOOL CEasyScreenLiveDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// ½«¡°¹ØÓÚ...¡±²Ëµ¥ÏîÌí¼Óµ½ÏµÍ³²Ëµ¥ÖĞ¡£
+	// å°†â€œå…³äº...â€èœå•é¡¹æ·»åŠ åˆ°ç³»ç»Ÿèœå•ä¸­ã€‚
 
-	// IDM_ABOUTBOX ±ØĞëÔÚÏµÍ³ÃüÁî·¶Î§ÄÚ¡£
+	// IDM_ABOUTBOX å¿…é¡»åœ¨ç³»ç»Ÿå‘½ä»¤èŒƒå›´å†…ã€‚
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -112,12 +113,12 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 		}
 	}
 
-	// ÉèÖÃ´Ë¶Ô»°¿òµÄÍ¼±ê¡£µ±Ó¦ÓÃ³ÌĞòÖ÷´°¿Ú²»ÊÇ¶Ô»°¿òÊ±£¬¿ò¼Ü½«×Ô¶¯
-	//  Ö´ĞĞ´Ë²Ù×÷
-	SetIcon(m_hIcon, TRUE);			// ÉèÖÃ´óÍ¼±ê
-	SetIcon(m_hIcon, FALSE);		// ÉèÖÃĞ¡Í¼±ê
+	// è®¾ç½®æ­¤å¯¹è¯æ¡†çš„å›¾æ ‡ã€‚å½“åº”ç”¨ç¨‹åºä¸»çª—å£ä¸æ˜¯å¯¹è¯æ¡†æ—¶ï¼Œæ¡†æ¶å°†è‡ªåŠ¨
+	//  æ‰§è¡Œæ­¤æ“ä½œ
+	SetIcon(m_hIcon, TRUE);			// è®¾ç½®å¤§å›¾æ ‡
+	SetIcon(m_hIcon, FALSE);		// è®¾ç½®å°å›¾æ ‡
 
-	// TODO: ÔÚ´ËÌí¼Ó¶îÍâµÄ³õÊ¼»¯´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ é¢å¤–çš„åˆå§‹åŒ–ä»£ç 
 
 	GetDlgItem(IDC_EDIT_IP)->SetWindowText(_T("www.easydss.com"));//
 	GetDlgItem(IDC_EDIT_PORT)->SetWindowText(_T("10085"));	
@@ -132,33 +133,60 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 
 	GetDlgItem(IDC_EDIT_MUTICAST_ADDR)->SetWindowText(_T("238.255.255.255"));	
 	GetDlgItem(IDC_EDIT_MUTICAST_TTL)->SetWindowText(_T("255"));	
+	GetDlgItem(IDC_EDIT_FPS)->SetWindowText(_T("15"));	
+
+
 
 	CComboBox* pComboSource  = (CComboBox*)GetDlgItem( IDC_COMBO_PUSHSOURCE);
 	if (pComboSource)
 	{
-		pComboSource->AddString(_T("ÉãÏñÍ·²É¼¯"));
-		pComboSource->AddString(_T("ÆÁÄ»²É¼¯"));
+		pComboSource->AddString(_T("æ‘„åƒå¤´é‡‡é›†"));
+		pComboSource->AddString(_T("å±å¹•é‡‡é›†"));
+		pComboSource->AddString(_T("æ–‡ä»¶é‡‡é›†"));
+		pComboSource->AddString(_T("RTSPæµé‡‡é›†"));
+		pComboSource->AddString(_T("RTMPæµé‡‡é›†"));
 		pComboSource->SetCurSel(1);
+	}
+	CComboBox* pComboChannels  = (CComboBox*)GetDlgItem( IDC_COMBO_CHANNELS);
+	if (pComboChannels)
+	{
+		pComboChannels->AddString(_T("1"));
+		pComboChannels->AddString(_T("2"));
+		pComboChannels->AddString(_T("3"));
+		pComboChannels->AddString(_T("4"));
+		pComboChannels->AddString(_T("5"));
+		pComboChannels->AddString(_T("6"));
+		pComboChannels->SetCurSel(0);
+	}
+	
+
+	CButton* pChekCapCursor = (CButton*)GetDlgItem(IDC_CHECK_CAPCURSOR);
+	if(pChekCapCursor)
+	{
+		pChekCapCursor->SetCheck(1);
 	}
 
 	CComboBox* pComboEncoder  = (CComboBox*)GetDlgItem( IDC_COMBO_ENCODER_TYPE);
 	if (pComboEncoder)
 	{
-		pComboEncoder->AddString(_T("Ä¬ÈÏ±àÂëÆ÷"));
-		pComboEncoder->AddString(_T("¿ìËÙÈí±àÂë"));
-		pComboEncoder->AddString(_T("¿ìËÙÓ²±àÂë"));
+		pComboEncoder->AddString(_T("é»˜è®¤ç¼–ç å™¨"));
+		pComboEncoder->AddString(_T("å¿«é€Ÿè½¯ç¼–ç "));
+		pComboEncoder->AddString(_T("å¿«é€Ÿç¡¬ç¼–ç "));
 		pComboEncoder->SetCurSel(1);
 	}	
 
 	CComboBox* pComboTransType  = (CComboBox*)GetDlgItem( IDC_COMBO_TRANSPORT_TYPE);
 	if (pComboTransType)
 	{
-		pComboTransType->AddString(_T("µ¥²¥"));
-		pComboTransType->AddString(_T("×é²¥"));
+		pComboTransType->AddString(_T("å•æ’­"));
+		pComboTransType->AddString(_T("ç»„æ’­"));
 		pComboTransType->SetCurSel(1);
 	}	
 
-	return TRUE;  // ³ı·Ç½«½¹µãÉèÖÃµ½¿Ø¼ş£¬·ñÔò·µ»Ø TRUE
+	CEdit* pEditURL = (CEdit*)GetDlgItem(IDC_EDIT_URL);//rtmp://live.hkstv.hk.lxdns.com/live/hks
+	pEditURL->SetWindowText(_T("rtmp://live.hkstv.hk.lxdns.com/live/hks"));
+
+	return TRUE;  // é™¤éå°†ç„¦ç‚¹è®¾ç½®åˆ°æ§ä»¶ï¼Œå¦åˆ™è¿”å› TRUE
 }
 
 void CEasyScreenLiveDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -174,19 +202,19 @@ void CEasyScreenLiveDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-// Èç¹ûÏò¶Ô»°¿òÌí¼Ó×îĞ¡»¯°´Å¥£¬ÔòĞèÒªÏÂÃæµÄ´úÂë
-//  À´»æÖÆ¸ÃÍ¼±ê¡£¶ÔÓÚÊ¹ÓÃÎÄµµ/ÊÓÍ¼Ä£ĞÍµÄ MFC Ó¦ÓÃ³ÌĞò£¬
-//  Õâ½«ÓÉ¿ò¼Ü×Ô¶¯Íê³É¡£
+// å¦‚æœå‘å¯¹è¯æ¡†æ·»åŠ æœ€å°åŒ–æŒ‰é’®ï¼Œåˆ™éœ€è¦ä¸‹é¢çš„ä»£ç 
+//  æ¥ç»˜åˆ¶è¯¥å›¾æ ‡ã€‚å¯¹äºä½¿ç”¨æ–‡æ¡£/è§†å›¾æ¨¡å‹çš„ MFC åº”ç”¨ç¨‹åºï¼Œ
+//  è¿™å°†ç”±æ¡†æ¶è‡ªåŠ¨å®Œæˆã€‚
 
 void CEasyScreenLiveDlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // ÓÃÓÚ»æÖÆµÄÉè±¸ÉÏÏÂÎÄ
+		CPaintDC dc(this); // ç”¨äºç»˜åˆ¶çš„è®¾å¤‡ä¸Šä¸‹æ–‡
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// Ê¹Í¼±êÔÚ¹¤×÷Çø¾ØĞÎÖĞ¾ÓÖĞ
+		// ä½¿å›¾æ ‡åœ¨å·¥ä½œåŒºçŸ©å½¢ä¸­å±…ä¸­
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -194,7 +222,7 @@ void CEasyScreenLiveDlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// »æÖÆÍ¼±ê
+		// ç»˜åˆ¶å›¾æ ‡
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -203,8 +231,8 @@ void CEasyScreenLiveDlg::OnPaint()
 	}
 }
 
-//µ±ÓÃ»§ÍÏ¶¯×îĞ¡»¯´°¿ÚÊ±ÏµÍ³µ÷ÓÃ´Ëº¯ÊıÈ¡µÃ¹â±ê
-//ÏÔÊ¾¡£
+//å½“ç”¨æˆ·æ‹–åŠ¨æœ€å°åŒ–çª—å£æ—¶ç³»ç»Ÿè°ƒç”¨æ­¤å‡½æ•°å–å¾—å…‰æ ‡
+//æ˜¾ç¤ºã€‚
 HCURSOR CEasyScreenLiveDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -213,7 +241,7 @@ HCURSOR CEasyScreenLiveDlg::OnQueryDragIcon()
 
 void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	CButton* pCapture = (CButton*)GetDlgItem(IDC_BUTTON_CAPTURE);
 	CButton* pBtnPushRTSP = (CButton*)GetDlgItem(IDC_BUTTON_PUSH_RTSP);
 	CButton* pBtnPushRTMP = (CButton*)GetDlgItem(IDC_BUTTON_PUSH_RTMP);
@@ -229,7 +257,20 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 		{
 			CString sSourceType;
 			CString sLog;
-			SOURCE_TYPE sourceType = SOURCE_LOCAL_CAMERA;
+			USES_CONVERSION;
+
+// 			SOURCE_RTSP_STREAM=3,//RTSPæµ
+// 			SOURCE_RTMP_STREAM=4,//RTMPæµ
+
+			SOURCE_TYPE sourceType = SOURCE_SCREEN_CAPTURE;
+			//char* sURL = "rsp://admin:admin12345@192.168.1.100/media/video1";
+			//char* sURL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
+			CEdit* pEditURL = (CEdit*)GetDlgItem(IDC_EDIT_URL);//rtmp://live.hkstv.hk.lxdns.com/live/hks
+			CString strURL;
+			pEditURL->GetWindowText(strURL);
+			string sURL = T2A(strURL);
+			//string sURL = ssURL;
+
 			int nEncoderType = 0;
 			string sFormat = "RGB24";
 			CComboBox* pComboxSourceMode = (CComboBox*)GetDlgItem(IDC_COMBO_PUSHSOURCE);
@@ -242,36 +283,108 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 			{
 				nEncoderType = pComboEncoder->GetCurSel();
 			}
+			if (nEncoderType == 2)
+			{
+				bool bSupport = EasyScreenLive_IsSupportNvEncoder(m_pusher);
+				if(!bSupport)
+				{
+					AfxMessageBox(_T("å½“å‰ç³»ç»Ÿä¸æ”¯æŒNå¡ç¡¬ä»¶ç¼–ç ï¼Œè¯·é€‰æ‹©å…¶ä»–ç¼–ç å™¨"));
+					return ;
+				}
+			}
 
 			if (sourceType == SOURCE_LOCAL_CAMERA)
 			{
 				sFormat = "YUY2";
-				sSourceType = _T("±¾µØÉãÏñ»ú²É¼¯");
+				sSourceType = _T("æœ¬åœ°æ‘„åƒæœºé‡‡é›†");
 			} 
-			else 		if (sourceType == SOURCE_SCREEN_CAPTURE)
+			else if (sourceType == SOURCE_SCREEN_CAPTURE)
 			{
-				sFormat = "RGB24";
-				sSourceType = _T("ÆÁÄ»²É¼¯");
+				CButton* pChekCapCursor = (CButton*)GetDlgItem(IDC_CHECK_CAPCURSOR);
+				if(pChekCapCursor)
+				{
+					BOOL bCheck = pChekCapCursor->GetCheck();
+					EasyScreenLive_SetCaptureCursor(m_pusher, bCheck?true:false);
+				}
 			}
+// 			SOURCE_FILE_STREAM = 2,       //æ–‡ä»¶æµæ¨é€(mp4,ts,flv???)
+// 				SOURCE_RTSP_STREAM=3,//RTSPæµ
+// 				SOURCE_RTMP_STREAM=4,//RTMPæµ
+			else 		if (sourceType == SOURCE_FILE_STREAM)
+			{
+				sSourceType = _T("æ–‡ä»¶é‡‡é›†");
+			}
+			else 		if (sourceType == SOURCE_RTSP_STREAM)
+			{
+				sSourceType = _T("RTSPé‡‡é›†");
+
+				int n = sURL.find("rtsp://") ;
+				if(n<0 ) 
+				{
+					sLog.Format(_T("å¼€å¯%så¤±è´¥ï¼ŒURLértspæ ¼å¼ã€‚"), sSourceType);	
+					OnLog( sLog );
+					return ;
+				}
+			}
+			else 	if (sourceType == SOURCE_RTMP_STREAM)
+			{
+				sSourceType = _T("RTMPé‡‡é›†");
+				int n = sURL.find("rtmp://") ;
+				if(n<0 ) 
+				{
+					sLog.Format(_T("å¼€å¯%så¤±è´¥ï¼ŒURLértmpæ ¼å¼ã€‚"), sSourceType);	
+					OnLog( sLog );
+					return ;
+				}			
+			}
+
 			CEdit* pEditBitrate = (CEdit*)GetDlgItem(IDC_EDIT_BITRATE);
 			CString sBitRate;
 			pEditBitrate->GetWindowText(sBitRate);
-			USES_CONVERSION;
+
+			CEdit* pEditFPS = (CEdit*)GetDlgItem(IDC_EDIT_FPS);
+			CString sFPS;
+			pEditFPS->GetWindowText(sFPS);
+			int fps =  atoi(T2A(sFPS));
 
 			int nBitRate =  atoi(T2A(sBitRate));
 			//IDC_EDIT_BITRATE
-			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, 0, 0, hShowVideo, nEncoderType, 640,480,25, nBitRate, (char*)sFormat.c_str(),44100,2);
-			if (ret)
+
+			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, (char*)sURL.c_str(), -1, -1, 
+				hShowVideo, nEncoderType, 1920,1080,fps, nBitRate, (char*)sFormat.c_str(),44100,2,true);
+			if (ret>=0)
 			{
 				m_bCapture = TRUE;
 				pCapture->SetWindowText(_T("Stop"));
-				sLog.Format(_T("¿ªÆô%s³É¹¦¡£"), sSourceType);	
+				sLog.Format(_T("å¼€å¯%sæˆåŠŸã€‚"), sSourceType);	
 				OnLog( sLog );
 			}else
 			{
-				sLog.Format(_T("¿ªÆô%sÊ§°Ü¡£"), sSourceType);
+				sLog.Format(_T("å¼€å¯%så¤±è´¥ã€‚"), sSourceType);
 				OnLog( sLog );
 			}
+#if 0
+			OnBnClickedButtonPublishServer();
+			Sleep(5000);
+			EasyScreenLive_StopServer(m_pusher);
+			EasyScreenLive_StopCapture(m_pusher);
+			pBtnPublishServer->SetWindowText(_T("Publish Server"));
+			m_bPublishServer = FALSE;
+			Sleep(2000);
+			ret = EasyScreenLive_StartCapture(m_pusher, sourceType, (char*)sURL.c_str(), 0, -1, hShowVideo, nEncoderType, 1280,720,fps, nBitRate, (char*)sFormat.c_str(),44100,2);
+			if (ret>=0)
+			{
+				m_bCapture = TRUE;
+				pCapture->SetWindowText(_T("Stop"));
+				sLog.Format(_T("å¼€å¯%sæˆåŠŸã€‚"), sSourceType);	
+				OnLog( sLog );
+			}else
+			{
+				sLog.Format(_T("å¼€å¯%så¤±è´¥ã€‚"), sSourceType);
+				OnLog( sLog );
+			}
+			OnBnClickedButtonPublishServer();
+#endif
 		}
 	} 
 	else
@@ -293,14 +406,14 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 		m_bPushingRtmp = FALSE;
 		pBtnPublishServer->SetWindowText(_T("Publish Server"));
 		m_bPublishServer = FALSE;
-		OnLog( _T("Í£Ö¹²É¼¯") );
+		OnLog( _T("åœæ­¢é‡‡é›†") );
 	}
 }
 
 void CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp()
 {
 #if 1
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	// 
 	CButton* pBtnPush = (CButton*)GetDlgItem(IDC_BUTTON_PUSH_RTSP);
 	if (!m_bPushingRtsp)
@@ -315,33 +428,33 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp()
 		int nPort = 0;
 
 		GetDlgItem(IDC_EDIT_IP_RTSPSERVER)->GetWindowText(wszIP,  sizeof(wszIP));
-		if (wcslen(wszIP)  > 0)//µ±Ç°Îª¿Õ		
+		if (wcslen(wszIP)  > 0)//å½“å‰ä¸ºç©º		
 		{
 			__WCharToMByte(wszIP, szIP, sizeof(szIP)/sizeof(szIP[0]));
 			//nStartTime = atoi( szStartTime );
 		}
 
 		GetDlgItem(IDC_EDIT_PORT_RTSPSERVER)->GetWindowText(wszPort,  sizeof(wszPort));	
-		if (wcslen(wszPort)  > 0)//µ±Ç°Îª¿Õ		
+		if (wcslen(wszPort)  > 0)//å½“å‰ä¸ºç©º		
 		{
 			__WCharToMByte(wszPort, szPort, sizeof(szPort)/sizeof(szPort[0]));
 			nPort = atoi( szPort );
 		}
 
 		GetDlgItem(IDC_EDIT_RTSP_STREAMNAME)->GetWindowText(wszStreamName,  sizeof(wszStreamName));	
-		if (wcslen(wszStreamName)  > 0)//µ±Ç°Îª¿Õ		
+		if (wcslen(wszStreamName)  > 0)//å½“å‰ä¸ºç©º		
 		{
 			__WCharToMByte(wszStreamName, szStreamName, sizeof(szStreamName)/sizeof(szStreamName[0]));
 		}
 
 		if (m_pusher)
 		{
-			EasyScreenLive_StartPush(m_pusher, PUSH_RTSP, szIP, nPort,  szStreamName );
+			EasyScreenLive_StartPush(m_pusher, PUSH_RTSP, szIP, nPort,  szStreamName , 0);
 			m_bPushingRtsp = TRUE;
 			pBtnPush->SetWindowText(_T("Stop"));
 			CString sLog = _T("");
 
-			sLog.Format(_T("¿ªÆôRTSPÍÆËÍ: rtsp://%s:%d/%s"), wszIP, nPort, wszStreamName);
+			sLog.Format(_T("å¼€å¯RTSPæ¨é€: rtsp://%s:%d/%s"), wszIP, nPort, wszStreamName);
 			OnLog( sLog );
 		}
 	}
@@ -351,7 +464,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp()
 
 		pBtnPush->SetWindowText(_T("Push-RTSP"));
 		m_bPushingRtsp = FALSE;
-		OnLog( _T("Í£Ö¹rtspÍÆËÍ!") );
+		OnLog( _T("åœæ­¢rtspæ¨é€!") );
 	}
 #endif
 }
@@ -360,7 +473,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp()
 void CEasyScreenLiveDlg::OnBnClickedButtonPushRtmp()
 {
 #if 1
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	// 
 	CButton* pBtnPush = (CButton*)GetDlgItem(IDC_BUTTON_PUSH_RTMP);
 	if (!m_bPushingRtmp)
@@ -375,33 +488,41 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtmp()
 		int nPort = 0;
 
 		GetDlgItem(IDC_EDIT_IP)->GetWindowText(wszIP,  sizeof(wszIP));
-		if (wcslen(wszIP)  > 0)//µ±Ç°Îª¿Õ		
+		if (wcslen(wszIP)  > 0)//å½“å‰ä¸ºç©º		
 		{
 			__WCharToMByte(wszIP, szIP, sizeof(szIP)/sizeof(szIP[0]));
 			//nStartTime = atoi( szStartTime );
 		}
 
 		GetDlgItem(IDC_EDIT_PORT)->GetWindowText(wszPort,  sizeof(wszPort));	
-		if (wcslen(wszPort)  > 0)//µ±Ç°Îª¿Õ		
+		if (wcslen(wszPort)  > 0)//å½“å‰ä¸ºç©º		
 		{
 			__WCharToMByte(wszPort, szPort, sizeof(szPort)/sizeof(szPort[0]));
 			nPort = atoi( szPort );
 		}
 
 		GetDlgItem(IDC_EDIT_STREAMNAME)->GetWindowText(wszStreamName,  sizeof(wszStreamName));	
-		if (wcslen(wszStreamName)  > 0)//µ±Ç°Îª¿Õ		
+		if (wcslen(wszStreamName)  > 0)//å½“å‰ä¸ºç©º		
 		{
 			__WCharToMByte(wszStreamName, szStreamName, sizeof(szStreamName)/sizeof(szStreamName[0]));
 		}
 
 		if (m_pusher)
 		{
-			EasyScreenLive_StartPush(m_pusher, PUSH_RTMP, szIP, nPort,  szStreamName );
+			bool bRecord = true ;
+			EasyScreenLive_StartPush(m_pusher, PUSH_RTMP, szIP, nPort,  szStreamName, 1, 1024, bRecord );
 			m_bPushingRtmp = TRUE;
 			pBtnPush->SetWindowText(_T("Stop"));
 			CString sLog = _T("");
 
-			sLog.Format(_T("¿ªÆôRTMPÍÆËÍ: rtmp://%s:%d/live/%s"), wszIP, nPort, wszStreamName);
+			if (bRecord)
+			{
+				sLog.Format(_T("å¼€å¯RTMPæ¨é€: rtmp://%s:%d/hls/%s"), wszIP, nPort, wszStreamName);
+			} 
+			else
+			{
+				sLog.Format(_T("å¼€å¯RTMPæ¨é€: rtmp://%s:%d/live/%s"), wszIP, nPort, wszStreamName);
+			}
 			OnLog( sLog );
 		}
 	}
@@ -411,19 +532,32 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtmp()
 
 		pBtnPush->SetWindowText(_T("Push-RTMP"));
 		m_bPushingRtmp = FALSE;
-		OnLog( _T("Í£Ö¹rtmpÍÆËÍ!") );
+		OnLog( _T("åœæ­¢rtmpæ¨é€!") );
 	}
 #endif
 }
 
 void CEasyScreenLiveDlg::OnCbnSelchangeComboPushsource()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	// 
 	CComboBox* pComboxSourceMode = (CComboBox*)GetDlgItem(IDC_COMBO_PUSHSOURCE);
 	if (pComboxSourceMode)
 	{
-		int nIdx = pComboxSourceMode->GetCurSel();
+		CButton* pChekCapCursor = (CButton*)GetDlgItem(IDC_CHECK_CAPCURSOR);
+		if (pChekCapCursor)
+		{
+			int nIdx = pComboxSourceMode->GetCurSel();
+			if (nIdx == 1)
+			{
+				pChekCapCursor->ShowWindow(SW_SHOW);
+			}
+			else
+			{
+				pChekCapCursor->ShowWindow(SW_HIDE);
+			}
+		}
+
 	}
 }
 
@@ -451,27 +585,27 @@ typedef struct tagIPInfo
 
 bool GetLocalIPs(IPInfo* ips,int maxCnt,int* cnt)
 {
-	//1.³õÊ¼»¯wsa
+	//1.åˆå§‹åŒ–wsa
 	WSADATA wsaData;
 	int ret=WSAStartup(MAKEWORD(2,2),&wsaData);
 	if (ret!=0)
 	{
 		return false;
 	}
-	//2.»ñÈ¡Ö÷»úÃû
+	//2.è·å–ä¸»æœºå
 	char hostname[256];
 	ret=gethostname(hostname,sizeof(hostname));
 	if (ret==SOCKET_ERROR)
 	{
 		return false;
 	}
-	//3.»ñÈ¡Ö÷»úip
+	//3.è·å–ä¸»æœºip
 	HOSTENT* host=gethostbyname(hostname);
 	if (host==NULL)
 	{
 		return false;
 	}
-	//4.Öğ¸ö×ª»¯Îªchar*²¢¿½±´·µ»Ø
+	//4.é€ä¸ªè½¬åŒ–ä¸ºchar*å¹¶æ‹·è´è¿”å›
 	int n = *cnt=host->h_length<maxCnt?host->h_length:maxCnt;
 	for (int i=0;i<n;i++)
 	{
@@ -484,7 +618,7 @@ bool GetLocalIPs(IPInfo* ips,int maxCnt,int* cnt)
 void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 {
 #if 1
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 	// 
 	//IDC_EDIT_LISTEN_PORT
 	CButton* pBtnPublishServer = (CButton*)GetDlgItem(IDC_BUTTON_PUBLISH_SERVER);
@@ -501,6 +635,12 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 
 				transportType = pComboTransType->GetCurSel();
 			}
+			int nChannels = 1;
+			CComboBox* pComboChannels  = (CComboBox*)GetDlgItem( IDC_COMBO_CHANNELS);
+			if (pComboChannels)
+			{
+				nChannels  = pComboChannels->GetCurSel()+1;
+			}
 
 			USES_CONVERSION;
 			CString sMuticastAddr ;
@@ -511,19 +651,27 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 			CEdit* pMuticastTTL = (CEdit*)GetDlgItem(IDC_EDIT_MUTICAST_TTL);
 			pMuticastTTL->GetWindowText( sMuticastTTL);
 			int ttl = atoi(T2A(sMuticastTTL));
+			int len = sizeof(EASYLIVE_CHANNEL_INFO_T);
 			EASYLIVE_CHANNEL_INFO_T	liveChannel[MAX_CHANNEL_NUM];
 			memset(&liveChannel[0], 0x00, sizeof(EASYLIVE_CHANNEL_INFO_T)*MAX_CHANNEL_NUM);
-			for (int i=0; i<MAX_CHANNEL_NUM; i++)
+			for (int i=0; i<nChannels; i++)
 			{
 				liveChannel[i].id = i;
 				//strcpy(liveChannel[i].name, channel[i].name);
 				sprintf(liveChannel[i].name, "channel=%d", i);
+				liveChannel[i].videoRTPPortNum = 6000;
+				liveChannel[i].audioRTPPortNum = 6002;
+
 #if 1
 				if (i==0)
 				{
 					liveChannel[i].enable_multicast = transportType;
 					strcpy(liveChannel[i].multicast_addr, T2A(sMuticastAddr));//"238.255.255.255"
 					liveChannel[i].ttl = ttl ;//255;
+					liveChannel[i].enableFec = 0;
+					liveChannel[i].fecGroudSize = 10;                       // fecç»„å¤§å°
+					liveChannel[i].fecParam = 40;	// fec å†—ä½™åŒ…  fecParam/%
+					liveChannel[i].isEnableArq = 0; // ä½¿èƒ½ arq
 				}
 #endif
 			}
@@ -532,7 +680,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 			char szPort[128] = {0,};
 			int nPort = 0;
 			GetDlgItem(IDC_EDIT_LISTEN_PORT)->GetWindowText(wszPort,  sizeof(wszPort));	
-			if (wcslen(wszPort)  > 0)//µ±Ç°Îª¿Õ		
+			if (wcslen(wszPort)  > 0)//å½“å‰ä¸ºç©º		
 			{
 				__WCharToMByte(wszPort, szPort, sizeof(szPort)/sizeof(szPort[0]));
 				nPort = atoi( szPort );
@@ -546,20 +694,20 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 			GetLocalIPs(ips, MaxCon, &num);
 #endif
 			GetLocalIP(ip);
-			//¿ªÊ¼RTSP·şÎñ
-			nRet  = EasyScreenLive_StartServer(m_pusher, nPort, "", "",  liveChannel, MAX_CHANNEL_NUM );
+			//å¼€å§‹RTSPæœåŠ¡
+			nRet  = EasyScreenLive_StartServer(m_pusher, nPort, "", "",  liveChannel, nChannels );
 			pBtnPublishServer->SetWindowText(_T("Stop"));
 			m_bPublishServer = TRUE;
 			CString sLog = _T("");
-			for (int nI=0; nI<MAX_CHANNEL_NUM; nI++)
+			for (int nI=0; nI<nChannels; nI++)
 			{
 				if (nRet>=0)
 				{
-					sLog.Format(_T("¿ªÆôRTSP·şÎñ: rtsp://%s:%d/channel=%d ³É¹¦"), CString(ip.c_str()), nPort, nI);
+					sLog.Format(_T("å¼€å¯RTSPæœåŠ¡: rtsp://%s:%d/channel=%d æˆåŠŸ"), CString(ip.c_str()), nPort, nI);
 				} 
 				else
 				{
-					sLog.Format(_T("¿ªÆôRTSP·şÎñ: rtsp://%s:%d/channel=%d Ê§°Ü"), CString(ip.c_str()), nPort, nI);
+					sLog.Format(_T("å¼€å¯RTSPæœåŠ¡: rtsp://%s:%d/channel=%d å¤±è´¥"), CString(ip.c_str()), nPort, nI);
 				}
 				OnLog( sLog );
 			}
@@ -570,7 +718,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 		EasyScreenLive_StopServer(m_pusher);
 		pBtnPublishServer->SetWindowText(_T("Publish Server"));
 		m_bPublishServer = FALSE;
-		OnLog(_T("Í£Ö¹RTSP·şÎñ"));
+		OnLog(_T("åœæ­¢RTSPæœåŠ¡"));
 	}
 #endif
 }
@@ -599,7 +747,7 @@ void CEasyScreenLiveDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 #if 1
-	// TODO: ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤å¤„æ·»åŠ æ¶ˆæ¯å¤„ç†ç¨‹åºä»£ç 
 	if (m_pusher)
 	{
 		EasyScreenLive_StopPush(m_pusher, PUSH_RTMP);
@@ -609,4 +757,16 @@ void CEasyScreenLiveDlg::OnDestroy()
 		m_pusher = NULL;
 	}
 #endif
+}
+
+
+void CEasyScreenLiveDlg::OnBnClickedCheckCapcursor()
+{
+
+	CButton* pChekCapCursor = (CButton*)GetDlgItem(IDC_CHECK_CAPCURSOR);
+	if(pChekCapCursor)
+	{
+		BOOL bCheck = pChekCapCursor->GetCheck();
+		EasyScreenLive_SetCaptureCursor(m_pusher, bCheck?true:false);
+	}
 }

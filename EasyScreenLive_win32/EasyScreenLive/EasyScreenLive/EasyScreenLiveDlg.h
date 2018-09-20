@@ -10,7 +10,7 @@
 #include "../bin/libEasyScreenLiveAPI.h"
 #pragma comment(lib, "../bin/libEasyScreenLive.lib")
 
-#define MAX_CHANNEL_NUM 1
+#define MAX_CHANNEL_NUM 8
 
 // CEasyScreenLiveDlg ¶Ô»°¿ò
 class CEasyScreenLiveDlg : public CDialogEx
@@ -52,4 +52,5 @@ public:
 	afx_msg void OnCbnSelchangeComboPushsource();
 	afx_msg void OnBnClickedButtonPublishServer();
 	void OnLog(CString sLog);
+	afx_msg void OnBnClickedCheckCapcursor();
 };
