@@ -73,7 +73,7 @@
             this.panel1.Location = new System.Drawing.Point(5, 4);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1539, 597);
+            this.panel1.Size = new System.Drawing.Size(1085, 349);
             this.panel1.TabIndex = 0;
             // 
             // CaptureType
@@ -83,7 +83,7 @@
             this.CaptureType.Items.AddRange(new object[] {
             "屏幕采集",
             "RTSP采集"});
-            this.CaptureType.Location = new System.Drawing.Point(163, 626);
+            this.CaptureType.Location = new System.Drawing.Point(12, 370);
             this.CaptureType.Margin = new System.Windows.Forms.Padding(4);
             this.CaptureType.Name = "CaptureType";
             this.CaptureType.Size = new System.Drawing.Size(128, 23);
@@ -94,7 +94,7 @@
             // 
             this.LIP.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.LIP.AutoSize = true;
-            this.LIP.Location = new System.Drawing.Point(386, 629);
+            this.LIP.Location = new System.Drawing.Point(235, 373);
             this.LIP.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.LIP.Name = "LIP";
             this.LIP.Size = new System.Drawing.Size(31, 15);
@@ -105,7 +105,7 @@
             // 
             this.tbIP.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.tbIP.Enabled = false;
-            this.tbIP.Location = new System.Drawing.Point(424, 626);
+            this.tbIP.Location = new System.Drawing.Point(273, 370);
             this.tbIP.Margin = new System.Windows.Forms.Padding(4);
             this.tbIP.Name = "tbIP";
             this.tbIP.Size = new System.Drawing.Size(201, 25);
@@ -116,7 +116,7 @@
             // 
             this.tbPort.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.tbPort.Enabled = false;
-            this.tbPort.Location = new System.Drawing.Point(690, 624);
+            this.tbPort.Location = new System.Drawing.Point(539, 368);
             this.tbPort.Margin = new System.Windows.Forms.Padding(4);
             this.tbPort.Name = "tbPort";
             this.tbPort.Size = new System.Drawing.Size(67, 25);
@@ -127,7 +127,7 @@
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(635, 629);
+            this.label1.Location = new System.Drawing.Point(484, 373);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 15);
@@ -138,7 +138,7 @@
             // 
             this.tbStream.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.tbStream.Enabled = false;
-            this.tbStream.Location = new System.Drawing.Point(878, 624);
+            this.tbStream.Location = new System.Drawing.Point(727, 368);
             this.tbStream.Margin = new System.Windows.Forms.Padding(4);
             this.tbStream.Name = "tbStream";
             this.tbStream.Size = new System.Drawing.Size(116, 25);
@@ -149,7 +149,7 @@
             // 
             this.lbStream.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lbStream.AutoSize = true;
-            this.lbStream.Location = new System.Drawing.Point(802, 629);
+            this.lbStream.Location = new System.Drawing.Point(651, 373);
             this.lbStream.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbStream.Name = "lbStream";
             this.lbStream.Size = new System.Drawing.Size(60, 15);
@@ -159,7 +159,7 @@
             // btnCapture
             // 
             this.btnCapture.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnCapture.Location = new System.Drawing.Point(1059, 626);
+            this.btnCapture.Location = new System.Drawing.Point(866, 372);
             this.btnCapture.Margin = new System.Windows.Forms.Padding(4);
             this.btnCapture.Name = "btnCapture";
             this.btnCapture.Size = new System.Drawing.Size(108, 36);
@@ -172,7 +172,7 @@
             // 
             this.btnStop.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnStop.Font = new System.Drawing.Font("宋体", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnStop.Location = new System.Drawing.Point(1064, 689);
+            this.btnStop.Location = new System.Drawing.Point(866, 426);
             this.btnStop.Margin = new System.Windows.Forms.Padding(4);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(103, 36);
@@ -189,7 +189,7 @@
             "默认编码器",
             "快速软编码",
             "快速硬编码"});
-            this.comboBox1.Location = new System.Drawing.Point(163, 658);
+            this.comboBox1.Location = new System.Drawing.Point(12, 402);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(128, 23);
@@ -203,7 +203,7 @@
             this.comboBox2.Items.AddRange(new object[] {
             "组播",
             "单播"});
-            this.comboBox2.Location = new System.Drawing.Point(163, 696);
+            this.comboBox2.Location = new System.Drawing.Point(12, 440);
             this.comboBox2.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(128, 23);
@@ -214,7 +214,7 @@
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(331, 629);
+            this.label2.Location = new System.Drawing.Point(180, 373);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(47, 15);
@@ -225,7 +225,7 @@
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(331, 662);
+            this.label3.Location = new System.Drawing.Point(180, 406);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(47, 15);
@@ -236,7 +236,7 @@
             // 
             this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(878, 658);
+            this.textBox1.Location = new System.Drawing.Point(727, 402);
             this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(116, 25);
@@ -247,7 +247,7 @@
             // 
             this.label4.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(802, 663);
+            this.label4.Location = new System.Drawing.Point(651, 407);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(60, 15);
@@ -258,7 +258,7 @@
             // 
             this.textBox2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.textBox2.Enabled = false;
-            this.textBox2.Location = new System.Drawing.Point(690, 658);
+            this.textBox2.Location = new System.Drawing.Point(539, 402);
             this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(67, 25);
@@ -269,7 +269,7 @@
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(635, 663);
+            this.label5.Location = new System.Drawing.Point(484, 407);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(45, 15);
@@ -280,7 +280,7 @@
             // 
             this.textBox3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.textBox3.Enabled = false;
-            this.textBox3.Location = new System.Drawing.Point(424, 659);
+            this.textBox3.Location = new System.Drawing.Point(273, 403);
             this.textBox3.Margin = new System.Windows.Forms.Padding(4);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(201, 25);
@@ -291,7 +291,7 @@
             // 
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(386, 663);
+            this.label6.Location = new System.Drawing.Point(235, 407);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(31, 15);
@@ -302,7 +302,7 @@
             // 
             this.textBox4.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.textBox4.Enabled = false;
-            this.textBox4.Location = new System.Drawing.Point(942, 697);
+            this.textBox4.Location = new System.Drawing.Point(791, 441);
             this.textBox4.Margin = new System.Windows.Forms.Padding(4);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(52, 25);
@@ -313,7 +313,7 @@
             // 
             this.label7.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(891, 701);
+            this.label7.Location = new System.Drawing.Point(740, 445);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(39, 15);
@@ -324,7 +324,7 @@
             // 
             this.textBox5.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.textBox5.Enabled = false;
-            this.textBox5.Location = new System.Drawing.Point(803, 697);
+            this.textBox5.Location = new System.Drawing.Point(652, 441);
             this.textBox5.Margin = new System.Windows.Forms.Padding(4);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(67, 25);
@@ -335,7 +335,7 @@
             // 
             this.label8.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(744, 701);
+            this.label8.Location = new System.Drawing.Point(593, 445);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(45, 15);
@@ -346,7 +346,7 @@
             // 
             this.textBox6.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.textBox6.Enabled = false;
-            this.textBox6.Location = new System.Drawing.Point(538, 698);
+            this.textBox6.Location = new System.Drawing.Point(387, 442);
             this.textBox6.Margin = new System.Windows.Forms.Padding(4);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(201, 25);
@@ -357,7 +357,7 @@
             // 
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(318, 701);
+            this.label9.Location = new System.Drawing.Point(167, 445);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(95, 15);
@@ -368,7 +368,7 @@
             // 
             this.label10.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(447, 701);
+            this.label10.Location = new System.Drawing.Point(296, 445);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(75, 15);
@@ -378,7 +378,7 @@
             // button1
             // 
             this.button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button1.Location = new System.Drawing.Point(1254, 626);
+            this.button1.Location = new System.Drawing.Point(982, 372);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(108, 36);
@@ -390,7 +390,7 @@
             // button2
             // 
             this.button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button2.Location = new System.Drawing.Point(1254, 690);
+            this.button2.Location = new System.Drawing.Point(982, 426);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(108, 36);
@@ -403,10 +403,10 @@
             // 
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.Location = new System.Drawing.Point(236, 733);
+            this.richTextBox1.Location = new System.Drawing.Point(16, 486);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(1017, 190);
+            this.richTextBox1.Size = new System.Drawing.Size(1074, 274);
             this.richTextBox1.TabIndex = 30;
             this.richTextBox1.Text = "";
             // 
@@ -414,7 +414,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1547, 936);
+            this.ClientSize = new System.Drawing.Size(1280, 788);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);

@@ -48,7 +48,7 @@ typedef struct __EASYLIVE_CHANNEL_INFO_T
 	int audioRTPPortNum;
 	int	ttl;
 	int enableFec;	// 是否使能fec
-	int fecGroudSize;     // fec组大小
+	int fecGroudSize;                       // fec组大小
 	int fecParam;	// fec 冗余包  fecParam/%
 	int isEnableArq; // 使能 arq
 	char	multicast_addr[36];
@@ -59,18 +59,18 @@ typedef struct __EASYLIVE_CHANNEL_INFO_T
 LIB_EASYSLIVE_API EASYSLIVE_HANDLE EasyScreenLive_Create(char* EasyIPCamera_Key, char* EasyRTMP_Key, char* EasyRTSP_Key);
 LIB_EASYSLIVE_API void EasyScreenLive_Release(EASYSLIVE_HANDLE handler);
 
-
 LIB_EASYSLIVE_API bool EasyScreenLive_IsSupportNvEncoder(EASYSLIVE_HANDLE handler);
+
 //设置屏幕采集是否采集鼠标光标
 LIB_EASYSLIVE_API int EasyScreenLive_SetCaptureCursor(EASYSLIVE_HANDLE handler, bool  bShow);
 
 //nEncoderType 编码类型： 
-//		0=默认软编码器（效率最低，通用性强） 
+//		0=默认编码器（效率最低，通用性强） 
 //		1=软编码（效率高，通用性不强）
 //		2=硬件编码（效率最高，通用性最低，需要英伟达独立显卡支持）
 LIB_EASYSLIVE_API int EasyScreenLive_StartCapture(EASYSLIVE_HANDLE handler, SOURCE_TYPE eSourceType, char* szURL,int nCamId, int nAudioId,  EASYSLIVE_HANDLE hCapWnd, int nEncoderType,
 	int nVideoWidth=640, int nVideoHeight=480, int nFps=25, int nBitRate=2048, char* szDataType = "YUY2",  //VIDEO PARAM
-	int nSampleRate=44100, int nChannel=2 , bool bTranscode = false);//AUDIO PARAM
+	int nSampleRate=44100, int nChannel=2, bool bTranscode = false);//AUDIO PARAM
 //停止采集
 LIB_EASYSLIVE_API void EasyScreenLive_StopCapture(EASYSLIVE_HANDLE handler);
 
@@ -82,7 +82,7 @@ LIB_EASYSLIVE_API void EasyScreenLive_StopPush(EASYSLIVE_HANDLE handler, PUSH_TY
 //开始RTSP服务
 LIB_EASYSLIVE_API int EasyScreenLive_StartServer(EASYSLIVE_HANDLE handler, int listenport, char *username, char *password,  EASYLIVE_CHANNEL_INFO_T *channelInfo, int channelNum);
 //停止服务
-LIB_EASYSLIVE_API void EasyScreenLive_StopServer(EASYSLIVE_HANDLE handler);
+LIB_EASYSLIVE_API int EasyScreenLive_StopServer(EASYSLIVE_HANDLE handler, int serverId);
 
 // DShow 采集枚举设备
 // 枚举视频采集设备

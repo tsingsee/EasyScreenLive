@@ -12,14 +12,14 @@ namespace CapturePusher
         /// 初始化推送接口，返回推送句柄
         /// </summary>
         /// <returns></returns>
-        public static IntPtr EasyScreenLive_Create()
+        public static IntPtr EasyScreenLive_CreateEx()
         {
-            var ret = EasyScreenLive_CreateEx();
+            var ret = EasyScreenLive_Create();
             return ret;
         }
 
         [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_Create@@YAPAXPAD00@Z")]
-        private static extern IntPtr EasyScreenLive_CreateEx(
+        private static extern IntPtr EasyScreenLive_Create(
             string EasyIPCamera_Key = "6D72754B7A4969576B5A75416D7942617064396A4575314659584E3555324E795A57567554476C325A53356C65475570567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35",
             string EasyRTMP_Key = "79397037795969576B5A75416D7942617064396A4575314659584E3555324E795A57567554476C325A53356C65475570567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35",
             string EasyRTSP_Key = "79397037795969576B5A7341596A5261706375647066464659584E355548567A614756794C6D56345A534E58444661672F365867523246326157346D516D466962334E68514449774D545A4659584E355247467964326C75564756686257566863336B3D");
@@ -80,7 +80,7 @@ namespace CapturePusher
         /// <param name="nSampleRate"></param>
         /// <param name="nChannel">推送通道號</param>
         /// <returns></returns>
-        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StartCapture@@YAHPAXW4tagSOURCE_TYPE@@PADHH0HHHHH2HH_N@Z")]     
+        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StartCapture@@YAHPAXW4tagSOURCE_TYPE@@PADHH0HHHHH2HH_N@Z")]
         private static extern int EasyScreenLive_StartCapture(IntPtr pusherHandle, SOURCE_TYPE eSourceType, string szURL, int nCamId, int nAudioId, IntPtr hCapWnd, EncoderType encodeType,
             int nVideoWidth = 1280, int nVideoHeight = 720, int nFps = 30, int nBitRate = 1024, string szDataType = "RGB24",  //VIDEO PARAM
             int nSampleRate = 44100, int nChannel = 2, bool bTransCode = true);
@@ -91,8 +91,6 @@ namespace CapturePusher
         /// <param name="pusherHandle"></param>
         [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StopCapture@@YAXPAX@Z")]
         public static extern void EasyScreenLive_StopCapture(IntPtr pusherHandle);
-
-
         /// <summary>
         /// 開始數據推送
         /// 返回0正常
@@ -104,8 +102,9 @@ namespace CapturePusher
         /// <param name="sPushName">流名稱</param>
         /// <param name="nPushBufSize">默認緩衝</param>
         /// <returns></returns>
-        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StartPush@@YAHPAXW4tagPUSH_TYPE@@PADH2HH_N@Z")]        
-        public static extern int EasyScreenLive_StartPush(IntPtr pusher, PUSH_TYPE pushType, string ServerIp, int nPushPort, string sPushName, int nPushBufSize = 1024, bool bServerRecord = false);
+        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StartPush@@YAHPAXW4tagPUSH_TYPE@@PADH2HH_N@Z")]
+        //? EasyScreenLive_StartPush@@YAHPAXW4tagPUSH_TYPE@@PADH2HH_N@Z
+        public static extern int EasyScreenLive_StartPush(IntPtr pusher, PUSH_TYPE pushType, string ServerIp, int nPushPort, string sPushName, int rtpOverTcp, int nPushBufSize = 1024, bool bServerRecord = false);
 
         /// <summary>
         /// 停止推送
@@ -126,6 +125,7 @@ namespace CapturePusher
         /// <param name="channelInfo">通道信息</param>
         /// <param name="channelNum">服务支持通道数，默认为1</param>
         [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StartServer@@YAHPAXHPAD1PAU__EASYLIVE_CHANNEL_INFO_T@@H@Z")]
+
         public static extern int EasyScreenLive_StartServer(IntPtr pusher, int listenport, string username, string password, /*ref EASYLIVE_CHANNEL_INFO_T*/IntPtr infosIntptr, int channelNum = 1);
 
         /// <summary>
@@ -133,8 +133,8 @@ namespace CapturePusher
         /// </summary>
         /// <param name="pusher">EasyPusher_Create返回值</param>
         /// <param name="pushType">推送類型</param>
-        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StopServer@@YAXPAX@Z")]
-        public static extern void EasyScreenLive_StopServer(IntPtr serverHandle);
+        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StopServer@@YAHPAXH@Z")]
+        public static extern int EasyScreenLive_StopServer(IntPtr serverHandle, int serverId);
     }
 
     public enum SOURCE_TYPE

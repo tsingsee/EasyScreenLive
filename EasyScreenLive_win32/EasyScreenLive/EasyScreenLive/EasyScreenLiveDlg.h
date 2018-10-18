@@ -42,6 +42,7 @@ private:
 	BOOL m_bPushingRtsp;
 	BOOL m_bPushingRtmp;
 	BOOL m_bPublishServer;
+	int m_nServerId[16];
 
 public:
 	afx_msg void OnBnClickedButtonCapture();

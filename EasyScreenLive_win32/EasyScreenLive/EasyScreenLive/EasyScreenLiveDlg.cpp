@@ -13,7 +13,7 @@ using namespace std;
 #pragma comment(lib,"ws2_32")        //链接到ws2_32动态链接库
 
 //#define EASY_RTSP_KEY "79397037795969576B5A7341596A5261706375647066464659584E355548567A614756794C6D56345A534E58444661672F365867523246326157346D516D466962334E68514449774D545A4659584E355247467964326C75564756686257566863336B3D"
-#define EASY_RTSP_KEY "6A36334A743469576B5A734150437862704E50447065314659584E3555324E795A57567554476C325A53356C6547556A567778576F502B6C34456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
+#define EASY_RTSP_KEY "6A36334A743469576B5A73417A4B7062704655796B75314659584E3555324E795A57567554476C325A53356C6547556A567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
 #define EASY_RTMP_KEY "79397037795969576B5A75416D7942617064396A4575314659584E3555324E795A57567554476C325A53356C65475570567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
 
 #define EASY_IPC_KEY   "6D72754B7A4969576B5A75416D7942617064396A4575314659584E3555324E795A57567554476C325A53356C65475570567778576F50365334456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
@@ -66,6 +66,7 @@ CEasyScreenLiveDlg::CEasyScreenLiveDlg(CWnd* pParent /*=NULL*/)
 	m_bPushingRtsp = FALSE;
 	m_bPushingRtmp = FALSE;
 	m_bPublishServer = FALSE;
+
 }
 
 void CEasyScreenLiveDlg::DoDataExchange(CDataExchange* pDX)
@@ -351,7 +352,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 			//IDC_EDIT_BITRATE
 
 			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, (char*)sURL.c_str(), -1, -1, 
-				hShowVideo, nEncoderType, 1920,1080,fps, nBitRate, (char*)sFormat.c_str(),44100,2,true);
+				hShowVideo, nEncoderType, 1280,720,fps, nBitRate, (char*)sFormat.c_str(),44100,2,true);
 			if (ret>=0)
 			{
 				m_bCapture = TRUE;
@@ -363,6 +364,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 				sLog.Format(_T("开启%s失败。"), sSourceType);
 				OnLog( sLog );
 			}
+
 #if 0
 			OnBnClickedButtonPublishServer();
 			Sleep(5000);
@@ -393,7 +395,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 		{
 			EasyScreenLive_StopPush(m_pusher, PUSH_RTSP);
 			EasyScreenLive_StopPush(m_pusher, PUSH_RTMP);
-			EasyScreenLive_StopServer(m_pusher);
+			EasyScreenLive_StopServer(m_pusher, m_nServerId[0]);
 			EasyScreenLive_StopCapture(m_pusher);
 			EasyScreenLive_Release(m_pusher);
 			m_pusher = NULL;
@@ -449,7 +451,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp()
 
 		if (m_pusher)
 		{
-			EasyScreenLive_StartPush(m_pusher, PUSH_RTSP, szIP, nPort,  szStreamName , 0);
+			EasyScreenLive_StartPush(m_pusher, PUSH_RTSP, szIP, nPort,  szStreamName , 1);
 			m_bPushingRtsp = TRUE;
 			pBtnPush->SetWindowText(_T("Stop"));
 			CString sLog = _T("");
@@ -619,7 +621,6 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 {
 #if 1
 	// TODO: 在此添加控件通知处理程序代码
-	// 
 	//IDC_EDIT_LISTEN_PORT
 	CButton* pBtnPublishServer = (CButton*)GetDlgItem(IDC_BUTTON_PUBLISH_SERVER);
 	if (!m_bPublishServer)
@@ -661,7 +662,6 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 				sprintf(liveChannel[i].name, "channel=%d", i);
 				liveChannel[i].videoRTPPortNum = 6000;
 				liveChannel[i].audioRTPPortNum = 6002;
-
 #if 1
 				if (i==0)
 				{
@@ -695,13 +695,15 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 #endif
 			GetLocalIP(ip);
 			//开始RTSP服务
-			nRet  = EasyScreenLive_StartServer(m_pusher, nPort, "", "",  liveChannel, nChannels );
+			m_nServerId[0]  = EasyScreenLive_StartServer(m_pusher, nPort, "", "",  liveChannel, nChannels );
+ 			m_nServerId[1]  = EasyScreenLive_StartServer(m_pusher, nPort+1, "", "",  liveChannel, nChannels );
+ 			m_nServerId[2]  = EasyScreenLive_StartServer(m_pusher, nPort+2, "", "",  liveChannel, nChannels );
 			pBtnPublishServer->SetWindowText(_T("Stop"));
 			m_bPublishServer = TRUE;
 			CString sLog = _T("");
 			for (int nI=0; nI<nChannels; nI++)
 			{
-				if (nRet>=0)
+				if (m_nServerId[0]>=0)
 				{
 					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 成功"), CString(ip.c_str()), nPort, nI);
 				} 
@@ -710,18 +712,39 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort, nI);
 				}
 				OnLog( sLog );
+				if (m_nServerId[1]>=0)
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 成功"), CString(ip.c_str()), nPort+1, nI);
+				} 
+				else
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort+1, nI);
+				}
+				OnLog( sLog );
+				if (m_nServerId[2]>=0)
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 成功"), CString(ip.c_str()), nPort+2, nI);
+				} 
+				else
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort+2, nI);
+				}
+				OnLog( sLog );
 			}
 		}
 	} 
 	else
 	{
-		EasyScreenLive_StopServer(m_pusher);
+		EasyScreenLive_StopServer(m_pusher,m_nServerId[0]);
+ 		EasyScreenLive_StopServer(m_pusher,m_nServerId[1]);
+ 		EasyScreenLive_StopServer(m_pusher,m_nServerId[2]);
 		pBtnPublishServer->SetWindowText(_T("Publish Server"));
 		m_bPublishServer = FALSE;
-		OnLog(_T("停止RTSP服务"));
+		OnLog(_T("停止RTSP服务")); 
 	}
 #endif
 }
+
 void CEasyScreenLiveDlg::OnLog(CString sLog)
 {
 	CEdit* pLog = (CEdit*)GetDlgItem(IDC_EDIT_LOG);
@@ -741,8 +764,6 @@ void CEasyScreenLiveDlg::OnLog(CString sLog)
 	}
 }
 
-
-
 void CEasyScreenLiveDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
@@ -751,7 +772,7 @@ void CEasyScreenLiveDlg::OnDestroy()
 	if (m_pusher)
 	{
 		EasyScreenLive_StopPush(m_pusher, PUSH_RTMP);
-		EasyScreenLive_StopServer(m_pusher);
+		EasyScreenLive_StopServer(m_pusher, m_nServerId[0]);
 		EasyScreenLive_StopCapture(m_pusher);
 		EasyScreenLive_Release(m_pusher);
 		m_pusher = NULL;
