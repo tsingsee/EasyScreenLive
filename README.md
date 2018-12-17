@@ -106,8 +106,6 @@ Android版本延时对比
 
 - 邮件：[support@easydarwin.org](mailto:support@easydarwin.org) 
 
-- Tel：13718530929
-
 - QQ交流群：[694451013](https://jq.qq.com/?_wv=1027&k=5GaYB7K "EasyScreenLive")
 
 > **我们同时提供Windows、Android版本的EasyScreenLive同屏技术**：EasyScreenLive商业使用需要经过授权才能永久使用，商业授权方案可以通过以上渠道进行更深入的技术与合作咨询；
