@@ -18,11 +18,14 @@ namespace CapturePusher
             return ret;
         }
 
-        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_Create@@YAPAXPAD00@Z")]
+        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_Create@@YAPAXPAD0000@Z")]
         private static extern IntPtr EasyScreenLive_Create(
             string EasyIPCamera_Key = "6D72754B7A4969576B5A7341636752636F2F754E7065314659584E3555324E795A57567554476C325A53356C65475857567778576F502B6C3430566863336C4559584A33615735555A57467453584E55614756435A584E30514449774D54686C59584E35",
             string EasyRTMP_Key = "79397037795969576B5A7541777756636F2F6F384A65314659584E3555324E795A57567554476C325A53356C65475868567778576F502B6C3430566863336C4559584A33615735555A57467453584E55614756435A584E30514449774D54686C59584E35",
-            string EasyRTSP_Key = "6A36334A743469576B5A754149414E636F2F7A664A65314659584E3555324E795A57567554476C325A53356C65475745567778576F502B6C3430566863336C4559584A33615735555A57467453584E55614756435A584E30514449774D54686C59584E35");
+            string EasyRTSP_Key = "6A36334A743469576B5A754149414E636F2F7A664A65314659584E3555324E795A57567554476C325A53356C65475745567778576F502B6C3430566863336C4559584A33615735555A57467453584E55614756435A584E30514449774D54686C59584E35",
+            string RTMPClient_KEY = null,
+            string RTSPClient_KEY = null
+            );
 
         /// <summary>
         /// 推送實例銷毀
@@ -103,7 +106,6 @@ namespace CapturePusher
         /// <param name="nPushBufSize">默認緩衝</param>
         /// <returns></returns>
         [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StartPush@@YAHPAXW4tagPUSH_TYPE@@PADH2HH_N@Z")]
-        //? EasyScreenLive_StartPush@@YAHPAXW4tagPUSH_TYPE@@PADH2HH_N@Z
         public static extern int EasyScreenLive_StartPush(IntPtr pusher, PUSH_TYPE pushType, string ServerIp, int nPushPort, string sPushName, int rtpOverTcp, int nPushBufSize = 1024, bool bServerRecord = false);
 
         /// <summary>
@@ -141,9 +143,9 @@ namespace CapturePusher
     {
         SOURCE_LOCAL_CAMERA = 0,//本地音视频
         SOURCE_SCREEN_CAPTURE = 1,//屏幕捕获
-        SOURCE_FILE_STREAM = 2,       //文件流推送(mp4,ts,flv???)
-        SOURCE_RTSP_STREAM = 3,//RTSP流
-        SOURCE_RTMP_STREAM = 4,//RTMP流
+        SOURCE_RTSP_STREAM = 2,//RTSP流
+        SOURCE_RTMP_STREAM = 3,//RTMP流
+        SOURCE_FILE_STREAM = 4,       //文件流推送(mp4,ts,flv???)
     }
 
     public enum PUSH_TYPE

@@ -10,9 +10,9 @@ typedef enum tagSOURCE_TYPE
 {
 	SOURCE_LOCAL_CAMERA = 0,//本地音视频
 	SOURCE_SCREEN_CAPTURE =1,//屏幕捕获
-	SOURCE_FILE_STREAM = 2,       //文件流推送(mp4,ts,flv???)
-	SOURCE_RTSP_STREAM=3,//RTSP流
-	SOURCE_RTMP_STREAM=4,//RTMP流
+	SOURCE_RTSP_STREAM=2,//RTSP流
+	SOURCE_RTMP_STREAM=3,//RTMP流
+	SOURCE_FILE_STREAM = 4,       //文件流推送(mp4,ts,flv???)
 	// 	Any other Source to push
 
 }SOURCE_TYPE;
@@ -56,8 +56,10 @@ typedef struct __EASYLIVE_CHANNEL_INFO_T
 
 }EASYLIVE_CHANNEL_INFO_T;
 
-LIB_EASYSLIVE_API EASYSLIVE_HANDLE EasyScreenLive_Create(char* EasyIPCamera_Key, char* EasyRTMP_Key, char* EasyRTSP_Key);
+LIB_EASYSLIVE_API EASYSLIVE_HANDLE EasyScreenLive_Create(char* EasyIPCamera_Key, char* EasyRTMP_Key, char* EasyRTSP_Key, char* EasyRTSPClient_Key = NULL, char* EasyRTMPClient_Key = NULL);
 LIB_EASYSLIVE_API void EasyScreenLive_Release(EASYSLIVE_HANDLE handler);
+
+LIB_EASYSLIVE_API int EasyScreenLive_GetActiveDays(EASYSLIVE_HANDLE handler);
 
 LIB_EASYSLIVE_API bool EasyScreenLive_IsSupportNvEncoder(EASYSLIVE_HANDLE handler);
 
