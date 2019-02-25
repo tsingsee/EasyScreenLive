@@ -6,8 +6,8 @@ android {
         applicationId "org.easydarwin.easyscreenlive"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 9
-        versionName "1.0.18.11.25"
+        versionCode 10
+        versionName "1.0.19.02.25"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
