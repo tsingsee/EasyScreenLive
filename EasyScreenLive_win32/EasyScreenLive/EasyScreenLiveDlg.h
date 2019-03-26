@@ -43,7 +43,8 @@ private:
 	BOOL m_bPushingRtmp;
 	BOOL m_bPublishServer;
 	int m_nServerId[16];
-
+	EASYLIVE_DEVICE_LIST_T* m_pAudioDevList ;
+	EASYLIVE_DEVICE_LIST_T* m_pCameraDevList ;
 public:
 	afx_msg void OnBnClickedButtonCapture();
 	afx_msg void OnBnClickedButtonPushRtmp();

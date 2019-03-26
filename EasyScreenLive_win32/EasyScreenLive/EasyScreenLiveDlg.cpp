@@ -12,9 +12,10 @@ using namespace std;
 #include <WinSock2.h>
 #pragma comment(lib,"ws2_32")        //链接到ws2_32动态链接库
 
-#define EASY_RTSP_KEY "6A36334A743469576B5A7341753242636F3539457065314659584E3555324E795A57567554476C325A53356C65475857567778576F502B6C3430566863336C4559584A33615735555A57467453584E55614756435A584E30514449774D54686C59584E35"
-#define EASY_RTMP_KEY "79397037795969576B5A754144474A636F35337A4A65314659584E3555324E795A57567554476C325A53356C65475775567778576F502B6C3430566863336C4559584A33615735555A57467453584E55614756435A584E30514449774D54686C59584E35"
-#define EASY_IPC_KEY   "6D72754B7A4969576B5A7341753242636F3539457065314659584E3555324E795A57567554476C325A53356C65475653567778576F502B6C3430566863336C4559584A33615735555A57467453584E55614756435A584E30514449774D54686C59584E35"
+#define EASY_RTSP_KEY "6A36334A743469576B5A7541794A5A636F326B334A65314659584E3555324E795A57567554476C325A53356C6547556A567778576F502B6C34456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
+#define EASY_RTMP_KEY "79397037795969576B5A7541794A5A636F326B334A65314659584E3555324E795A57567554476C325A53356C65475570567778576F502B6C34456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
+
+#define EASY_IPC_KEY   "6D72754B7A4969576B5A7541794A5A636F326B334A65314659584E3555324E795A57567554476C325A53356C6547572B567778576F502B6C34456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35"
 
 
 #ifdef _DEBUG
@@ -64,7 +65,8 @@ CEasyScreenLiveDlg::CEasyScreenLiveDlg(CWnd* pParent /*=NULL*/)
 	m_bPushingRtsp = FALSE;
 	m_bPushingRtmp = FALSE;
 	m_bPublishServer = FALSE;
-
+	m_pAudioDevList  = NULL;
+	m_pCameraDevList = NULL;
 }
 
 void CEasyScreenLiveDlg::DoDataExchange(CDataExchange* pDX)
@@ -121,7 +123,7 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 
 	GetDlgItem(IDC_EDIT_IP)->SetWindowText(_T("demo.easydss.com"));//
 	GetDlgItem(IDC_EDIT_PORT)->SetWindowText(_T("10085"));	
-	GetDlgItem(IDC_EDIT_STREAMNAME)->SetWindowText(_T("live/Sword"));	
+	GetDlgItem(IDC_EDIT_STREAMNAME)->SetWindowText(_T("hls/Sword"));	
 	GetDlgItem(IDC_EDIT_LISTEN_PORT)->SetWindowText(_T("8554"));	
 
 	GetDlgItem(IDC_EDIT_IP_RTSPSERVER)->SetWindowText(_T("cloud.easydarwin.org"));//www.easydss.com
@@ -133,8 +135,6 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 	GetDlgItem(IDC_EDIT_MUTICAST_ADDR)->SetWindowText(_T("238.255.255.255"));	
 	GetDlgItem(IDC_EDIT_MUTICAST_TTL)->SetWindowText(_T("255"));	
 	GetDlgItem(IDC_EDIT_FPS)->SetWindowText(_T("15"));	
-
-
 
 	CComboBox* pComboSource  = (CComboBox*)GetDlgItem( IDC_COMBO_PUSHSOURCE);
 	if (pComboSource)
@@ -157,7 +157,6 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 		pComboChannels->SetCurSel(0);
 	}
 	
-
 	CButton* pChekCapCursor = (CButton*)GetDlgItem(IDC_CHECK_CAPCURSOR);
 	if(pChekCapCursor)
 	{
@@ -181,8 +180,56 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 		pComboTransType->SetCurSel(0);
 	}	
 
+	//IDC_CHECK_TRANSCODE
+	CComboBox* pComboTEncodeMode = (CComboBox*)GetDlgItem( IDC_COMBO_ENCODE_MODE);
+	if (pComboTEncodeMode)
+	{
+		pComboTEncodeMode->AddString(_T("H264"));
+		pComboTEncodeMode->AddString(_T("H265"));
+		pComboTEncodeMode->SetCurSel(0);
+	}	
+	//IDC_COMBO_VIDEOID IDC_COMBO_AUDIOID
+	CComboBox* pComboVideoId = (CComboBox*)GetDlgItem( IDC_COMBO_VIDEOID);
+	CComboBox* pComboAudioId = (CComboBox*)GetDlgItem( IDC_COMBO_AUDIOID);
+	if(!m_pusher )
+		m_pusher =  EasyScreenLive_Create(EASY_IPC_KEY, EASY_RTMP_KEY, EASY_RTSP_KEY, NULL, NULL);
+
+	// 枚举视频采集设备
+	m_pAudioDevList = EasyScreenLive_GetAudioInputDevList(m_pusher);
+	// 枚举音频采集设备
+	m_pCameraDevList = EasyScreenLive_GetCameraList(m_pusher);
+	EASYLIVE_DEVICE_INFO_T		*pDevice = m_pAudioDevList->pDevice;
+	for (int i = 0; i<m_pAudioDevList->count; i++)
+	{
+		if (pDevice)
+		{
+			pComboAudioId->AddString(CString(pDevice->friendlyName));
+		}
+		pDevice = pDevice->pNext;
+	}
+	pComboAudioId->AddString(TEXT("不启用"));
+	pComboAudioId->SetCurSel(m_pAudioDevList->count);
+
+	pDevice = m_pCameraDevList->pDevice;
+	for (int i = 0; i<m_pCameraDevList->count; i++)
+	{
+		if (pDevice)
+		{
+			pComboVideoId->AddString(CString(pDevice->friendlyName));
+		}
+		pDevice = pDevice->pNext;
+	}
+	pComboVideoId->AddString(TEXT("不启用"));
+	pComboVideoId->SetCurSel(0);
+
 	CEdit* pEditURL = (CEdit*)GetDlgItem(IDC_EDIT_URL);//rtmp://live.hkstv.hk.lxdns.com/live/hks
-	pEditURL->SetWindowText(_T("rtmp://live.hkstv.hk.lxdns.com/live/hks"));
+	pEditURL->SetWindowText(_T("rtmp://live.hkstv.hk.lxdns.com/live/hks2"));
+
+
+	CEdit* pEditWidth = (CEdit*)GetDlgItem(IDC_EDIT_WIDTH);
+	pEditWidth->SetWindowText(_T("1920"));
+	CEdit* pEditHeight = (CEdit*)GetDlgItem(IDC_EDIT_HEIGHT);
+	pEditHeight->SetWindowText(_T("1080"));
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -247,9 +294,6 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 	if (!m_bCapture)
 	{
 		HWND hShowVideo = GetDlgItem(IDC_STATIC_VIDEO)->GetSafeHwnd();
-
-		if(!m_pusher )
-			m_pusher =  EasyScreenLive_Create(EASY_IPC_KEY, EASY_RTMP_KEY, EASY_RTSP_KEY);
 
 		if (m_pusher)
 		{
@@ -345,15 +389,66 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 			pEditFPS->GetWindowText(sFPS);
 			int fps =  atoi(T2A(sFPS));
 
-			int nBitRate =  atoi(T2A(sBitRate));
-			//IDC_EDIT_BITRATE
+			CEdit* pEditWidth = (CEdit*)GetDlgItem(IDC_EDIT_WIDTH);
+			CEdit* pEditHeight = (CEdit*)GetDlgItem(IDC_EDIT_HEIGHT);
+			CString sWidth;
+			pEditWidth->GetWindowText(sWidth);
+			int width =  atoi(T2A(sWidth));
+			CString sHeight;
+			pEditHeight->GetWindowText(sHeight);
+			int height =  atoi(T2A(sHeight));		
 
-			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, (char*)sURL.c_str(), 0, 0, 
-				hShowVideo, nEncoderType, 1280,720, fps, nBitRate, (char*)sFormat.c_str(),44100, 2,false);
+			int nBitRate =  atoi(T2A(sBitRate));
+
+			bool bTransCode = false;
+			//IDC_CHECK_TRANSCODE
+			CButton* pChekTranscode = (CButton*)GetDlgItem(IDC_CHECK_TRANSCODE);
+			if (pChekTranscode)
+			{
+				bTransCode = pChekTranscode->GetCheck()?true:false;
+			}
+
+			ENCODE_MODE encMode = ENCODE_H264;
+			CComboBox* pComboTEncodeMode = (CComboBox*)GetDlgItem( IDC_COMBO_ENCODE_MODE);
+			if (pComboTEncodeMode)
+			{
+				encMode = (ENCODE_MODE)pComboTEncodeMode->GetCurSel();
+			}	
+			if (nEncoderType == 1&&encMode == ENCODE_H265)
+			{
+				sLog = _T("快速软编码模式下暂不支持H265编码，已为您切换至H264编码。");	
+				OnLog( sLog );
+				encMode = ENCODE_H264;
+				if(pComboTEncodeMode)
+					pComboTEncodeMode->SetCurSel(0);
+			}
+
+			// 枚举视频采集设备
+			m_pAudioDevList = EasyScreenLive_GetAudioInputDevList(m_pusher);
+			// 枚举音频采集设备
+			m_pCameraDevList = EasyScreenLive_GetCameraList(m_pusher);
+			int nVideoId = 0;
+			int nAudioId = 0;
+			//IDC_COMBO_VIDEOID IDC_COMBO_AUDIOID
+			CComboBox* pComboVideoId = (CComboBox*)GetDlgItem( IDC_COMBO_VIDEOID);
+			if (pComboVideoId)
+			{
+				nVideoId = pComboVideoId->GetCurSel();
+				nVideoId = nVideoId>=m_pCameraDevList->count?-1:nVideoId;
+			}
+			CComboBox* pComboAudioId = (CComboBox*)GetDlgItem( IDC_COMBO_AUDIOID);
+			if (pComboAudioId)
+			{
+				nAudioId = pComboAudioId->GetCurSel();
+				nAudioId = nAudioId>=m_pAudioDevList->count?-1:nVideoId;
+			}
+
+			int ret = EasyScreenLive_StartCapture(m_pusher, sourceType, (char*)sURL.c_str(), nVideoId, nAudioId, 
+				hShowVideo, nEncoderType, width,height, fps, nBitRate, (char*)sFormat.c_str(),44100, 2,bTransCode, encMode);
 			if (ret>=0)
 			{
 				m_bCapture = TRUE;
-				pCapture->SetWindowText(_T("Stop"));
+				pCapture->SetWindowText(_T("StopCapture"));
 				sLog.Format(_T("开启%s成功。"), sSourceType);	
 				OnLog( sLog );
 			}else
@@ -361,6 +456,21 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 				sLog.Format(_T("开启%s失败。"), sSourceType);
 				OnLog( sLog );
 			}
+
+#if 1	//OSD Example
+			EASY_OSD osd;
+			osd.alpha = 255;
+			osd.size = 35;
+			osd.color = RGB(255,0,255);
+			osd.rect.left = 10;
+			osd.rect.right = 5000;
+			osd.rect.top = 100;
+			osd.rect.bottom = 800;
+			osd.shadowcolor = RGB(0,0,0);
+			char* ss =  "这是EasyScreenLive \r\n的视频字幕叠加接口的效果！！\r\n以\"\\r\\n\"为换行结束符号\r\n注意：每行的长度不能超过128个字节\r\n总的OSD长度不能超过1024个字节";
+			strcpy(osd.stOSD ,ss);
+			EasyScreenLive_SetOSD(m_pusher, true,  osd);
+#endif
 
 #if 0
 			OnBnClickedButtonPublishServer();
@@ -396,8 +506,6 @@ void CEasyScreenLiveDlg::OnBnClickedButtonCapture()
 			EasyScreenLive_StopServer(m_pusher,m_nServerId[1]);
 			EasyScreenLive_StopServer(m_pusher,m_nServerId[2]);
 			EasyScreenLive_StopCapture(m_pusher);
-			EasyScreenLive_Release(m_pusher);
-			m_pusher = NULL;
 		}
 		pCapture->SetWindowText(_T("Capture"));
 		m_bCapture = FALSE;
@@ -452,7 +560,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp()
 		{
 			EasyScreenLive_StartPush(m_pusher, PUSH_RTSP, szIP, nPort,  szStreamName , 1);
 			m_bPushingRtsp = TRUE;
-			pBtnPush->SetWindowText(_T("Stop"));
+			pBtnPush->SetWindowText(_T("StopPushRTSP"));
 			CString sLog = _T("");
 
 			sLog.Format(_T("开启RTSP推送: rtsp://%s:%d/%s"), wszIP, nPort, wszStreamName);
@@ -513,7 +621,7 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtmp()
 			bool bRecord = false;
 			EasyScreenLive_StartPush(m_pusher, PUSH_RTMP, szIP, nPort,  szStreamName, 1, 1024, bRecord );
 			m_bPushingRtmp = TRUE;
-			pBtnPush->SetWindowText(_T("Stop"));
+			pBtnPush->SetWindowText(_T("StopPushRTMP"));
 			CString sLog = _T("");
 
 			sLog.Format(_T("开启RTMP推送: rtmp://%s:%d/%s"), wszIP, nPort, wszStreamName);
@@ -689,9 +797,9 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 			GetLocalIP(ip);
 			//开始RTSP服务
 			m_nServerId[0]  = EasyScreenLive_StartServer(m_pusher, nPort, "", "",  liveChannel, nChannels );
-//  			m_nServerId[1]  = EasyScreenLive_StartServer(m_pusher, nPort+1, "", "",  liveChannel, nChannels );
-//  			m_nServerId[2]  = EasyScreenLive_StartServer(m_pusher, nPort+2, "", "",  liveChannel, nChannels );
-			pBtnPublishServer->SetWindowText(_T("Stop"));
+ 			m_nServerId[1]  = EasyScreenLive_StartServer(m_pusher, nPort+1, "", "",  liveChannel, nChannels );
+ 			m_nServerId[2]  = EasyScreenLive_StartServer(m_pusher, nPort+2, "", "",  liveChannel, nChannels );
+			pBtnPublishServer->SetWindowText(_T("StopRTSPServer"));
 			m_bPublishServer = TRUE;
 			CString sLog = _T("");
 			for (int nI=0; nI<nChannels; nI++)
@@ -705,32 +813,32 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort, nI);
 				}
 				OnLog( sLog );
-// 				if (m_nServerId[1]>=0)
-// 				{
-// 					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 成功"), CString(ip.c_str()), nPort+1, nI);
-// 				} 
-// 				else
-// 				{
-// 					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort+1, nI);
-// 				}
-// 				OnLog( sLog );
-// 				if (m_nServerId[2]>=0)
-// 				{
-// 					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 成功"), CString(ip.c_str()), nPort+2, nI);
-// 				} 
-// 				else
-// 				{
-// 					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort+2, nI);
-// 				}
-// 				OnLog( sLog );
+				if (m_nServerId[1]>=0)
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 成功"), CString(ip.c_str()), nPort+1, nI);
+				} 
+				else
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort+1, nI);
+				}
+				OnLog( sLog );
+				if (m_nServerId[2]>=0)
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 成功"), CString(ip.c_str()), nPort+2, nI);
+				} 
+				else
+				{
+					sLog.Format(_T("开启RTSP服务: rtsp://%s:%d/channel=%d 失败"), CString(ip.c_str()), nPort+2, nI);
+				}
+				OnLog( sLog );
 			}
 		}
 	} 
 	else
 	{
 		EasyScreenLive_StopServer(m_pusher,m_nServerId[0]);
-//  		EasyScreenLive_StopServer(m_pusher,m_nServerId[1]);
-//  		EasyScreenLive_StopServer(m_pusher,m_nServerId[2]);
+ 		EasyScreenLive_StopServer(m_pusher,m_nServerId[1]);
+ 		EasyScreenLive_StopServer(m_pusher,m_nServerId[2]);
 		pBtnPublishServer->SetWindowText(_T("Publish Server"));
 		m_bPublishServer = FALSE;
 		OnLog(_T("停止RTSP服务")); 
