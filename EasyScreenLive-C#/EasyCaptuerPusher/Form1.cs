@@ -120,7 +120,8 @@ namespace EasyCaptuerPusher
                 SOURCE_TYPE captureType = this.CaptureType.Text == "屏幕采集" ? SOURCE_TYPE.SOURCE_SCREEN_CAPTURE : SOURCE_TYPE.SOURCE_RTSP_STREAM;
                 string szDataType = captureType == SOURCE_TYPE.SOURCE_LOCAL_CAMERA ? "YUY2" : "RGB24";
                 int captureRet = 0;
-                captureRet = CapturePusher.CapturePusherSDK.EasyScreenLive_StartCapture(pusherPtr, captureType, "rtsp://192.168.0.101:8004/12345",this.panel1.Handle/*IntPtr.Zero*/, encodeType, szDataType, 1280, 720, 1024, false);
+                ENCODE_MODE encMode = ENCODE_MODE.H265;
+                captureRet = CapturePusher.CapturePusherSDK.EasyScreenLive_StartCapture(pusherPtr, captureType, "rtsp://192.168.0.101:8004/12345",this.panel1.Handle/*IntPtr.Zero*/, encodeType, szDataType, 1280, 720, 1024, false, encMode);
 
                 isCapture = captureRet >= 0;
 

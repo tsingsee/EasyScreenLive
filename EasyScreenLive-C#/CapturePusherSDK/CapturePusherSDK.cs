@@ -59,9 +59,9 @@ namespace CapturePusher
         /// <param name="szDataType">推送數據類型</param>
         /// <param name="nBitRate">比特率</param>
         /// <returns></returns>
-        public static int EasyScreenLive_StartCapture(IntPtr pusherHandle, SOURCE_TYPE eSourceType, string szURL, IntPtr hCapWnd, EncoderType encodeType, string szDataType = "RGB24", int nWidth=1280, int nHeight=720, int nBitRate = 2048, bool bTranscode=true)
+        public static int EasyScreenLive_StartCapture(IntPtr pusherHandle, SOURCE_TYPE eSourceType, string szURL, IntPtr hCapWnd, EncoderType encodeType, string szDataType = "RGB24", int nWidth=1280, int nHeight=720, int nBitRate = 2048, bool bTranscode=false, ENCODE_MODE encMode=0)
         {
-            var ret = EasyScreenLive_StartCapture(pusherHandle, eSourceType, szURL, 0, 0, hCapWnd, encodeType, nVideoWidth : nWidth, nVideoHeight: nHeight, nBitRate: nBitRate, szDataType: szDataType, bTransCode:bTranscode);
+            var ret = EasyScreenLive_StartCapture(pusherHandle, eSourceType, szURL, 0, 0, hCapWnd, encodeType, nVideoWidth : nWidth, nVideoHeight: nHeight, nBitRate: nBitRate, szDataType: szDataType, bTransCode:bTranscode, encodeMode:encMode);
 
             return ret;
         }
@@ -83,10 +83,10 @@ namespace CapturePusher
         /// <param name="nSampleRate"></param>
         /// <param name="nChannel">推送通道號</param>
         /// <returns></returns>
-        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StartCapture@@YAHPAXW4tagSOURCE_TYPE@@PADHH0HHHHH2HH_N@Z")]
+        [DllImport(@"Lib\libEasyScreenLive.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "?EasyScreenLive_StartCapture@@YAHPAXW4tagSOURCE_TYPE@@PADHH0HHHHH2HH_NW4tagENCODE_MODE@@@Z")]
         private static extern int EasyScreenLive_StartCapture(IntPtr pusherHandle, SOURCE_TYPE eSourceType, string szURL, int nCamId, int nAudioId, IntPtr hCapWnd, EncoderType encodeType,
             int nVideoWidth = 1280, int nVideoHeight = 720, int nFps = 30, int nBitRate = 1024, string szDataType = "RGB24",  //VIDEO PARAM
-            int nSampleRate = 44100, int nChannel = 2, bool bTransCode = true);
+            int nSampleRate = 44100, int nChannel = 2, bool bTransCode = false, ENCODE_MODE encodeMode = 0);
 
         /// <summary>
         /// 停止數據采集
@@ -165,7 +165,11 @@ namespace CapturePusher
         快速软编码 = 1,//（效率高，通用性不强）
         快速硬编码 = 2//效率最高，通用性最低，需要英伟达独立显卡支持
     }
-
+    public enum ENCODE_MODE
+    {
+        H264 = 0,
+        H265 = 1
+    }
     [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
     public struct EASYLIVE_CHANNEL_INFO_T
     {

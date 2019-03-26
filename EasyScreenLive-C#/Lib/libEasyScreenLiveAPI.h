@@ -17,6 +17,12 @@ typedef enum tagSOURCE_TYPE
 
 }SOURCE_TYPE;
 
+typedef enum tagENCODE_MODE
+{
+	ENCODE_H264 = 0,
+	ENCODE_H265 = 1
+
+}ENCODE_MODE;
 
 typedef enum tagPUSH_TYPE
 {
@@ -56,7 +62,18 @@ typedef struct __EASYLIVE_CHANNEL_INFO_T
 
 }EASYLIVE_CHANNEL_INFO_T;
 
-LIB_EASYSLIVE_API EASYSLIVE_HANDLE EasyScreenLive_Create(char* EasyIPCamera_Key, char* EasyRTMP_Key, char* EasyRTSP_Key, char* EasyRTSPClient_Key = NULL, char* EasyRTMPClient_Key = NULL);
+typedef struct tagEASY_OSD
+{
+	char	stOSD[1024];
+	DWORD	alpha;		//0-255
+	DWORD	color;		//RGB(0xf9,0xf9,0xf9)
+	DWORD	shadowcolor;		//RGB(0x4d,0x4d,0x4d) 全为0背景透明
+	RECT	rect;		//OSD基于图像右上角显示区域
+	int			size;		//just D3D Support
+}EASY_OSD;
+
+
+LIB_EASYSLIVE_API EASYSLIVE_HANDLE EasyScreenLive_Create(char* EasyIPCamera_Key, char* EasyRTMP_Key, char* EasyRTSP_Key, char* EasyRTSPClient_Key, char* EasyRTMPClient_Key);
 LIB_EASYSLIVE_API void EasyScreenLive_Release(EASYSLIVE_HANDLE handler);
 
 LIB_EASYSLIVE_API int EasyScreenLive_GetActiveDays(EASYSLIVE_HANDLE handler);
@@ -66,13 +83,16 @@ LIB_EASYSLIVE_API bool EasyScreenLive_IsSupportNvEncoder(EASYSLIVE_HANDLE handle
 //设置屏幕采集是否采集鼠标光标
 LIB_EASYSLIVE_API int EasyScreenLive_SetCaptureCursor(EASYSLIVE_HANDLE handler, bool  bShow);
 
+//拉RTSP/RTMP流设置OSD,其他采集模式设置无效
+LIB_EASYSLIVE_API  int EasyScreenLive_SetOSD(EASYSLIVE_HANDLE handler, bool  bShow, EASY_OSD osd);
+
 //nEncoderType 编码类型： 
 //		0=默认编码器（效率最低，通用性强） 
 //		1=软编码（效率高，通用性不强）
 //		2=硬件编码（效率最高，通用性最低，需要英伟达独立显卡支持）
 LIB_EASYSLIVE_API int EasyScreenLive_StartCapture(EASYSLIVE_HANDLE handler, SOURCE_TYPE eSourceType, char* szURL,int nCamId, int nAudioId,  EASYSLIVE_HANDLE hCapWnd, int nEncoderType,
 	int nVideoWidth=640, int nVideoHeight=480, int nFps=25, int nBitRate=2048, char* szDataType = "YUY2",  //VIDEO PARAM
-	int nSampleRate=44100, int nChannel=2, bool bTranscode = false);//AUDIO PARAM
+	int nSampleRate=44100, int nChannel=2, bool bTranscode = false, ENCODE_MODE encType = ENCODE_H264);//AUDIO PARAM
 //停止采集
 LIB_EASYSLIVE_API void EasyScreenLive_StopCapture(EASYSLIVE_HANDLE handler);
 
@@ -90,5 +110,5 @@ LIB_EASYSLIVE_API int EasyScreenLive_StopServer(EASYSLIVE_HANDLE handler, int se
 // 枚举视频采集设备
 LIB_EASYSLIVE_API EASYLIVE_DEVICE_LIST_T* EasyScreenLive_GetAudioInputDevList(EASYSLIVE_HANDLE handler);
 // 枚举音频采集设备
- LIB_EASYSLIVE_API EASYLIVE_DEVICE_LIST_T* EasyScreenLive_GetCameraList(EASYSLIVE_HANDLE handler);
+LIB_EASYSLIVE_API EASYLIVE_DEVICE_LIST_T* EasyScreenLive_GetCameraList(EASYSLIVE_HANDLE handler);
 
