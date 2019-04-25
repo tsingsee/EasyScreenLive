@@ -208,7 +208,7 @@ BOOL CEasyScreenLiveDlg::OnInitDialog()
 		pDevice = pDevice->pNext;
 	}
 	pComboAudioId->AddString(TEXT("不启用"));
-	pComboAudioId->SetCurSel(m_pAudioDevList->count);
+	pComboAudioId->SetCurSel(0); //m_pAudioDevList->count
 
 	pDevice = m_pCameraDevList->pDevice;
 	for (int i = 0; i<m_pCameraDevList->count; i++)
@@ -558,12 +558,20 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtsp()
 
 		if (m_pusher)
 		{
-			EasyScreenLive_StartPush(m_pusher, PUSH_RTSP, szIP, nPort,  szStreamName , 1);
+			int ret = EasyScreenLive_StartPush(m_pusher, PUSH_RTSP, szIP, nPort,  szStreamName , 1);
 			m_bPushingRtsp = TRUE;
 			pBtnPush->SetWindowText(_T("StopPushRTSP"));
 			CString sLog = _T("");
 
-			sLog.Format(_T("开启RTSP推送: rtsp://%s:%d/%s"), wszIP, nPort, wszStreamName);
+			if (ret>0)
+			{
+				sLog.Format(_T("开启RTSP推送: rtsp://%s:%d/%s 成功"), wszIP, nPort, wszStreamName);
+			} 
+			else
+			{
+				sLog.Format(_T("开启RTSP推送: rtsp://%s:%d/%s 失败"), wszIP, nPort, wszStreamName);
+			}
+
 			OnLog( sLog );
 		}
 	}
@@ -619,12 +627,18 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPushRtmp()
 		if (m_pusher)
 		{
 			bool bRecord = false;
-			EasyScreenLive_StartPush(m_pusher, PUSH_RTMP, szIP, nPort,  szStreamName, 1, 1024, bRecord );
+			int ret = EasyScreenLive_StartPush(m_pusher, PUSH_RTMP, szIP, nPort,  szStreamName, 1, 1024, bRecord );
 			m_bPushingRtmp = TRUE;
 			pBtnPush->SetWindowText(_T("StopPushRTMP"));
 			CString sLog = _T("");
-
-			sLog.Format(_T("开启RTMP推送: rtmp://%s:%d/%s"), wszIP, nPort, wszStreamName);
+			if (ret>0)
+			{
+				sLog.Format(_T("开启RTMP推送: rtmp://%s:%d/%s 成功"), wszIP, nPort, wszStreamName);
+			} 
+			else
+			{
+				sLog.Format(_T("开启RTMP推送: rtmp://%s:%d/%s 失败"), wszIP, nPort, wszStreamName);
+			}
 
 			OnLog( sLog );
 		}
@@ -796,9 +810,9 @@ void CEasyScreenLiveDlg::OnBnClickedButtonPublishServer()
 #endif
 			GetLocalIP(ip);
 			//开始RTSP服务
-			m_nServerId[0]  = EasyScreenLive_StartServer(m_pusher, nPort, "", "",  liveChannel, nChannels );
- 			m_nServerId[1]  = EasyScreenLive_StartServer(m_pusher, nPort+1, "", "",  liveChannel, nChannels );
- 			m_nServerId[2]  = EasyScreenLive_StartServer(m_pusher, nPort+2, "", "",  liveChannel, nChannels );
+			m_nServerId[0]  = EasyScreenLive_StartServer(m_pusher, nPort, "admin", "123456",  liveChannel, nChannels );
+ 			m_nServerId[1]  = EasyScreenLive_StartServer(m_pusher, nPort+1, "admin", "123456",  liveChannel, nChannels );
+ 			m_nServerId[2]  = EasyScreenLive_StartServer(m_pusher, nPort+2, "admin", "123456",  liveChannel, nChannels );
 			pBtnPublishServer->SetWindowText(_T("StopRTSPServer"));
 			m_bPublishServer = TRUE;
 			CString sLog = _T("");
