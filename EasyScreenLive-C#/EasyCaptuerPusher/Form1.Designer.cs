@@ -143,7 +143,7 @@
             this.tbStream.Name = "tbStream";
             this.tbStream.Size = new System.Drawing.Size(116, 25);
             this.tbStream.TabIndex = 7;
-            this.tbStream.Text = "Stream1";
+            this.tbStream.Text = "live/Stream1";
             // 
             // lbStream
             // 

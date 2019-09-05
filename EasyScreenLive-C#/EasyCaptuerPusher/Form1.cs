@@ -202,11 +202,11 @@ namespace EasyCaptuerPusher
                 int streamPort = int.Parse(this.tbPort.Text);
                 string streamName = this.tbStream.Text;
                 int pusherret = CapturePusher.CapturePusherSDK.EasyScreenLive_StartPush(pusherPtr, PUSH_TYPE.PUSH_RTMP, streamIp, streamPort, streamName,1, bServerRecord: true);
-                isPusherRtmp = pusherret == 0;
+                isPusherRtmp = pusherret == 1;
                 if (isPusherRtmp)
                 {
                     button2.Text = "Stop";
-                    Log(string.Format("开启RTMP推送:rtmp://{0}:{1}/hls/{2}", streamIp, streamPort, streamName));
+                    Log(string.Format("开启RTMP推送:rtmp://{0}:{1}/{2}", streamIp, streamPort, streamName));
                 }
             }
         }
