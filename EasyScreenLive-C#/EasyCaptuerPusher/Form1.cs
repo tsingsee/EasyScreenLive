@@ -31,6 +31,29 @@ namespace EasyCaptuerPusher
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // 取消关闭窗体
+            e.Cancel = true;
+            // 将窗体变为最小化
+            this.WindowState = FormWindowState.Minimized;
+            this.ShowInTaskbar = false; //不显示在系统任务栏   
+
+        }
+
+        // 托盘双击显示
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.ShowInTaskbar = true;
+                
+            }
+        }
+
+        // 托盘右键退出
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
             if (isPusherRtsp)
                 CapturePusher.CapturePusherSDK.EasyScreenLive_StopPush(pusherPtr, PUSH_TYPE.PUSH_RTSP);
             if (isPusherRtmp)
@@ -46,64 +69,7 @@ namespace EasyCaptuerPusher
             if (isInit)
                 CapturePusher.CapturePusherSDK.EasyScreenLive_Release(pusherPtr);
 
-        }
-
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-            if (!isCapture) return;
-            if (!isServerOpen)
-            {
-                if (!isInit) return;
-                int serverPort = int.Parse(textBox5.Text);
-                int enable_multicast = comboBox2.Text == "组播" ? 1 : 0;
-                string multicast_addr = textBox6.Text;
-                short ttl = short.Parse(textBox4.Text);
-                EASYLIVE_CHANNEL_INFO_T[] stru = new EASYLIVE_CHANNEL_INFO_T[3];
-                int size = (Marshal.SizeOf(typeof(EASYLIVE_CHANNEL_INFO_T)));
-                IntPtr pData = Marshal.AllocHGlobal(size * 3);
-
-                for (int i=0; i<3; i++)
-                {
-                    stru[i].videoRTPPortNum = 6000 + i * 2;
-                    stru[i].audioRTPPortNum = 6001 + i * 2;
-                    //stru[i].videoRTPPortNum = 6000 ;
-                    //stru[i].audioRTPPortNum = 6002;
-                    stru[i].enable_multicast = enable_multicast;
-                    stru[i].multicast_addr = multicast_addr;
-                    stru[i].ttl = ttl; 
-                    stru[i].name = "channel=" + i;
-                    stru[i].id = i;
-                    Marshal.StructureToPtr(stru[i], pData+size*i,true);
-                }
-                //var struStr = new EASYLIVE_CHANNEL_INFO_T[] { stru };
-                //int ret = 0;
-
-                serverId0 = CapturePusher.CapturePusherSDK.EasyScreenLive_StartServer(pusherPtr, serverPort, string.Empty, string.Empty, pData, 1);
-                isServerOpen = serverId0 >= 0;
-                Log(string.Format("开启RTSP服务: rtsp://{0}:{1}/channel=0 {2}", GetLocalIP(), serverPort, isServerOpen ? "成功" : "失敗"));
-
-                serverId1 = CapturePusher.CapturePusherSDK.EasyScreenLive_StartServer(pusherPtr, serverPort+1, string.Empty, string.Empty, pData, 1);
-                isServerOpen = serverId1 >= 0;
-                Log(string.Format("开启RTSP服务: rtsp://{0}:{1}/channel=0 {2}", GetLocalIP(), serverPort+1, isServerOpen ? "成功" : "失敗"));
-
-                serverId2 = CapturePusher.CapturePusherSDK.EasyScreenLive_StartServer(pusherPtr, serverPort+2, string.Empty, string.Empty, pData, 1);
-                isServerOpen = serverId2 >= 0;
-                Log(string.Format("开启RTSP服务: rtsp://{0}:{1}/channel=0 {2}", GetLocalIP(), serverPort+2, isServerOpen ? "成功" : "失敗"));
-
-                if (isServerOpen)
-                    btnStop.Text = "Stop";
-                Marshal.FreeHGlobal(pData);//Release memory space.  
-            }
-            else
-            {
-                CapturePusher.CapturePusherSDK.EasyScreenLive_StopServer(pusherPtr, serverId0);
-                CapturePusher.CapturePusherSDK.EasyScreenLive_StopServer(pusherPtr, serverId1);
-                CapturePusher.CapturePusherSDK.EasyScreenLive_StopServer(pusherPtr, serverId2);
-
-                btnStop.Text = "RTSP Server";
-                isServerOpen = false;
-                Log("停止RTSP服务");
-            }
+            Application.Exit();
         }
 
         private void btnCapture_Click(object sender, EventArgs e)
@@ -116,18 +82,18 @@ namespace EasyCaptuerPusher
                 return;
             if (!isCapture)
             {
-                EncoderType encodeType = (EncoderType)Enum.Parse(typeof(EncoderType), this.comboBox1.Text);
-                SOURCE_TYPE captureType = this.CaptureType.Text == "屏幕采集" ? SOURCE_TYPE.SOURCE_SCREEN_CAPTURE : SOURCE_TYPE.SOURCE_RTSP_STREAM;
+                EncoderType encodeType = (EncoderType)Enum.Parse(typeof(EncoderType), "快速软编码");
+                SOURCE_TYPE captureType = SOURCE_TYPE.SOURCE_SCREEN_CAPTURE;
                 string szDataType = captureType == SOURCE_TYPE.SOURCE_LOCAL_CAMERA ? "YUY2" : "RGB24";
                 int captureRet = 0;
                 ENCODE_MODE encMode = ENCODE_MODE.H264;
-                captureRet = CapturePusher.CapturePusherSDK.EasyScreenLive_StartCapture(pusherPtr, captureType, "rtsp://192.168.0.101:8004/12345",this.panel1.Handle/*IntPtr.Zero*/, encodeType, szDataType, 1280, 720, 1024, false, encMode);
+                captureRet = CapturePusher.CapturePusherSDK.EasyScreenLive_StartCapture(pusherPtr, captureType, "rtsp://192.168.0.35:8555/12345",this.panel1.Handle/*IntPtr.Zero*/, encodeType, szDataType, 1280, 720, 1024, false, encMode);
 
                 isCapture = captureRet >= 0;
 
                 if (isCapture)
-                    btnCapture.Text = "Stop";
-                Log(string.Format("開啓{0}{1}", this.CaptureType.Text, isCapture ? "成功" : "失敗"));
+                    btnCapture.Text = "停止";
+                Log(string.Format("开启{0}{1}", "屏幕采集", isCapture ? "成功" : "失敗"));
             }
             else
             {
@@ -136,13 +102,12 @@ namespace EasyCaptuerPusher
                     if (isPusherRtsp)
                     {
                         CapturePusher.CapturePusherSDK.EasyScreenLive_StopPush(pusherPtr, PUSH_TYPE.PUSH_RTSP);
-                        this.button1.Text = "RTSP Push";
+                        this.button1.Text = "屏幕推送";
                         isPusherRtsp = false;
                     }
                     if (isPusherRtmp)
                     {
                         CapturePusher.CapturePusherSDK.EasyScreenLive_StopPush(pusherPtr, PUSH_TYPE.PUSH_RTMP);
-                        this.button2.Text = "RTMP Push";
                         isPusherRtsp = false;
                     }
                     if (isServerOpen)
@@ -150,7 +115,6 @@ namespace EasyCaptuerPusher
                         CapturePusher.CapturePusherSDK.EasyScreenLive_StopServer(pusherPtr, serverId0);
                         CapturePusher.CapturePusherSDK.EasyScreenLive_StopServer(pusherPtr, serverId1);
                         CapturePusher.CapturePusherSDK.EasyScreenLive_StopServer(pusherPtr, serverId2);
-                        this.btnStop.Text = "RTSP Server";
                         isServerOpen = false;
                     }
                     CapturePusher.CapturePusherSDK.EasyScreenLive_StopCapture(pusherPtr);
@@ -159,7 +123,7 @@ namespace EasyCaptuerPusher
                 isCapture = false;
 
                 Log("停止采集");
-                btnCapture.Text = "Capture";
+                btnCapture.Text = "采集屏幕";
             }
         }
 
@@ -169,7 +133,7 @@ namespace EasyCaptuerPusher
             {
                 CapturePusher.CapturePusherSDK.EasyScreenLive_StopPush(pusherPtr, PUSH_TYPE.PUSH_RTSP);
                 isPusherRtsp = false;
-                button1.Text = "RTSP Push";
+                button1.Text = "屏幕推送";
                 Log("停止rtsp推送!");
             }
             else
@@ -178,38 +142,16 @@ namespace EasyCaptuerPusher
                 int streamPort = int.Parse(this.textBox2.Text);
                 string streamName = this.textBox1.Text;
                 int pusherret = CapturePusher.CapturePusherSDK.EasyScreenLive_StartPush(pusherPtr, PUSH_TYPE.PUSH_RTSP, streamIp, streamPort, streamName,1);
-                isPusherRtsp = pusherret == 0;
+
+                isPusherRtsp = pusherret == 1;
                 if (isPusherRtsp)
                 {
-                    button1.Text = "Stop";
+                    button1.Text = "停止推送";
                     Log(string.Format("开启RTSP推送:rtsp://{0}:{1}/{2}", streamIp, streamPort, streamName));
                 }
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (isPusherRtmp)
-            {
-                CapturePusher.CapturePusherSDK.EasyScreenLive_StopPush(pusherPtr, PUSH_TYPE.PUSH_RTMP);
-                isPusherRtmp = false;
-                button2.Text = "RTMP Push";
-                Log("停止rtmp推送!");
-            }
-            else
-            {
-                string streamIp = this.tbIP.Text;
-                int streamPort = int.Parse(this.tbPort.Text);
-                string streamName = this.tbStream.Text;
-                int pusherret = CapturePusher.CapturePusherSDK.EasyScreenLive_StartPush(pusherPtr, PUSH_TYPE.PUSH_RTMP, streamIp, streamPort, streamName,1, bServerRecord: true);
-                isPusherRtmp = pusherret == 1;
-                if (isPusherRtmp)
-                {
-                    button2.Text = "Stop";
-                    Log(string.Format("开启RTMP推送:rtmp://{0}:{1}/{2}", streamIp, streamPort, streamName));
-                }
-            }
-        }
 
         private void Log(string message)
         {

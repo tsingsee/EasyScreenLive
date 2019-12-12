@@ -287,18 +287,18 @@ public class EasyPlayerClient implements Client.SourceCallBack {
     }
 
     /**
-     * 创建SDK对象
-     *
-     * @param context 上下文对象
-     * @param key     SDK key
-     * @param surface 显示视频用的surface
-     */
+         * 创建SDK对象
+         *
+         * @param context 上下文对象
+         * @param key     SDK key
+         * @param surface 显示视频用的surface
+         */
     public EasyPlayerClient(Context context, String key, Surface surface, ResultReceiver receiver, I420DataCallback callback) {
-        mSurface = surface;
-        mContext = context;
-        mKey = key;
-        mRR = receiver;
-        i420callback = callback;
+            mSurface = surface;
+            mContext = context;
+            mKey = key;
+            mRR = receiver;
+            i420callback = callback;
     }
 
     /**
