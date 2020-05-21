@@ -77,7 +77,7 @@ typedef enum tagPUSH_TYPE
 
 - 历史版本下载：[https://github.com/EasyDSS/EasyScreenLive/releases](https://github.com/EasyDSS/EasyScreenLive/releases)
 
-- Android 版：[https://fir.im/EasyScreenLive](https://fir.im/EasyScreenLive)
+- Android 版：[http://d.7short.com/EasyScreenLive](http://d.7short.com/EasyScreenLive)
 
 > EasyScreenLive中已经内嵌了对应的播放器功能，如果需要使用额外的播放器来进行播放，可选择使用EasyPlayer-RTSP播放器：[https://github.com/EasyDSS/EasyPlayer-RTSP](https://github.com/EasyDSS/EasyPlayer-RTSP "EasyPlayer-RTSP")
 
