@@ -1,4 +1,4 @@
-﻿package org.easydarwin.video;
+package org.easydarwin.video;
 
 import android.content.Context;
 import android.os.Handler;
@@ -133,8 +133,8 @@ public class Client implements Closeable {
     public static final int TRANSTYPE_UDP = 2;
     private static final String TAG = Client.class.getSimpleName();
 
-//    20201201-20210201
-    private static final String LIC_KEY = "79393674363469576B5A7541683856666F4470344A65314659584E3555324E795A57567554476C325A53356C6547564A567778576F502B6C34456468646D6C754A6B4A68596D397A595541794D4445325257467A65555268636E6470626C526C5957316C59584E35";
+    //    20201201-20210201
+    private static final String LIC_KEY = "6D75724D7A4A36526D3432414C6A78676E38505251755A76636D63755A57467A65575268636E64706269356C59584E356347786865575679567778576F502F432F32566863336B3D";
 
     static {
         System.loadLibrary("EasyRTSPClient");
